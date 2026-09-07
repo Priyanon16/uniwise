@@ -310,31 +310,6 @@ function moduleLabel(string $module): string
                     </a>
 
 
-                    <div class="stat-card">
-                        <div class="stat-icon cyan">
-                            <i class="bi bi-list-check"></i>
-                        </div>
-
-                        <div class="stat-content">
-                            <span>ขั้นตอนฝึกงาน</span>
-                            <strong><?= $stepCount ?></strong>
-                            <small>ขั้นตอนในระบบ</small>
-                        </div>
-                    </div>
-
-
-                    <div class="stat-card">
-                        <div class="stat-icon navy">
-                            <i class="bi bi-file-earmark-text-fill"></i>
-                        </div>
-
-                        <div class="stat-content">
-                            <span>เอกสารฝึกงาน</span>
-                            <strong><?= $documentCount ?></strong>
-                            <small>เอกสารที่กำหนดไว้</small>
-                        </div>
-                    </div>
-
                 </section>
 
 
