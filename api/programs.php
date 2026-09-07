@@ -203,6 +203,16 @@ try {
     $planCode =
         trim($_GET['plan_code'] ?? '');
 
+    // -----------------------------------------------------
+    // ตัวกรองสำหรับคำอธิบายรายวิชา
+    // -----------------------------------------------------
+
+    $courseCode =
+        trim($_GET['course_code'] ?? '');
+
+    $courseSearch =
+        trim($_GET['course_search'] ?? '');
+
     $topic =
         strtolower(
             trim($_GET['topic'] ?? 'general')
@@ -270,7 +280,13 @@ try {
         'careers',
 
         'objective',
-        'objectives'
+        'objectives',
+
+        // คำอธิบายรายวิชา
+        'course',
+        'courses',
+        'course_description',
+        'course_descriptions'
     ];
 
 
@@ -1131,7 +1147,167 @@ try {
 
 
         // =================================================
-        // 4.5 General
+        // 4.5 Course Descriptions
+        //
+        // ใช้สำหรับ:
+        // - "มีรายวิชาอะไรบ้าง"
+        // - "0904 101 คือวิชาอะไร"
+        // - "คำอธิบายรายวิชา 0904 101"
+        //
+        // หมายเหตุ:
+        // ไม่ส่ง raw_content ออก API เพราะเป็นข้อความต้นฉบับ
+        // สำหรับตรวจสอบภายในและซ้ำกับข้อมูลที่แยกคอลัมน์แล้ว
+        // =================================================
+
+        if (
+            in_array(
+                $topic,
+                [
+                    'course',
+                    'courses',
+                    'course_description',
+                    'course_descriptions'
+                ],
+                true
+            )
+        ) {
+
+            $courseSql = "
+                SELECT
+                    id,
+                    program_id,
+                    curriculum_name,
+                    major_name,
+                    degree_level,
+                    course_code,
+                    course_name_th,
+                    course_name_en,
+                    credits,
+                    course_group,
+                    course_type,
+                    plan_applicability,
+                    credit_counted,
+                    assessment_type,
+                    prerequisite,
+                    description_th,
+                    description_en,
+                    sort_order,
+                    created_at,
+                    updated_at
+
+                FROM
+                    course_descriptions
+
+                WHERE
+                    program_id = :program_id
+            ";
+
+            $courseParams = [
+                ':program_id' =>
+                    $programId
+            ];
+
+
+            // ---------------------------------------------
+            // ค้นด้วยรหัสวิชา
+            // รองรับทั้ง 0904 101 และ 0904101
+            // ---------------------------------------------
+
+            if ($courseCode !== '') {
+
+                $courseSql .= "
+                    AND REPLACE(
+                        course_code,
+                        ' ',
+                        ''
+                    ) = REPLACE(
+                        :course_code,
+                        ' ',
+                        ''
+                    )
+                ";
+
+                $courseParams[':course_code'] =
+                    $courseCode;
+            }
+
+
+            // ---------------------------------------------
+            // ค้นจากรหัส / ชื่อ / คำอธิบาย
+            // ---------------------------------------------
+
+            if ($courseSearch !== '') {
+
+                $courseSql .= "
+                    AND (
+                        course_code LIKE :course_search
+                        OR course_name_th LIKE :course_search
+                        OR course_name_en LIKE :course_search
+                        OR course_group LIKE :course_search
+                        OR course_type LIKE :course_search
+                        OR prerequisite LIKE :course_search
+                        OR description_th LIKE :course_search
+                        OR description_en LIKE :course_search
+                    )
+                ";
+
+                $courseParams[':course_search'] =
+                    '%' . $courseSearch . '%';
+            }
+
+
+            $courseSql .= "
+                ORDER BY
+                    sort_order ASC,
+                    course_code ASC,
+                    id ASC
+            ";
+
+
+            $stmtCourse =
+                $pdo->prepare(
+                    $courseSql
+                );
+
+            $stmtCourse->execute(
+                $courseParams
+            );
+
+
+            $courses =
+                $stmtCourse->fetchAll(
+                    PDO::FETCH_ASSOC
+                );
+
+
+            foreach ($courses as &$course) {
+
+                $course['id'] =
+                    (int)$course['id'];
+
+                $course['program_id'] =
+                    (int)$course['program_id'];
+
+                $course['credit_counted'] =
+                    (int)$course['credit_counted'];
+
+                $course['sort_order'] =
+                    (int)$course['sort_order'];
+            }
+
+            unset($course);
+
+
+            $program['course_count'] =
+                count($courses);
+
+            $program['courses'] =
+                $courses;
+        }
+
+
+        // =================================================
+        // 4.6 General
         // =================================================
 
         if ($topic === 'general') {
@@ -1189,6 +1365,16 @@ try {
                 'plan_code' =>
                     $planCode !== ''
                         ? $planCode
+                        : null,
+
+                'course_code' =>
+                    $courseCode !== ''
+                        ? $courseCode
+                        : null,
+
+                'course_search' =>
+                    $courseSearch !== ''
+                        ? $courseSearch
                         : null,
 
                 'active' =>
