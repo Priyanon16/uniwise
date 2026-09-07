@@ -3,7 +3,7 @@
 $host = "localhost";
 $dbname = "mbs_chatbot";
 $username = "root";
-$password = "";
+$password = "Took@66010912608";
 
 try {
 
