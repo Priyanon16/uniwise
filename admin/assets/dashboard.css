@@ -501,6 +501,12 @@ a.stat-card:hover {
 
 .activity-list {
     display: grid;
+
+    max-height: 430px;
+    overflow-y: auto;
+
+    padding-right: 6px;
+    overscroll-behavior: contain;
 }
 
 .activity-list::-webkit-scrollbar {
