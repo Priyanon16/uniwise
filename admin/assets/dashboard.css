@@ -503,6 +503,23 @@ a.stat-card:hover {
     display: grid;
 }
 
+.activity-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.activity-list::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.activity-list::-webkit-scrollbar-thumb {
+    background: #c9d7e3;
+    border-radius: 10px;
+}
+
+.activity-list::-webkit-scrollbar-thumb:hover {
+    background: #9fb4c5;
+}
+
 .activity-item {
     padding: 14px 0;
 
