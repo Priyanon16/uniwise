@@ -1,0 +1,832 @@
+/* =========================================================
+   MBS UNIWISE ADMIN
+   INTERNSHIP MANAGEMENT
+========================================================= */
+
+
+/* =========================================================
+   HERO
+========================================================= */
+
+.internship-hero {
+    min-height: 255px;
+    padding: 38px 42px;
+
+    position: relative;
+    overflow: hidden;
+
+    display: flex;
+    align-items: center;
+
+    color: #ffffff;
+
+    border-radius: var(--radius-xl);
+
+    background:
+        linear-gradient(
+            120deg,
+            #063b73 0%,
+            #075fa9 52%,
+            #0a83cf 100%
+        );
+
+    box-shadow:
+        0 24px 60px
+        rgba(6, 59, 115, 0.20);
+
+    isolation: isolate;
+}
+
+
+.internship-hero::before {
+    content: "";
+
+    position: absolute;
+
+    width: 520px;
+    height: 520px;
+
+    right: -200px;
+    top: -310px;
+
+    z-index: -1;
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.16);
+
+    border-radius: 50%;
+
+    box-shadow:
+        0 0 0 55px rgba(255,255,255,.025),
+        0 0 0 110px rgba(255,255,255,.018);
+}
+
+
+.internship-hero::after {
+    content: "MBS";
+
+    position: absolute;
+
+    right: 35px;
+    bottom: -35px;
+
+    z-index: -1;
+
+    color:
+        rgba(255,255,255,.055);
+
+    font-size:
+        clamp(9rem, 18vw, 15rem);
+
+    line-height: 1;
+
+    font-weight: 800;
+
+    letter-spacing: -.08em;
+
+    pointer-events: none;
+}
+
+
+.internship-hero-copy {
+    position: relative;
+
+    z-index: 2;
+
+    max-width: 720px;
+}
+
+
+.internship-eyebrow {
+    display: inline-flex;
+    align-items: center;
+
+    gap: 8px;
+
+    padding: 7px 11px;
+
+    color:
+        rgba(255,255,255,.88);
+
+    background:
+        rgba(255,255,255,.08);
+
+    border:
+        1px solid
+        rgba(255,255,255,.18);
+
+    border-radius: 999px;
+
+    font-size: .68rem;
+    font-weight: 800;
+
+    letter-spacing: .07em;
+}
+
+
+.internship-eyebrow span {
+    width: 8px;
+    height: 8px;
+
+    border-radius: 50%;
+
+    background:
+        var(--mbs-yellow);
+
+    box-shadow:
+        0 0 0 4px
+        rgba(245,213,31,.13);
+}
+
+
+.internship-hero h1 {
+    margin:
+        15px 0 8px;
+
+    font-size:
+        clamp(1.8rem, 3vw, 2.8rem);
+
+    line-height: 1.18;
+
+    font-weight: 750;
+
+    letter-spacing: -.035em;
+}
+
+
+.internship-hero p {
+    margin: 0;
+
+    color:
+        rgba(255,255,255,.72);
+
+    font-size: .9rem;
+}
+
+
+.internship-hero-meta {
+    margin-top: 18px;
+
+    display: flex;
+    flex-wrap: wrap;
+
+    gap: 10px 20px;
+
+    color:
+        rgba(255,255,255,.80);
+
+    font-size: .76rem;
+}
+
+
+.internship-hero-meta span {
+    display: inline-flex;
+    align-items: center;
+
+    gap: 7px;
+}
+
+
+.internship-hero-meta i {
+    color:
+        var(--mbs-yellow);
+}
+
+
+/* =========================================================
+   ALERT
+========================================================= */
+
+.internship-alert {
+    margin-top: 18px;
+
+    padding: 13px 16px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+
+    color: #126243;
+
+    background: #f0fbf5;
+
+    border:
+        1px solid #cdeadd;
+
+    border-radius: 13px;
+
+    font-size: .82rem;
+    font-weight: 600;
+
+    box-shadow:
+        var(--shadow-soft);
+}
+
+
+/* =========================================================
+   WORKSPACE
+========================================================= */
+
+.workspace-heading {
+    margin: 30px 0 16px;
+
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+
+    gap: 20px;
+}
+
+
+.workspace-kicker {
+    display: block;
+
+    margin-bottom: 5px;
+
+    color:
+        var(--mbs-blue);
+
+    font-size: .65rem;
+    font-weight: 800;
+
+    letter-spacing: .11em;
+}
+
+
+.workspace-heading h2 {
+    margin: 0;
+
+    color:
+        var(--text);
+
+    font-size: 1.3rem;
+
+    font-weight: 750;
+}
+
+
+.workspace-heading p {
+    margin: 4px 0 0;
+
+    color:
+        var(--text-soft);
+
+    font-size: .78rem;
+}
+
+
+.workspace-chip {
+    padding: 8px 11px;
+
+    display: inline-flex;
+    align-items: center;
+
+    gap: 7px;
+
+    color:
+        var(--mbs-blue);
+
+    background: #ffffff;
+
+    border:
+        1px solid
+        var(--line);
+
+    border-radius: 11px;
+
+    box-shadow:
+        var(--shadow-soft);
+
+    font-size: .72rem;
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   NAVIGATION
+========================================================= */
+
+.internship-nav {
+    padding: 7px;
+
+    display: flex;
+    flex-wrap: wrap;
+
+    gap: 6px;
+
+    background: #ffffff;
+
+    border:
+        1px solid
+        var(--line);
+
+    border-radius: 16px;
+
+    box-shadow:
+        var(--shadow-soft);
+}
+
+
+.internship-nav .nav-link {
+    min-height: 42px;
+
+    padding: 9px 14px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 7px;
+
+    color: #65788c;
+
+    border-radius: 11px;
+
+    font-size: .8rem;
+    font-weight: 650;
+}
+
+
+.internship-nav .nav-link:hover {
+    color:
+        var(--mbs-blue);
+
+    background:
+        #f0f8fe;
+}
+
+
+.internship-nav .nav-link.active {
+    color: #ffffff;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--mbs-blue),
+            var(--mbs-blue-2)
+        );
+
+    box-shadow:
+        0 8px 18px
+        rgba(7,95,169,.22);
+}
+
+
+/* =========================================================
+   CARD
+========================================================= */
+
+.internship-card {
+    position: relative;
+
+    overflow: hidden;
+
+    background: #ffffff;
+
+    border:
+        1px solid
+        var(--line);
+
+    border-radius:
+        var(--radius-lg);
+
+    box-shadow:
+        var(--shadow-card);
+}
+
+
+.internship-card::before {
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+    top: 0;
+
+    width: 4px;
+    height: 80px;
+
+    z-index: 2;
+
+    background:
+        linear-gradient(
+            180deg,
+            var(--mbs-yellow),
+            var(--mbs-blue-2)
+        );
+}
+
+
+.internship-card-header {
+    min-height: 76px;
+
+    padding: 17px 22px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 15px;
+
+    background:
+        linear-gradient(
+            180deg,
+            #ffffff,
+            #fbfdff
+        );
+
+    border-bottom:
+        1px solid
+        #edf2f6;
+}
+
+
+.internship-card-title {
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+}
+
+
+.section-icon {
+    width: 42px;
+    height: 42px;
+
+    flex: 0 0 auto;
+
+    display: grid;
+    place-items: center;
+
+    color:
+        var(--mbs-blue);
+
+    background:
+        #eaf6ff;
+
+    border:
+        1px solid
+        #d6ebf8;
+
+    border-radius: 12px;
+
+    font-size: 1rem;
+}
+
+
+.internship-card-title strong,
+.internship-card-title small {
+    display: block;
+}
+
+
+.internship-card-title strong {
+    color:
+        var(--text);
+
+    font-size: .92rem;
+
+    font-weight: 750;
+}
+
+
+.internship-card-title small {
+    margin-top: 2px;
+
+    color:
+        var(--text-soft);
+
+    font-size: .7rem;
+}
+
+
+.record-count {
+    padding: 6px 10px;
+
+    color:
+        var(--mbs-blue);
+
+    background:
+        #edf8ff;
+
+    border:
+        1px solid
+        #dceaf4;
+
+    border-radius: 999px;
+
+    font-size: .7rem;
+    font-weight: 750;
+
+    white-space: nowrap;
+}
+
+
+.internship-card-body {
+    padding: 24px;
+}
+
+
+/* =========================================================
+   FORM
+========================================================= */
+
+.internship-card .form-label {
+    margin-bottom: 6px;
+
+    color: #334a62;
+
+    font-size: .78rem;
+    font-weight: 650;
+}
+
+
+.internship-card .form-control,
+.internship-card .form-select {
+    min-height: 46px;
+
+    color:
+        var(--text);
+
+    background:
+        #ffffff;
+
+    border:
+        1px solid
+        #d7e2eb;
+
+    border-radius: 11px;
+
+    font-size: .85rem;
+
+    box-shadow: none;
+}
+
+
+.internship-card textarea.form-control {
+    min-height: 110px;
+
+    resize: vertical;
+}
+
+
+.internship-card .form-control:focus,
+.internship-card .form-select:focus {
+    border-color:
+        var(--mbs-blue-2);
+
+    box-shadow:
+        0 0 0 4px
+        rgba(10,131,207,.10);
+}
+
+
+/* =========================================================
+   BUTTON
+========================================================= */
+
+.internship-card .btn {
+    border-radius: 10px;
+
+    font-size: .78rem;
+    font-weight: 700;
+}
+
+
+.internship-card .btn-primary {
+    color: #ffffff;
+
+    border-color:
+        var(--mbs-blue);
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--mbs-blue),
+            var(--mbs-blue-2)
+        );
+}
+
+
+.internship-card .btn-warning {
+    color: #755800;
+
+    border-color: #f3de73;
+
+    background:
+        var(--mbs-yellow-soft);
+}
+
+
+.internship-card .btn-danger {
+    color: #b72f41;
+
+    border-color: #f1c8cf;
+
+    background:
+        #fff3f5;
+}
+
+
+.internship-card .btn-secondary {
+    color: #55687c;
+
+    border-color: #dce4eb;
+
+    background:
+        #f5f7f9;
+}
+
+
+/* =========================================================
+   TABLE
+========================================================= */
+
+.internship-table-wrap {
+    width: 100%;
+
+    overflow-x: auto;
+}
+
+
+.internship-table {
+    width: 100%;
+
+    margin: 0;
+
+    vertical-align: middle;
+
+    font-size: .8rem;
+}
+
+
+.internship-table > :not(caption) > * > * {
+    padding: 14px 16px;
+
+    border-bottom-color:
+        #edf2f6;
+}
+
+
+.internship-table thead th {
+    white-space: nowrap;
+
+    color: #5f748a;
+
+    background:
+        #f5f9fc;
+
+    border-bottom:
+        1px solid
+        #dce6ee;
+
+    font-size: .69rem;
+
+    font-weight: 750;
+}
+
+
+.internship-table tbody tr:hover > * {
+    background:
+        #f7fbfe;
+}
+
+
+.internship-table td:last-child {
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
+.internship-footer {
+    margin-top: 25px;
+
+    padding: 19px 3px 4px;
+
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+
+    gap: 18px;
+
+    color: #75879a;
+
+    border-top:
+        1px solid
+        var(--line);
+
+    font-size: .68rem;
+}
+
+
+.internship-footer strong,
+.internship-footer span {
+    display: block;
+}
+
+
+.internship-footer strong {
+    margin-bottom: 2px;
+
+    color: #536a80;
+
+    font-size: .72rem;
+}
+
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 991.98px) {
+
+    .internship-hero {
+        min-height: auto;
+
+        padding: 34px 30px;
+    }
+
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 767.98px) {
+
+    .internship-hero {
+        padding: 28px 22px;
+
+        border-radius: 20px;
+    }
+
+
+    .internship-hero h1 {
+        font-size: 1.75rem;
+    }
+
+
+    .workspace-heading {
+        margin-top: 25px;
+
+        align-items: flex-start;
+    }
+
+
+    .workspace-chip {
+        display: none;
+    }
+
+
+    .internship-nav {
+        flex-wrap: nowrap;
+
+        overflow-x: auto;
+
+        scrollbar-width: none;
+    }
+
+
+    .internship-nav::-webkit-scrollbar {
+        display: none;
+    }
+
+
+    .internship-nav .nav-item {
+        flex: 0 0 auto;
+    }
+
+
+    .internship-nav .nav-link {
+        white-space: nowrap;
+    }
+
+
+    .internship-card-header {
+        padding: 15px 17px;
+    }
+
+
+    .internship-card-body {
+        padding: 18px;
+    }
+
+
+    .internship-table {
+        min-width: 720px;
+    }
+
+
+    .internship-footer {
+        flex-direction: column;
+
+        align-items: flex-start;
+    }
+
+}

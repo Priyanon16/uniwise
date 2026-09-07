@@ -1,0 +1,1121 @@
+/* =========================================================
+   MBS UniWise Admin
+   Shared Admin Styles
+   ========================================================= */
+
+
+/* =========================================================
+   ROOT / THEME
+========================================================= */
+
+:root {
+    --mbs-navy: #063b73;
+    --mbs-navy-deep: #052d57;
+
+    --mbs-blue: #075fa9;
+    --mbs-blue-2: #0a83cf;
+
+    --mbs-yellow: #f5d51f;
+    --mbs-yellow-soft: #fff8cb;
+
+    --bg: #f3f7fa;
+    --surface: #ffffff;
+
+    --text: #122235;
+    --text-soft: #6f8295;
+
+    --line: #dfe8ef;
+    --line-soft: #edf2f6;
+
+    --sidebar-width: 280px;
+
+    --radius-xl: 28px;
+    --radius-lg: 20px;
+    --radius-md: 14px;
+
+    --shadow-soft:
+        0 14px 40px
+        rgba(6, 59, 115, 0.07);
+
+    --shadow-card:
+        0 16px 45px
+        rgba(18, 56, 91, 0.08);
+}
+
+
+/* =========================================================
+   BASE
+========================================================= */
+
+* {
+    box-sizing: border-box;
+}
+
+
+html {
+    scroll-behavior: smooth;
+}
+
+
+body {
+    min-height: 100vh;
+
+    margin: 0;
+
+    color: var(--text);
+
+    background:
+        radial-gradient(
+            circle at 95% 0%,
+            rgba(245, 213, 31, 0.08),
+            transparent 24rem
+        ),
+        var(--bg);
+
+    font-family:
+        "Noto Sans Thai",
+        "Segoe UI",
+        sans-serif;
+}
+
+
+a {
+    transition: 0.18s ease;
+}
+
+
+/* =========================================================
+   ADMIN LAYOUT
+========================================================= */
+
+.admin-layout {
+    min-height: 100vh;
+
+    display: flex;
+}
+
+
+.main-shell {
+    width:
+        calc(
+            100% - var(--sidebar-width)
+        );
+
+    min-width: 0;
+    min-height: 100vh;
+
+    margin-left:
+        var(--sidebar-width);
+
+    display: flex;
+    flex-direction: column;
+
+    transition:
+        width 0.25s ease,
+        margin-left 0.25s ease;
+}
+
+
+/* =========================================================
+   SIDEBAR
+========================================================= */
+
+.sidebar {
+    width: var(--sidebar-width);
+    height: 100vh;
+
+    position: fixed;
+
+    left: 0;
+    top: 0;
+
+    z-index: 1100;
+
+    display: flex;
+    flex-direction: column;
+
+    overflow: visible;
+
+    color: #ffffff;
+
+    background:
+        radial-gradient(
+            circle at 15% 0%,
+            rgba(24, 148, 222, 0.30),
+            transparent 250px
+        ),
+        linear-gradient(
+            180deg,
+            var(--mbs-navy) 0%,
+            var(--mbs-navy-deep) 100%
+        );
+
+    box-shadow:
+        14px 0 40px
+        rgba(5, 45, 87, 0.12);
+
+    transition:
+        width 0.25s ease,
+        transform 0.25s ease;
+}
+
+
+/* =========================================================
+   SIDEBAR BRAND
+========================================================= */
+
+.sidebar-brand {
+    min-height: 104px;
+
+    padding: 24px 22px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 13px;
+
+    transition:
+        padding 0.25s ease;
+}
+
+
+.brand-logo {
+    width: 54px;
+    height: 54px;
+
+    flex: 0 0 auto;
+
+    position: relative;
+
+    overflow: hidden;
+
+    display: grid;
+    place-items: center;
+
+    color: #ffffff;
+
+    background:
+        linear-gradient(
+            145deg,
+            #1593dc,
+            #07518f
+        );
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.24);
+
+    border-radius: 17px;
+
+    font-size: 1rem;
+    font-weight: 800;
+
+    letter-spacing: 0.04em;
+
+    box-shadow:
+        0 12px 25px
+        rgba(0, 0, 0, 0.15);
+
+    transition:
+        width 0.25s ease,
+        height 0.25s ease;
+}
+
+
+.brand-logo::after {
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    height: 5px;
+
+    background:
+        var(--mbs-yellow);
+}
+
+
+.brand-copy {
+    min-width: 0;
+}
+
+
+.brand-copy strong,
+.brand-copy span {
+    display: block;
+}
+
+
+.brand-copy strong {
+    color: #ffffff;
+
+    font-size: 1rem;
+    font-weight: 700;
+
+    white-space: nowrap;
+}
+
+
+.brand-copy span {
+    margin-top: 2px;
+
+    color:
+        rgba(
+            255,
+            255,
+            255,
+            0.60
+        );
+
+    font-size: 0.74rem;
+
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   SIDEBAR DIVIDER
+========================================================= */
+
+.sidebar-divider {
+    height: 1px;
+
+    margin:
+        0
+        20px;
+
+    background:
+        rgba(
+            255,
+            255,
+            255,
+            0.10
+        );
+
+    transition:
+        margin 0.25s ease;
+}
+
+
+/* =========================================================
+   SIDEBAR TOGGLE
+========================================================= */
+
+.sidebar-toggle {
+    position: absolute;
+
+    top: 34px;
+    right: -18px;
+
+    width: 36px;
+    height: 36px;
+
+    padding: 0;
+
+    display: grid;
+    place-items: center;
+
+    color:
+        var(--mbs-navy);
+
+    background:
+        #ffffff;
+
+    border:
+        1px solid
+        var(--line);
+
+    border-radius: 50%;
+
+    box-shadow:
+        0 7px 22px
+        rgba(
+            5,
+            45,
+            87,
+            0.18
+        );
+
+    cursor: pointer;
+
+    z-index: 1200;
+
+    transition:
+        color 0.2s ease,
+        background 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+.sidebar-toggle:hover {
+    color: #ffffff;
+
+    background:
+        var(--mbs-blue);
+
+    border-color:
+        var(--mbs-blue);
+}
+
+
+.sidebar-toggle i {
+    transition:
+        transform 0.25s ease;
+}
+
+
+/* =========================================================
+   SIDEBAR SECTION
+========================================================= */
+
+.sidebar-section-label {
+    padding:
+        20px
+        22px
+        8px;
+
+    color:
+        rgba(
+            255,
+            255,
+            255,
+            0.42
+        );
+
+    font-size: 0.65rem;
+    font-weight: 700;
+
+    letter-spacing:
+        0.12em;
+
+    text-transform:
+        uppercase;
+}
+
+
+.sidebar-system-label {
+    margin-top: 12px;
+}
+
+
+/* =========================================================
+   SIDEBAR NAVIGATION
+========================================================= */
+
+.sidebar-nav {
+    padding:
+        0
+        12px;
+}
+
+
+.sidebar-link {
+    min-height: 48px;
+
+    padding:
+        9px
+        11px;
+
+    margin-bottom: 5px;
+
+    position: relative;
+
+    display: flex;
+    align-items: center;
+
+    gap: 11px;
+
+    color:
+        rgba(
+            255,
+            255,
+            255,
+            0.72
+        );
+
+    border-radius: 13px;
+
+    font-size: 0.86rem;
+    font-weight: 600;
+
+    text-decoration: none;
+
+    transition:
+        color 0.18s ease,
+        background 0.18s ease,
+        padding 0.25s ease;
+}
+
+
+.sidebar-link:hover {
+    color: #ffffff;
+
+    background:
+        rgba(
+            255,
+            255,
+            255,
+            0.08
+        );
+}
+
+
+.sidebar-link.active {
+    color: #ffffff;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(15, 137, 211, 0.84),
+            rgba(7, 101, 174, 0.75)
+        );
+
+    box-shadow:
+        inset
+        0
+        0
+        0
+        1px
+        rgba(
+            255,
+            255,
+            255,
+            0.10
+        );
+}
+
+
+.sidebar-link.active::after {
+    content: "";
+
+    position: absolute;
+
+    right: 9px;
+
+    width: 7px;
+    height: 7px;
+
+    border-radius: 50%;
+
+    background:
+        var(--mbs-yellow);
+
+    box-shadow:
+        0
+        0
+        0
+        4px
+        rgba(
+            245,
+            213,
+            31,
+            0.10
+        );
+
+    transition:
+        right 0.25s ease;
+}
+
+
+/* =========================================================
+   SIDEBAR ICON
+========================================================= */
+
+.sidebar-icon {
+    width: 30px;
+    height: 30px;
+
+    flex: 0 0 auto;
+
+    display: grid;
+    place-items: center;
+
+    border-radius: 9px;
+
+    background:
+        rgba(
+            255,
+            255,
+            255,
+            0.07
+        );
+
+    transition:
+        width 0.25s ease,
+        height 0.25s ease;
+}
+
+
+.sidebar-text {
+    flex: 1;
+
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   SIDEBAR FOOTER
+========================================================= */
+
+.sidebar-footer {
+    margin-top: auto;
+
+    padding: 18px;
+
+    transition:
+        padding 0.25s ease;
+}
+
+
+.faculty-badge {
+    padding: 13px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+
+    border:
+        1px solid
+        rgba(
+            255,
+            255,
+            255,
+            0.10
+        );
+
+    border-radius: 14px;
+
+    background:
+        rgba(
+            255,
+            255,
+            255,
+            0.06
+        );
+}
+
+
+.faculty-dot {
+    width: 9px;
+    height: 9px;
+
+    flex: 0 0 auto;
+
+    border-radius: 50%;
+
+    background:
+        #55dda0;
+
+    box-shadow:
+        0
+        0
+        0
+        5px
+        rgba(
+            85,
+            221,
+            160,
+            0.10
+        );
+}
+
+
+.faculty-info {
+    min-width: 0;
+}
+
+
+.faculty-info strong,
+.faculty-info span {
+    display: block;
+}
+
+
+.faculty-info strong {
+    color: #ffffff;
+
+    font-size: 0.75rem;
+
+    white-space: nowrap;
+}
+
+
+.faculty-info span {
+    margin-top: 2px;
+
+    color:
+        rgba(
+            255,
+            255,
+            255,
+            0.48
+        );
+
+    font-size: 0.63rem;
+
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   SIDEBAR COLLAPSED
+========================================================= */
+
+body.sidebar-collapsed {
+    --sidebar-width: 88px;
+}
+
+
+/* Brand */
+
+body.sidebar-collapsed
+.sidebar-brand {
+    justify-content: center;
+
+    padding-left: 12px;
+    padding-right: 12px;
+}
+
+
+body.sidebar-collapsed
+.brand-logo {
+    width: 50px;
+    height: 50px;
+}
+
+
+body.sidebar-collapsed
+.brand-copy {
+    display: none;
+}
+
+
+body.sidebar-collapsed
+.sidebar-divider {
+    margin-left: 14px;
+    margin-right: 14px;
+}
+
+
+/* Section */
+
+body.sidebar-collapsed
+.sidebar-section-label {
+    display: none;
+}
+
+
+/* Navigation */
+
+body.sidebar-collapsed
+.sidebar-nav {
+    padding:
+        12px
+        10px
+        0;
+}
+
+
+body.sidebar-collapsed
+.sidebar-link {
+    min-height: 50px;
+
+    padding:
+        6px
+        0;
+
+    justify-content: center;
+}
+
+
+body.sidebar-collapsed
+.sidebar-text {
+    display: none;
+}
+
+
+body.sidebar-collapsed
+.sidebar-icon {
+    width: 40px;
+    height: 40px;
+
+    font-size: 1rem;
+}
+
+
+body.sidebar-collapsed
+.sidebar-link.active::after {
+    right: 3px;
+}
+
+
+/* Footer */
+
+body.sidebar-collapsed
+.sidebar-footer {
+    padding:
+        14px
+        10px;
+}
+
+
+body.sidebar-collapsed
+.faculty-badge {
+    padding:
+        15px
+        8px;
+
+    justify-content: center;
+}
+
+
+body.sidebar-collapsed
+.faculty-info {
+    display: none;
+}
+
+
+/* Toggle */
+
+body.sidebar-collapsed
+.sidebar-toggle i {
+    transform:
+        rotate(180deg);
+}
+
+
+/* =========================================================
+   TOPBAR
+========================================================= */
+
+.topbar {
+    min-height: 78px;
+
+    padding:
+        0
+        34px;
+
+    position: sticky;
+
+    top: 0;
+
+    z-index: 900;
+
+    display: flex;
+    align-items: center;
+
+    gap: 18px;
+
+    background:
+        rgba(
+            255,
+            255,
+            255,
+            0.95
+        );
+
+    border-top:
+        4px solid
+        var(--mbs-yellow);
+
+    border-bottom:
+        1px solid
+        var(--line);
+
+    backdrop-filter:
+        blur(16px);
+}
+
+
+.topbar-title {
+    display: flex;
+    flex-direction: column;
+}
+
+
+.topbar-kicker {
+    margin-bottom: 2px;
+
+    color:
+        var(--mbs-blue);
+
+    font-size: 0.62rem;
+    font-weight: 800;
+
+    letter-spacing:
+        0.10em;
+}
+
+
+.topbar-title strong {
+    color:
+        var(--text);
+
+    font-size: 0.91rem;
+    font-weight: 700;
+}
+
+
+.topbar-status {
+    margin-left: auto;
+
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+
+    padding:
+        8px
+        12px;
+
+    color:
+        var(--mbs-navy);
+
+    background:
+        #f5fbff;
+
+    border:
+        1px solid
+        #d9eaf5;
+
+    border-radius:
+        999px;
+
+    font-size:
+        0.73rem;
+
+    font-weight: 700;
+}
+
+
+.status-dot {
+    width: 7px;
+    height: 7px;
+
+    border-radius: 50%;
+
+    background:
+        #20a970;
+
+    box-shadow:
+        0
+        0
+        0
+        4px
+        rgba(
+            32,
+            169,
+            112,
+            0.10
+        );
+}
+
+
+/* =========================================================
+   MOBILE MENU BUTTON
+========================================================= */
+
+.mobile-menu-btn {
+    width: 42px;
+    height: 42px;
+
+    padding: 0;
+
+    display: none;
+    place-items: center;
+
+    color:
+        var(--mbs-navy);
+
+    background:
+        #ffffff;
+
+    border:
+        1px solid
+        var(--line);
+
+    border-radius: 11px;
+
+    font-size:
+        1.25rem;
+
+    cursor: pointer;
+}
+
+
+/* =========================================================
+   CONTENT AREA
+========================================================= */
+
+.content-area {
+    flex: 1;
+
+    width: 100%;
+    max-width: none;
+
+    padding:
+        32px
+        34px
+        38px;
+}
+
+
+/* =========================================================
+   SIDEBAR OVERLAY
+========================================================= */
+
+.sidebar-overlay {
+    display: none;
+}
+
+
+/* =========================================================
+   TABLET / MOBILE SIDEBAR
+========================================================= */
+
+@media (max-width: 991.98px) {
+
+    /*
+     * บนมือถือไม่ใช้ Sidebar collapsed
+     */
+    body.sidebar-collapsed {
+        --sidebar-width: 280px;
+    }
+
+
+    .sidebar {
+        width: 280px;
+
+        transform:
+            translateX(-100%);
+
+        transition:
+            transform
+            0.22s ease;
+    }
+
+
+    .sidebar.show {
+        transform:
+            translateX(0);
+    }
+
+
+    /*
+     * ปุ่มลูกศรย่อ Sidebar
+     * ไม่ใช้บนมือถือ
+     */
+    .sidebar-toggle {
+        display: none;
+    }
+
+
+    /*
+     * Main content เต็มหน้าจอ
+     */
+    .main-shell {
+        width: 100%;
+
+        margin-left: 0;
+    }
+
+
+    /*
+     * แสดงปุ่ม Hamburger
+     */
+    .mobile-menu-btn {
+        display: grid;
+    }
+
+
+    /*
+     * Overlay
+     */
+    .sidebar-overlay {
+        position: fixed;
+
+        inset: 0;
+
+        z-index: 1050;
+
+        background:
+            rgba(
+                8,
+                25,
+                43,
+                0.42
+            );
+
+        backdrop-filter:
+            blur(2px);
+    }
+
+
+    .sidebar-overlay.show {
+        display: block;
+    }
+
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 767.98px) {
+
+    .topbar {
+        min-height: 72px;
+
+        padding:
+            0
+            16px;
+    }
+
+
+    .topbar-status {
+        display: none;
+    }
+
+
+    .topbar-kicker {
+        display: none;
+    }
+
+
+    .topbar-title strong {
+        font-size:
+            0.82rem;
+    }
+
+
+    .content-area {
+        padding:
+            18px
+            14px
+            28px;
+    }
+
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+========================================================= */
+
+@media (max-width: 575.98px) {
+
+    .sidebar {
+        width:
+            min(
+                280px,
+                86vw
+            );
+    }
+
+}
