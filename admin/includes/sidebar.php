@@ -6,20 +6,15 @@
 |--------------------------------------------------------------------------
 |
 | $activeMenu
-|   dashboard        = แดชบอร์ด
-|   internship       = ฝึกงานและสหกิจศึกษา
-|   programs         = หลักสูตรและสาขาวิชา
-|   admissions       = รับสมัครนักศึกษา
-|   calendar         = ปฏิทินการศึกษา
-|   academic_guides  = คู่มือการเรียน
-|   contacts         = ข้อมูลติดต่อคณะ
+|   dashboard   = แดชบอร์ด
+|   internship  = ฝึกงานและสหกิจศึกษา
+|   programs    = หลักสูตรและสาขาวิชา
+    calendar    = ปฏิทินการศึกษา
 |
 | $basePath
 |   admin/index.php                  = ''
 |   admin/programs/index.php         = '../'
 |   admin/internship_admin/index.php = '../'
-|   admin/admissions/index.php       = '../'
-|   admin/calendar/index.php         = '../'
 |
 */
 
@@ -105,7 +100,9 @@ $basePath   = $basePath ?? '';
 
             <span class="sidebar-icon">
 
-                <i class="bi bi-grid-1x2-fill"></i>
+                <i
+                    class="bi bi-grid-1x2-fill"
+                ></i>
 
             </span>
 
@@ -132,7 +129,9 @@ $basePath   = $basePath ?? '';
 
             <span class="sidebar-icon">
 
-                <i class="bi bi-briefcase-fill"></i>
+                <i
+                    class="bi bi-briefcase-fill"
+                ></i>
 
             </span>
 
@@ -159,7 +158,9 @@ $basePath   = $basePath ?? '';
 
             <span class="sidebar-icon">
 
-                <i class="bi bi-mortarboard-fill"></i>
+                <i
+                    class="bi bi-mortarboard-fill"
+                ></i>
 
             </span>
 
@@ -169,8 +170,7 @@ $basePath   = $basePath ?? '';
 
         </a>
 
-
-        <!-- Admissions -->
+                <!-- Admissions -->
 
         <a
             href="<?= $basePath ?>admissions/index.php"
@@ -195,7 +195,6 @@ $basePath   = $basePath ?? '';
             </span>
 
         </a>
-
 
         <!-- Academic Calendar -->
 
@@ -223,8 +222,7 @@ $basePath   = $basePath ?? '';
 
         </a>
 
-
-        <!-- Academic Guide -->
+                <!-- Academic Guide -->
 
         <a
             href="<?= $basePath ?>academic_guides/index.php"
@@ -304,7 +302,9 @@ $basePath   = $basePath ?? '';
 
             <span class="sidebar-icon">
 
-                <i class="bi bi-box-arrow-up-right"></i>
+                <i
+                    class="bi bi-box-arrow-up-right"
+                ></i>
 
             </span>
 
