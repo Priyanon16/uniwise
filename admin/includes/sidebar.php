@@ -196,6 +196,59 @@ $basePath   = $basePath ?? '';
 
         </a>
 
+                <!-- Academic Guide -->
+
+        <a
+            href="<?= $basePath ?>academic_guides/index.php"
+            class="
+                sidebar-link
+                <?= $activeMenu === 'academic_guides'
+                    ? 'active'
+                    : ''
+                ?>
+            "
+            title="คู่มือการเรียน"
+        >
+
+            <span class="sidebar-icon">
+
+                <i class="bi bi-journal-text"></i>
+
+            </span>
+
+            <span class="sidebar-text">
+                คู่มือการเรียน
+            </span>
+
+        </a>
+
+
+        <!-- Faculty Contact -->
+
+        <a
+            href="<?= $basePath ?>contacts/index.php"
+            class="
+                sidebar-link
+                <?= $activeMenu === 'contacts'
+                    ? 'active'
+                    : ''
+                ?>
+            "
+            title="ข้อมูลติดต่อคณะ"
+        >
+
+            <span class="sidebar-icon">
+
+                <i class="bi bi-telephone-fill"></i>
+
+            </span>
+
+            <span class="sidebar-text">
+                ข้อมูลติดต่อคณะ
+            </span>
+
+        </a>
+
     </nav>
 
 

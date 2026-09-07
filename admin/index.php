@@ -15,7 +15,9 @@ function safeCount(PDO $pdo, string $table): int
         'internship_steps',
         'internship_document_requirements',
         'application_periods',
-        'academic_calendar_events'
+        'academic_calendar_events',
+        'academic_guides',
+        'faculty_contacts'
     ];
 
     if (!in_array($table, $allowed, true)) {
@@ -36,6 +38,8 @@ $stepCount = safeCount($pdo, 'internship_steps');
 $documentCount = safeCount($pdo, 'internship_document_requirements');
 $applicationCount = safeCount($pdo, 'application_periods');
 $calendarCount = safeCount($pdo, 'academic_calendar_events');
+$guideCount = safeCount($pdo, 'academic_guides');
+$contactCount = safeCount($pdo, 'faculty_contacts');
 
 $internshipDataCount =
     $internshipTypeCount +
@@ -101,16 +105,22 @@ function moduleLabel(string $module): string
     return match ($module) {
 
         'programs' =>
-            'หลักสูตรและสาขาวิชา',
+        'หลักสูตรและสาขาวิชา',
 
         'internship' =>
-            'ฝึกงานและสหกิจศึกษา',
+        'ฝึกงานและสหกิจศึกษา',
 
         'calendar' =>
-            'ปฏิทินการศึกษา',
+        'ปฏิทินการศึกษา',
+
+        'academic_guide' =>
+        'คู่มือการเรียน',
+
+        'contact' =>
+        'ข้อมูลติดต่อคณะ',
 
         default =>
-            $module
+        $module
     };
 }
 ?>
@@ -370,6 +380,47 @@ function moduleLabel(string $module): string
                                         แจ้งจบ และกำหนดการทางการศึกษา
                                     </p>
 
+                                </div>
+
+                                <span class="quick-go">
+                                    <i class="bi bi-arrow-right"></i>
+                                </span>
+
+                            </a>
+
+                            <a href="academic_guides/index.php" class="quick-card">
+
+                                <div class="quick-icon program">
+                                    <i class="bi bi-journal-text"></i>
+                                </div>
+
+                                <div>
+                                    <h3>คู่มือการเรียน</h3>
+                                    <p>
+                                        จัดการหัวข้อคู่มือ ขั้นตอน เอกสาร
+                                        และกำหนดการที่เกี่ยวข้องกับงานวิชาการ
+                                    </p>
+                                </div>
+
+                                <span class="quick-go">
+                                    <i class="bi bi-arrow-right"></i>
+                                </span>
+
+                            </a>
+
+
+                            <a href="contacts/index.php" class="quick-card">
+
+                                <div class="quick-icon calendar">
+                                    <i class="bi bi-telephone-fill"></i>
+                                </div>
+
+                                <div>
+                                    <h3>ข้อมูลติดต่อคณะ</h3>
+                                    <p>
+                                        จัดการเบอร์โทร อีเมล เว็บไซต์
+                                        Facebook และเวลาทำการของคณะ
+                                    </p>
                                 </div>
 
                                 <span class="quick-go">
