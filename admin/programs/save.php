@@ -1515,6 +1515,16 @@ $objectivesJson =
                             กลับหน้าหลักสูตร
                         </a>
 
+                        <?php if ($isEdit): ?>
+                            <a
+                                href="course_descriptions.php?program_id=<?= (int)$program['id'] ?>"
+                                class="btn btn-outline-primary"
+                            >
+                                <i class="bi bi-journal-text"></i>
+                                จัดการคำอธิบายรายวิชา
+                            </a>
+                        <?php endif; ?>
+
                         <span><?= $isEdit ? 'กำลังแก้ไขข้อมูลเดิม' : 'กำลังสร้างหลักสูตรใหม่' ?></span>
                     </div>
 

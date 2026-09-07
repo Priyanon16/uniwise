@@ -516,6 +516,54 @@ $objectives =
         PDO::FETCH_ASSOC
     );
 
+
+// =========================================================
+// Course Descriptions
+// =========================================================
+
+$stmt = $pdo->prepare("
+    SELECT COUNT(*)
+    FROM course_descriptions
+    WHERE program_id = :program_id
+");
+
+$stmt->execute([
+    ':program_id' => $id
+]);
+
+$courseCount =
+    (int)$stmt->fetchColumn();
+
+
+$stmt = $pdo->prepare("
+    SELECT
+        id,
+        course_code,
+        course_name_th,
+        course_name_en,
+        credits,
+        course_group,
+        course_type,
+        credit_counted,
+        assessment_type
+    FROM course_descriptions
+    WHERE program_id = :program_id
+    ORDER BY
+        sort_order ASC,
+        course_code ASC,
+        id ASC
+    LIMIT 10
+");
+
+$stmt->execute([
+    ':program_id' => $id
+]);
+
+$courseDescriptions =
+    $stmt->fetchAll(
+        PDO::FETCH_ASSOC
+    );
+
 ?>
 <!doctype html>
 
@@ -1287,6 +1335,137 @@ include __DIR__ . '/../includes/sidebar.php';
 
             <?php endif; ?>
 
+
+        </div>
+
+    </div>
+
+
+    <!-- ================================================= -->
+    <!-- Course Descriptions -->
+    <!-- ================================================= -->
+
+    <div class="card border-0 shadow-sm mb-4">
+
+        <div class="card-body p-4">
+
+            <div class="section-header mb-4">
+                <div>
+                    <h2 class="h5 fw-bold mb-1">
+                        คำอธิบายรายวิชา
+                    </h2>
+                    <p class="text-secondary small mb-0">
+                        มีข้อมูล <?= number_format($courseCount) ?> รายวิชาในหลักสูตรนี้
+                    </p>
+                </div>
+
+                <div class="d-flex gap-2 flex-wrap">
+                    <a
+                        href="course_descriptions.php?program_id=<?= (int)$program['id'] ?>"
+                        class="btn btn-outline-primary btn-sm"
+                    >
+                        <i class="bi bi-journal-text"></i>
+                        จัดการรายวิชาทั้งหมด
+                    </a>
+
+                    <a
+                        href="course_description_save.php?program_id=<?= (int)$program['id'] ?>"
+                        class="btn btn-mbs-primary btn-sm"
+                    >
+                        <i class="bi bi-plus-lg"></i>
+                        เพิ่มรายวิชา
+                    </a>
+                </div>
+            </div>
+
+            <?php if (!$courseDescriptions): ?>
+
+                <div class="course-empty-state">
+                    <i class="bi bi-journal-x"></i>
+                    <strong>ยังไม่มีคำอธิบายรายวิชา</strong>
+                    <span>สามารถเพิ่มข้อมูลรายวิชาของหลักสูตรนี้ได้จากปุ่มด้านบน</span>
+                </div>
+
+            <?php else: ?>
+
+                <div class="table-responsive">
+                    <table class="table table-sm align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>รหัสวิชา</th>
+                                <th>ชื่อวิชา</th>
+                                <th>หน่วยกิต</th>
+                                <th>กลุ่ม / ประเภท</th>
+                                <th>การประเมิน</th>
+                                <th class="text-end">ดูข้อมูล</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        <?php foreach ($courseDescriptions as $course): ?>
+                            <tr>
+                                <td>
+                                    <span class="program-code">
+                                        <?= htmlspecialchars($course['course_code'], ENT_QUOTES, 'UTF-8') ?>
+                                    </span>
+                                </td>
+                                <td style="min-width: 280px;">
+                                    <div class="fw-semibold">
+                                        <?= htmlspecialchars($course['course_name_th'], ENT_QUOTES, 'UTF-8') ?>
+                                    </div>
+                                    <?php if (!empty($course['course_name_en'])): ?>
+                                        <div class="program-alias mt-1">
+                                            <?= htmlspecialchars($course['course_name_en'], ENT_QUOTES, 'UTF-8') ?>
+                                        </div>
+                                    <?php endif; ?>
+                                </td>
+                                <td>
+                                    <?= htmlspecialchars($course['credits'] ?: '-', ENT_QUOTES, 'UTF-8') ?>
+                                </td>
+                                <td>
+                                    <div>
+                                        <?= htmlspecialchars($course['course_group'] ?: '-', ENT_QUOTES, 'UTF-8') ?>
+                                    </div>
+                                    <?php if (!empty($course['course_type'])): ?>
+                                        <span class="badge text-bg-light border mt-1">
+                                            <?= htmlspecialchars($course['course_type'], ENT_QUOTES, 'UTF-8') ?>
+                                        </span>
+                                    <?php endif; ?>
+                                    <?php if ((int)$course['credit_counted'] === 0): ?>
+                                        <span class="badge text-bg-warning mt-1">ไม่นับหน่วยกิต</span>
+                                    <?php endif; ?>
+                                </td>
+                                <td>
+                                    <?= !empty($course['assessment_type'])
+                                        ? htmlspecialchars($course['assessment_type'], ENT_QUOTES, 'UTF-8')
+                                        : '-' ?>
+                                </td>
+                                <td class="text-end">
+                                    <a
+                                        href="course_description_detail.php?id=<?= (int)$course['id'] ?>"
+                                        class="btn btn-outline-primary btn-sm"
+                                    >
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+
+                <?php if ($courseCount > 10): ?>
+                    <div class="text-center mt-3">
+                        <a
+                            href="course_descriptions.php?program_id=<?= (int)$program['id'] ?>"
+                            class="btn btn-outline-primary btn-sm"
+                        >
+                            ดูทั้งหมด <?= number_format($courseCount) ?> รายวิชา
+                            <i class="bi bi-arrow-right"></i>
+                        </a>
+                    </div>
+                <?php endif; ?>
+
+            <?php endif; ?>
 
         </div>
 

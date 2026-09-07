@@ -1,0 +1,79 @@
+<?php
+
+require_once "../../api/db.php";
+require_once "../admin_activity.php";
+
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    http_response_code(405);
+    exit('Method Not Allowed');
+}
+
+$id = filter_input(INPUT_POST, 'id', FILTER_VALIDATE_INT);
+$programId = filter_input(INPUT_POST, 'program_id', FILTER_VALIDATE_INT);
+
+if (!$id) {
+    header('Location: index.php?error=' . urlencode('ID รายวิชาไม่ถูกต้อง'));
+    exit;
+}
+
+try {
+    $pdo->beginTransaction();
+
+    $stmt = $pdo->prepare("\n        SELECT\n            id,\n            program_id,\n            course_code,\n            course_name_th\n        FROM course_descriptions\n        WHERE id = :id\n        LIMIT 1\n    ");
+    $stmt->execute([':id' => $id]);
+    $course = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if (!$course) {
+        throw new Exception('ไม่พบคำอธิบายรายวิชาที่ต้องการลบ');
+    }
+
+    $actualProgramId = (int)$course['program_id'];
+    if (!$programId) {
+        $programId = $actualProgramId;
+    }
+
+    $stmt = $pdo->prepare("\n        DELETE FROM course_descriptions\n        WHERE id = :id\n    ");
+    $stmt->execute([':id' => $id]);
+
+    if ($stmt->rowCount() === 0) {
+        throw new Exception('ไม่พบคำอธิบายรายวิชาที่ต้องการลบ');
+    }
+
+    logAdminActivity(
+        $pdo,
+        'programs',
+        'delete',
+        trim($course['course_code'] . ' ' . $course['course_name_th']),
+        'ลบคำอธิบายรายวิชา'
+    );
+
+    $pdo->commit();
+
+    header(
+        'Location: course_descriptions.php?program_id=' .
+        (int)$programId .
+        '&success=delete'
+    );
+    exit;
+
+} catch (Throwable $e) {
+    if ($pdo->inTransaction()) {
+        $pdo->rollBack();
+    }
+
+    $targetProgramId = $programId ?: 0;
+
+    if ($targetProgramId > 0) {
+        header(
+            'Location: course_descriptions.php?program_id=' .
+            (int)$targetProgramId .
+            '&error=' . urlencode('ไม่สามารถลบข้อมูลได้: ' . $e->getMessage())
+        );
+    } else {
+        header(
+            'Location: index.php?error=' .
+            urlencode('ไม่สามารถลบข้อมูลได้: ' . $e->getMessage())
+        );
+    }
+    exit;
+}

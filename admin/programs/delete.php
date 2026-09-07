@@ -75,6 +75,7 @@ try {
         'program_admission_requirements',
         'program_careers',
         'program_objectives',
+        'course_descriptions',
         'program_plans'
     ];
 

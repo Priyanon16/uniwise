@@ -19,7 +19,12 @@ $sql = "
         major_name_en,
         aliases,
         curriculum_year,
-        active
+        active,
+        (
+            SELECT COUNT(*)
+            FROM course_descriptions cd
+            WHERE cd.program_id = academic_programs.id
+        ) AS course_count
     FROM academic_programs
     WHERE 1 = 1
 ";
@@ -382,6 +387,18 @@ include __DIR__ . '/../includes/sidebar.php';
 
                             <td>
                                 <div class="d-flex justify-content-center gap-2 flex-wrap">
+                                    <a
+                                        href="course_descriptions.php?program_id=<?= (int)$row['id'] ?>"
+                                        class="btn btn-outline-secondary btn-sm"
+                                        title="จัดการคำอธิบายรายวิชา"
+                                    >
+                                        <i class="bi bi-journal-text"></i>
+                                        รายวิชา
+                                        <span class="badge text-bg-light border ms-1">
+                                            <?= (int)$row['course_count'] ?>
+                                        </span>
+                                    </a>
+
                                     <a
                                         href="detail.php?id=<?= (int)$row['id'] ?>"
                                         class="btn btn-outline-primary btn-sm"
