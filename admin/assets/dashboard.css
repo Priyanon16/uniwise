@@ -336,13 +336,14 @@ a.stat-card:hover {
 
 .quick-grid {
     display: grid;
-    gap: 13px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
 }
 
 .quick-card {
-    min-height: 124px;
+    min-height: 120px;
 
-    padding: 18px;
+    padding: 20px;
 
     position: relative;
 
