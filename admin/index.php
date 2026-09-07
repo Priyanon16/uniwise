@@ -17,7 +17,8 @@ function safeCount(PDO $pdo, string $table): int
         'application_periods',
         'academic_calendar_events',
         'academic_guides',
-        'faculty_contacts'
+        'faculty_contacts',
+        'admission_schedules'
     ];
 
     if (!in_array($table, $allowed, true)) {
@@ -40,6 +41,7 @@ $applicationCount = safeCount($pdo, 'application_periods');
 $calendarCount = safeCount($pdo, 'academic_calendar_events');
 $guideCount = safeCount($pdo, 'academic_guides');
 $contactCount = safeCount($pdo, 'faculty_contacts');
+$admissionCount = safeCount($pdo, 'admission_schedules');
 
 $internshipDataCount =
     $internshipTypeCount +
@@ -118,6 +120,9 @@ function moduleLabel(string $module): string
 
         'contact' =>
         'ข้อมูลติดต่อคณะ',
+
+        'admission' =>
+        'รับสมัครนักศึกษา',
 
         default =>
         $module
@@ -280,6 +285,30 @@ function moduleLabel(string $module): string
 
                     </a>
 
+                    <a href="admissions/index.php" class="stat-card">
+
+                        <div class="stat-icon cyan">
+                            <i class="bi bi-person-vcard-fill"></i>
+                        </div>
+
+                        <div class="stat-content">
+
+                            <span>กำหนดการรับสมัคร</span>
+
+                            <strong>
+                                <?= $admissionCount ?>
+                            </strong>
+
+                            <small>
+                                รายการในฐานข้อมูล
+                            </small>
+
+                        </div>
+
+                        <i class="bi bi-arrow-up-right stat-arrow"></i>
+
+                    </a>
+
 
                     <div class="stat-card">
                         <div class="stat-icon cyan">
@@ -362,74 +391,161 @@ function moduleLabel(string $module): string
                                 </span>
                             </a>
 
-                            <a href="calendar/index.php" class="quick-card">
+                            <div class="quick-grid">
 
-                                <div class="quick-icon calendar">
-                                    <i class="bi bi-calendar-event-fill"></i>
-                                </div>
+                                <a href="internship_admin/index.php" class="quick-card">
+                                    <div class="quick-icon internship">
+                                        <i class="bi bi-briefcase-fill"></i>
+                                    </div>
 
-                                <div>
+                                    <div>
+                                        <h3>ฝึกงานและสหกิจศึกษา</h3>
+                                        <p>
+                                            ประเภทการฝึกงาน ขั้นตอน เอกสาร
+                                            ช่วงปฏิบัติงาน และช่วงรับสมัคร
+                                        </p>
+                                    </div>
 
-                                    <h3>
-                                        ปฏิทินการศึกษา
-                                    </h3>
-
-                                    <p>
-                                        จัดการวันลงทะเบียน เปิดภาคการศึกษา
-                                        สอบกลางภาค สอบปลายภาค ถอนรายวิชา
-                                        แจ้งจบ และกำหนดการทางการศึกษา
-                                    </p>
-
-                                </div>
-
-                                <span class="quick-go">
-                                    <i class="bi bi-arrow-right"></i>
-                                </span>
-
-                            </a>
-
-                            <a href="academic_guides/index.php" class="quick-card">
-
-                                <div class="quick-icon program">
-                                    <i class="bi bi-journal-text"></i>
-                                </div>
-
-                                <div>
-                                    <h3>คู่มือการเรียน</h3>
-                                    <p>
-                                        จัดการหัวข้อคู่มือ ขั้นตอน เอกสาร
-                                        และกำหนดการที่เกี่ยวข้องกับงานวิชาการ
-                                    </p>
-                                </div>
-
-                                <span class="quick-go">
-                                    <i class="bi bi-arrow-right"></i>
-                                </span>
-
-                            </a>
+                                    <span class="quick-go">
+                                        <i class="bi bi-arrow-right"></i>
+                                    </span>
+                                </a>
 
 
-                            <a href="contacts/index.php" class="quick-card">
+                                <a href="programs/index.php" class="quick-card">
+                                    <div class="quick-icon program">
+                                        <i class="bi bi-mortarboard-fill"></i>
+                                    </div>
 
-                                <div class="quick-icon calendar">
-                                    <i class="bi bi-telephone-fill"></i>
-                                </div>
+                                    <div>
+                                        <h3>หลักสูตรและสาขาวิชา</h3>
+                                        <p>
+                                            ข้อมูลหลักสูตร ระดับการศึกษา
+                                            สาขาวิชา Alias และรายละเอียดหลักสูตร
+                                        </p>
+                                    </div>
 
-                                <div>
-                                    <h3>ข้อมูลติดต่อคณะ</h3>
-                                    <p>
-                                        จัดการเบอร์โทร อีเมล เว็บไซต์
-                                        Facebook และเวลาทำการของคณะ
-                                    </p>
-                                </div>
+                                    <span class="quick-go">
+                                        <i class="bi bi-arrow-right"></i>
+                                    </span>
+                                </a>
 
-                                <span class="quick-go">
-                                    <i class="bi bi-arrow-right"></i>
-                                </span>
 
-                            </a>
+                                <!-- เพิ่มตรงนี้ -->
+                                <a href="admissions/index.php" class="quick-card">
 
-                        </div>
+                                    <div class="quick-icon calendar">
+                                        <i class="bi bi-person-vcard-fill"></i>
+                                    </div>
+
+                                    <div>
+                                        <h3>รับสมัครนักศึกษา</h3>
+
+                                        <p>
+                                            จัดการรอบรับสมัคร โครงการ
+                                            กำหนดการ สัมภาษณ์ ประกาศผล
+                                            ยืนยันสิทธิ์ และรายงานตัว
+                                        </p>
+                                    </div>
+
+                                    <span class="quick-go">
+                                        <i class="bi bi-arrow-right"></i>
+                                    </span>
+
+                                </a>
+                                <!-- จบส่วนที่เพิ่ม -->
+
+
+                                <a href="calendar/index.php" class="quick-card">
+
+                                    <div class="quick-icon calendar">
+                                        <i class="bi bi-calendar-event-fill"></i>
+                                    </div>
+
+                                    <div>
+                                        <h3>ปฏิทินการศึกษา</h3>
+
+                                        <p>
+                                            จัดการวันลงทะเบียน เปิดภาคการศึกษา
+                                            สอบกลางภาค สอบปลายภาค ถอนรายวิชา
+                                            แจ้งจบ และกำหนดการทางการศึกษา
+                                        </p>
+                                    </div>
+
+                                    <span class="quick-go">
+                                        <i class="bi bi-arrow-right"></i>
+                                    </span>
+
+                                </a>
+
+                                <a href="calendar/index.php" class="quick-card">
+
+                                    <div class="quick-icon calendar">
+                                        <i class="bi bi-calendar-event-fill"></i>
+                                    </div>
+
+                                    <div>
+
+                                        <h3>
+                                            ปฏิทินการศึกษา
+                                        </h3>
+
+                                        <p>
+                                            จัดการวันลงทะเบียน เปิดภาคการศึกษา
+                                            สอบกลางภาค สอบปลายภาค ถอนรายวิชา
+                                            แจ้งจบ และกำหนดการทางการศึกษา
+                                        </p>
+
+                                    </div>
+
+                                    <span class="quick-go">
+                                        <i class="bi bi-arrow-right"></i>
+                                    </span>
+
+                                </a>
+
+                                <a href="academic_guides/index.php" class="quick-card">
+
+                                    <div class="quick-icon program">
+                                        <i class="bi bi-journal-text"></i>
+                                    </div>
+
+                                    <div>
+                                        <h3>คู่มือการเรียน</h3>
+                                        <p>
+                                            จัดการหัวข้อคู่มือ ขั้นตอน เอกสาร
+                                            และกำหนดการที่เกี่ยวข้องกับงานวิชาการ
+                                        </p>
+                                    </div>
+
+                                    <span class="quick-go">
+                                        <i class="bi bi-arrow-right"></i>
+                                    </span>
+
+                                </a>
+
+
+                                <a href="contacts/index.php" class="quick-card">
+
+                                    <div class="quick-icon calendar">
+                                        <i class="bi bi-telephone-fill"></i>
+                                    </div>
+
+                                    <div>
+                                        <h3>ข้อมูลติดต่อคณะ</h3>
+                                        <p>
+                                            จัดการเบอร์โทร อีเมล เว็บไซต์
+                                            Facebook และเวลาทำการของคณะ
+                                        </p>
+                                    </div>
+
+                                    <span class="quick-go">
+                                        <i class="bi bi-arrow-right"></i>
+                                    </span>
+
+                                </a>
+
+                            </div>
 
                     </section>
 
