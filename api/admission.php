@@ -20,7 +20,7 @@ function sendJson(
     echo json_encode(
         $data,
         JSON_UNESCAPED_UNICODE |
-        JSON_PRETTY_PRINT
+            JSON_PRETTY_PRINT
     );
 
     exit;
@@ -307,7 +307,7 @@ try {
             "mode" => "projects",
             "academic_year" => (int)$academicYear,
             "round_number" =>
-                $roundNumber !== ''
+            $roundNumber !== ''
                 ? (int)$roundNumber
                 : null,
             "count" => count($rows),
@@ -378,15 +378,50 @@ try {
 
     // =====================================================
     // กรองโครงการ / โควตา
+    //
+    // ถ้าถามโครงการเฉพาะ เช่น "เด็กดีมีที่เรียน"
+    // ให้ดึง:
+    // 1. ข้อมูลของโครงการนั้น
+    // 2. ข้อมูลกลางของรอบเดียวกัน เช่น
+    //    ยืนยันสิทธิ์ / สละสิทธิ์ / รายงานตัว
     // =====================================================
 
     if ($quotaType !== '') {
 
         $sql .= "
-            AND quota_type LIKE :quota_type
-        ";
+        AND (
+            quota_type LIKE :quota_type
+
+            OR (
+
+                (
+                    quota_type = 'ทุกโครงการ'
+                    OR quota_type LIKE 'รอบที่ % ทั้งหมด'
+                )
+
+                AND EXISTS (
+
+                    SELECT 1
+                    FROM admission_schedules q
+
+                    WHERE
+                        q.academic_year =
+                            admission_schedules.academic_year
+
+                        AND q.round_number =
+                            admission_schedules.round_number
+
+                        AND q.quota_type
+                            LIKE :quota_match
+                )
+            )
+        )
+    ";
 
         $params[':quota_type'] =
+            '%' . $quotaType . '%';
+
+        $params[':quota_match'] =
             '%' . $quotaType . '%';
     }
 
@@ -521,35 +556,35 @@ try {
 
         "filters" => [
             "academic_year" =>
-                (int)$academicYear,
+            (int)$academicYear,
 
             "round_number" =>
-                $roundNumber !== ''
+            $roundNumber !== ''
                 ? (int)$roundNumber
                 : null,
 
             "round_name" =>
-                $roundName !== ''
+            $roundName !== ''
                 ? $roundName
                 : null,
 
             "quota_type" =>
-                $quotaType !== ''
+            $quotaType !== ''
                 ? $quotaType
                 : null,
 
             "activity_type" =>
-                $activityType !== ''
+            $activityType !== ''
                 ? $activityType
                 : null,
 
             "activity" =>
-                $activity !== ''
+            $activity !== ''
                 ? $activity
                 : null,
 
             "search" =>
-                $search !== ''
+            $search !== ''
                 ? $search
                 : null
         ],
@@ -558,8 +593,6 @@ try {
 
         "data" => $rows
     ]);
-
-
 } catch (PDOException $e) {
 
     sendJson(
