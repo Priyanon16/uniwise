@@ -100,11 +100,9 @@ function buildComponentTree(array $components): array
             $componentId;
 
         $component['parent_component_id'] =
-            !empty(
-                $component['parent_component_id']
-            )
-                ? (int)$component['parent_component_id']
-                : null;
+            !empty($component['parent_component_id'])
+            ? (int)$component['parent_component_id']
+            : null;
 
         $component['children'] = [];
 
@@ -234,11 +232,9 @@ function renderComponentRows(
             12 + ($level * 28);
 
         $hasChildren =
-            !empty(
-                $component['children']
-            );
+            !empty($component['children']);
 
-        ?>
+?>
 
         <tr>
 
@@ -246,14 +242,12 @@ function renderComponentRows(
                 style="
                     padding-left:
                     <?= $paddingLeft ?>px;
-                "
-            >
+                ">
 
                 <?php if ($level > 0): ?>
 
                     <span
-                        class="text-secondary me-1"
-                    >
+                        class="text-secondary me-1">
                         ↳
                     </span>
 
@@ -262,15 +256,12 @@ function renderComponentRows(
 
                 <span
                     class="<?= $hasChildren
-                        ? 'fw-semibold'
-                        : ''
-                    ?>"
-                >
+                                ? 'fw-semibold'
+                                : ''
+                            ?>">
 
                     <?= htmlspecialchars(
-                        $component[
-                            'component_name'
-                        ] ?? '',
+                        $component['component_name'] ?? '',
                         ENT_QUOTES,
                         'UTF-8'
                     ) ?>
@@ -279,9 +270,7 @@ function renderComponentRows(
 
 
                 <?php if (
-                    !empty(
-                        $component['description']
-                    )
+                    !empty($component['description'])
                 ): ?>
 
                     <div
@@ -289,13 +278,10 @@ function renderComponentRows(
                             small
                             text-secondary
                             mt-1
-                        "
-                    >
+                        ">
 
                         <?= showValue(
-                            $component[
-                                'description'
-                            ]
+                            $component['description']
                         ) ?>
 
                     </div>
@@ -308,9 +294,7 @@ function renderComponentRows(
             <td>
 
                 <?= showNumber(
-                    $component[
-                        'credits'
-                    ] ?? null
+                    $component['credits'] ?? null
                 ) ?>
 
             </td>
@@ -319,9 +303,7 @@ function renderComponentRows(
             <td>
 
                 <?= showNumber(
-                    $component[
-                        'hours'
-                    ] ?? null
+                    $component['hours'] ?? null
                 ) ?>
 
             </td>
@@ -330,16 +312,14 @@ function renderComponentRows(
             <td>
 
                 <?= showValue(
-                    $component[
-                        'note'
-                    ] ?? null
+                    $component['note'] ?? null
                 ) ?>
 
             </td>
 
         </tr>
 
-        <?php
+<?php
 
         if ($hasChildren) {
 
@@ -426,7 +406,7 @@ foreach ($plans as &$plan) {
 
     $stmt->execute([
         ':plan_id' =>
-            $plan['id']
+        $plan['id']
     ]);
 
     $flatComponents =
@@ -575,8 +555,7 @@ $courseDescriptions =
 
     <meta
         name="viewport"
-        content="width=device-width, initial-scale=1"
-    >
+        content="width=device-width, initial-scale=1">
 
     <title>
         รายละเอียดหลักสูตร
@@ -584,1068 +563,1031 @@ $courseDescriptions =
 
     <link
         href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-        rel="stylesheet"
-    >
+        rel="stylesheet">
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- CSS กลางของระบบ Admin -->
     <link
         rel="stylesheet"
-        href="../assets/admin.css?v=<?= filemtime(__DIR__ . '/../assets/admin.css') ?>"
-    >
+        href="../assets/admin.css?v=<?= filemtime(__DIR__ . '/../assets/admin.css') ?>">
 
     <!-- CSS เฉพาะหน้าหลักสูตร -->
     <link
         rel="stylesheet"
-        href="assets/programs.css?v=<?= filemtime(__DIR__ . '/assets/programs.css') ?>"
-    >
+        href="assets/programs.css?v=<?= filemtime(__DIR__ . '/assets/programs.css') ?>">
 
 </head>
 
 
 <body>
 
-<div class="admin-layout">
-<?php
-$activeMenu = 'programs';
-$basePath   = '../';
+    <div class="admin-layout">
+        <?php
+        $activeMenu = 'programs';
+        $basePath   = '../';
 
-include __DIR__ . '/../includes/sidebar.php';
-?>
+        include __DIR__ . '/../includes/sidebar.php';
+        ?>
 
-<div class="main-shell">
-<header class="topbar">
-    <button type="button" class="mobile-menu-btn" id="mobileMenuBtn" aria-label="เปิดเมนู">
-        <i class="bi bi-list"></i>
-    </button>
+        <div class="main-shell">
+            <header class="topbar">
+                <button type="button" class="mobile-menu-btn" id="mobileMenuBtn" aria-label="เปิดเมนู">
+                    <i class="bi bi-list"></i>
+                </button>
 
-    <div class="topbar-title">
-        <span class="topbar-kicker">MBS • MAHASARAKHAM UNIVERSITY</span>
-        <strong>หลักสูตรและสาขาวิชา</strong>
-    </div>
+                <div class="topbar-title">
+                    <span class="topbar-kicker">MBS • MAHASARAKHAM UNIVERSITY</span>
+                    <strong>หลักสูตรและสาขาวิชา</strong>
+                </div>
 
-    <a href="javascript:history.back()" class="header-back-btn">
-        <i class="bi bi-arrow-left"></i>
-        <span>ย้อนกลับ</span>
-    </a>
-</header>
-
-
-<main class="content-area">
-<section class="page-hero">
-    <div>
-        <span class="hero-badge"><span></span> PROGRAM DETAIL</span>
-        <h1><?= htmlspecialchars($program['major_name'], ENT_QUOTES, 'UTF-8') ?></h1>
-        <p><?= degreeName($program['degree_level']) ?> • <?= htmlspecialchars($program['program_code'], ENT_QUOTES, 'UTF-8') ?></p>
-    </div>
-
-    <div class="hero-actions-inline">
-        <a href="index.php" class="btn btn-light-soft">
-            <i class="bi bi-arrow-left"></i>
-            กลับรายการหลักสูตร
-        </a>
-
-        <a href="save.php?id=<?= (int)$program['id'] ?>" class="btn btn-mbs-yellow">
-            <i class="bi bi-pencil-square"></i>
-            แก้ไขข้อมูล
-        </a>
-    </div>
-
-    <div class="hero-decoration">MBS</div>
-</section>
-<div class="page-section">
+                <a href="javascript:history.back()" class="header-back-btn">
+                    <i class="bi bi-arrow-left"></i>
+                    <span>ย้อนกลับ</span>
+                </a>
+            </header>
 
 
-    <!-- ================================================= -->
-    <!-- ข้อมูลทั่วไป -->
-    <!-- ================================================= -->
+            <main class="content-area">
+                <section class="page-hero">
+                    <div>
+                        <span class="hero-badge"><span></span> PROGRAM DETAIL</span>
+                        <h1><?= htmlspecialchars($program['major_name'], ENT_QUOTES, 'UTF-8') ?></h1>
+                        <p><?= degreeName($program['degree_level']) ?> • <?= htmlspecialchars($program['program_code'], ENT_QUOTES, 'UTF-8') ?></p>
+                    </div>
 
-    <div
-        class="
+                    <div class="hero-actions-inline">
+                        <a href="index.php" class="btn btn-light-soft">
+                            <i class="bi bi-arrow-left"></i>
+                            กลับรายการหลักสูตร
+                        </a>
+
+                        <a href="save.php?id=<?= (int)$program['id'] ?>" class="btn btn-mbs-yellow">
+                            <i class="bi bi-pencil-square"></i>
+                            แก้ไขข้อมูล
+                        </a>
+                    </div>
+
+                    <div class="hero-decoration">MBS</div>
+                </section>
+                <div class="page-section">
+
+
+                    <!-- ================================================= -->
+                    <!-- ข้อมูลทั่วไป -->
+                    <!-- ================================================= -->
+
+                    <div
+                        class="
             card
             border-0
             shadow-sm
             mb-4
-        "
-    >
+        ">
 
-        <div class="card-body p-4">
+                        <div class="card-body p-4">
 
-            <h2 class="h5 fw-bold mb-4">
-                ข้อมูลทั่วไป
-            </h2>
-
-
-            <div class="row g-4">
+                            <h2 class="h5 fw-bold mb-4">
+                                ข้อมูลทั่วไป
+                            </h2>
 
 
-                <div class="col-md-6">
+                            <div class="row g-4">
 
-                    <div class="detail-label">
-                        ชื่อหลักสูตร
+
+                                <div class="col-md-6">
+
+                                    <div class="detail-label">
+                                        ชื่อหลักสูตร
+                                    </div>
+
+                                    <div>
+                                        <?= showValue(
+                                            $program['curriculum_name']
+                                        ) ?>
+                                    </div>
+
+                                </div>
+
+
+                                <div class="col-md-6">
+
+                                    <div class="detail-label">
+                                        สาขาวิชาภาษาอังกฤษ
+                                    </div>
+
+                                    <div>
+                                        <?= showValue(
+                                            $program['major_name_en']
+                                        ) ?>
+                                    </div>
+
+                                </div>
+
+
+                                <div class="col-md-6">
+
+                                    <div class="detail-label">
+                                        ชื่อปริญญาภาษาไทย
+                                    </div>
+
+                                    <div>
+                                        <?= showValue(
+                                            $program['degree_name_th']
+                                        ) ?>
+                                    </div>
+
+                                </div>
+
+
+                                <div class="col-md-6">
+
+                                    <div class="detail-label">
+                                        อักษรย่อภาษาไทย
+                                    </div>
+
+                                    <div>
+                                        <?= showValue(
+                                            $program['degree_abbr_th']
+                                        ) ?>
+                                    </div>
+
+                                </div>
+
+
+                                <div class="col-md-6">
+
+                                    <div class="detail-label">
+                                        ชื่อปริญญาภาษาอังกฤษ
+                                    </div>
+
+                                    <div>
+                                        <?= showValue(
+                                            $program['degree_name_en']
+                                        ) ?>
+                                    </div>
+
+                                </div>
+
+
+                                <div class="col-md-6">
+
+                                    <div class="detail-label">
+                                        อักษรย่อภาษาอังกฤษ
+                                    </div>
+
+                                    <div>
+                                        <?= showValue(
+                                            $program['degree_abbr_en']
+                                        ) ?>
+                                    </div>
+
+                                </div>
+
+
+                                <div class="col-md-6">
+
+                                    <div class="detail-label">
+                                        ปีหลักสูตร
+                                    </div>
+
+                                    <div>
+                                        <?= showValue(
+                                            $program['curriculum_year']
+                                        ) ?>
+                                    </div>
+
+                                </div>
+
+                                <div class="col-md-6">
+
+                                    <div class="detail-label">
+                                        ระยะเวลาการศึกษา
+                                    </div>
+
+                                    <div>
+                                        <?= showValue(
+                                            $program['study_period']
+                                        ) ?>
+                                    </div>
+
+                                </div>
+
+
+                                <div class="col-md-6">
+
+                                    <div class="detail-label">
+                                        ค่าเล่าเรียนต่อภาคการศึกษา
+                                    </div>
+
+                                    <div>
+                                        <?= showValue(
+                                            $program['tuition_fee_per_semester']
+                                        ) ?>
+                                    </div>
+
+                                </div>
+
+
+                                <div class="col-12">
+
+                                    <div class="detail-label">
+                                        ค่าเล่าเรียนรวมตลอดหลักสูตร
+                                    </div>
+
+                                    <div>
+                                        <?= showValue(
+                                            $program['total_tuition_fee']
+                                        ) ?>
+                                    </div>
+
+                                </div>
+
+
+                                <div class="col-md-6">
+
+                                    <div class="detail-label">
+                                        Alias
+                                    </div>
+
+                                    <div>
+                                        <?= showValue(
+                                            $program['aliases']
+                                        ) ?>
+                                    </div>
+
+                                </div>
+
+
+                                <div class="col-12">
+
+                                    <div class="detail-label">
+                                        ภาษาที่ใช้ในการเรียนการสอน
+                                    </div>
+
+                                    <div>
+                                        <?= showValue(
+                                            $program['program_language']
+                                        ) ?>
+                                    </div>
+
+                                </div>
+
+
+                                <div class="col-12">
+
+                                    <div class="detail-label">
+                                        ข้อมูลการรับเข้า
+                                    </div>
+
+                                    <div>
+                                        <?= showValue(
+                                            $program['admission_info']
+                                        ) ?>
+                                    </div>
+
+                                </div>
+
+
+                                <div class="col-12">
+
+                                    <div class="detail-label">
+                                        ความร่วมมือ
+                                    </div>
+
+                                    <div>
+                                        <?= showValue(
+                                            $program['cooperation_info']
+                                        ) ?>
+                                    </div>
+
+                                </div>
+
+
+                                <div class="col-12">
+
+                                    <div class="detail-label">
+                                        การบูรณาการ
+                                    </div>
+
+                                    <div>
+                                        <?= showValue(
+                                            $program['integration_info']
+                                        ) ?>
+                                    </div>
+
+                                </div>
+
+
+                            </div>
+
+                        </div>
+
                     </div>
 
-                    <div>
-                        <?= showValue(
-                            $program[
-                                'curriculum_name'
-                            ]
-                        ) ?>
-                    </div>
 
-                </div>
+                    <!-- ================================================= -->
+                    <!-- Plans -->
+                    <!-- ================================================= -->
 
-
-                <div class="col-md-6">
-
-                    <div class="detail-label">
-                        สาขาวิชาภาษาอังกฤษ
-                    </div>
-
-                    <div>
-                        <?= showValue(
-                            $program[
-                                'major_name_en'
-                            ]
-                        ) ?>
-                    </div>
-
-                </div>
-
-
-                <div class="col-md-6">
-
-                    <div class="detail-label">
-                        ชื่อปริญญาภาษาไทย
-                    </div>
-
-                    <div>
-                        <?= showValue(
-                            $program[
-                                'degree_name_th'
-                            ]
-                        ) ?>
-                    </div>
-
-                </div>
-
-
-                <div class="col-md-6">
-
-                    <div class="detail-label">
-                        อักษรย่อภาษาไทย
-                    </div>
-
-                    <div>
-                        <?= showValue(
-                            $program[
-                                'degree_abbr_th'
-                            ]
-                        ) ?>
-                    </div>
-
-                </div>
-
-
-                <div class="col-md-6">
-
-                    <div class="detail-label">
-                        ชื่อปริญญาภาษาอังกฤษ
-                    </div>
-
-                    <div>
-                        <?= showValue(
-                            $program[
-                                'degree_name_en'
-                            ]
-                        ) ?>
-                    </div>
-
-                </div>
-
-
-                <div class="col-md-6">
-
-                    <div class="detail-label">
-                        อักษรย่อภาษาอังกฤษ
-                    </div>
-
-                    <div>
-                        <?= showValue(
-                            $program[
-                                'degree_abbr_en'
-                            ]
-                        ) ?>
-                    </div>
-
-                </div>
-
-
-                <div class="col-md-6">
-
-                    <div class="detail-label">
-                        ปีหลักสูตร
-                    </div>
-
-                    <div>
-                        <?= showValue(
-                            $program[
-                                'curriculum_year'
-                            ]
-                        ) ?>
-                    </div>
-
-                </div>
-
-
-                <div class="col-md-6">
-
-                    <div class="detail-label">
-                        Alias
-                    </div>
-
-                    <div>
-                        <?= showValue(
-                            $program[
-                                'aliases'
-                            ]
-                        ) ?>
-                    </div>
-
-                </div>
-
-
-                <div class="col-12">
-
-                    <div class="detail-label">
-                        ภาษาที่ใช้ในการเรียนการสอน
-                    </div>
-
-                    <div>
-                        <?= showValue(
-                            $program[
-                                'program_language'
-                            ]
-                        ) ?>
-                    </div>
-
-                </div>
-
-
-                <div class="col-12">
-
-                    <div class="detail-label">
-                        ข้อมูลการรับเข้า
-                    </div>
-
-                    <div>
-                        <?= showValue(
-                            $program[
-                                'admission_info'
-                            ]
-                        ) ?>
-                    </div>
-
-                </div>
-
-
-                <div class="col-12">
-
-                    <div class="detail-label">
-                        ความร่วมมือ
-                    </div>
-
-                    <div>
-                        <?= showValue(
-                            $program[
-                                'cooperation_info'
-                            ]
-                        ) ?>
-                    </div>
-
-                </div>
-
-
-                <div class="col-12">
-
-                    <div class="detail-label">
-                        การบูรณาการ
-                    </div>
-
-                    <div>
-                        <?= showValue(
-                            $program[
-                                'integration_info'
-                            ]
-                        ) ?>
-                    </div>
-
-                </div>
-
-
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <!-- ================================================= -->
-    <!-- Plans -->
-    <!-- ================================================= -->
-
-    <div
-        class="
+                    <div
+                        class="
             card
             border-0
             shadow-sm
             mb-4
-        "
-    >
+        ">
 
-        <div class="card-body p-4">
-
-
-            <h2 class="h5 fw-bold mb-4">
-                แผน / โครงสร้างหน่วยกิต
-            </h2>
+                        <div class="card-body p-4">
 
 
-            <?php if (!$plans): ?>
+                            <h2 class="h5 fw-bold mb-4">
+                                แผน / โครงสร้างหน่วยกิต
+                            </h2>
 
 
-                <p class="text-secondary mb-0">
-                    ไม่มีข้อมูล
-                </p>
+                            <?php if (!$plans): ?>
 
 
-            <?php else: ?>
+                                <p class="text-secondary mb-0">
+                                    ไม่มีข้อมูล
+                                </p>
 
 
-                <?php foreach ($plans as $plan): ?>
+                            <?php else: ?>
 
 
-                    <div class="plan-detail-block">
+                                <?php foreach ($plans as $plan): ?>
 
 
-                        <div
-                            class="
+                                    <div class="plan-detail-block">
+
+
+                                        <div
+                                            class="
                                 d-flex
                                 flex-column
                                 flex-md-row
                                 justify-content-between
                                 gap-2
                                 mb-3
-                            "
-                        >
+                            ">
 
 
-                            <div>
+                                            <div>
 
 
-                                <h3
-                                    class="
+                                                <h3
+                                                    class="
                                         h6
                                         fw-bold
                                         mb-1
-                                    "
-                                >
+                                    ">
 
-                                    <?= showValue(
-                                        $plan[
-                                            'plan_name'
-                                        ]
-                                    ) ?>
+                                                    <?= showValue(
+                                                        $plan['plan_name']
+                                                    ) ?>
 
-                                </h3>
+                                                </h3>
 
 
-                                <div
-                                    class="
+                                                <div
+                                                    class="
                                         small
                                         text-secondary
-                                    "
-                                >
+                                    ">
 
-                                    รหัสแผน:
+                                                    รหัสแผน:
 
-                                    <?= showValue(
-                                        $plan[
-                                            'plan_code'
-                                        ]
-                                    ) ?>
+                                                    <?= showValue(
+                                                        $plan['plan_code']
+                                                    ) ?>
 
-                                </div>
+                                                </div>
 
 
-                            </div>
+                                            </div>
 
 
-                            <div
-                                class="
+                                            <div
+                                                class="
                                     text-md-end
-                                "
-                            >
+                                ">
 
 
-                                <div
-                                    class="
+                                                <div
+                                                    class="
                                         small
                                         text-secondary
-                                    "
-                                >
-                                    หน่วยกิตรวม
-                                </div>
+                                    ">
+                                                    หน่วยกิตรวม
+                                                </div>
 
 
-                                <div
-                                    class="
+                                                <div
+                                                    class="
                                         fs-5
                                         fw-bold
-                                    "
-                                >
+                                    ">
 
-                                    <?= showNumber(
-                                        $plan[
-                                            'total_credits'
-                                        ]
-                                    ) ?>
+                                                    <?= showNumber(
+                                                        $plan['total_credits']
+                                                    ) ?>
 
-                                </div>
+                                                </div>
 
 
-                            </div>
+                                            </div>
 
 
-                        </div>
+                                        </div>
 
 
-                        <?php if (
-                            !empty(
-                                $plan[
-                                    'description'
-                                ]
-                            )
-                        ): ?>
+                                        <?php if (
+                                            !empty($plan['description'])
+                                        ): ?>
 
 
-                            <div class="mb-3">
+                                            <div class="mb-3">
 
-                                <?= showValue(
-                                    $plan[
-                                        'description'
-                                    ]
-                                ) ?>
+                                                <?= showValue(
+                                                    $plan['description']
+                                                ) ?>
 
-                            </div>
+                                            </div>
 
 
-                        <?php endif; ?>
+                                        <?php endif; ?>
 
 
-                        <?php if (
-                            empty(
-                                $plan[
-                                    'components'
-                                ]
-                            )
-                        ): ?>
+                                        <?php if (
+                                            empty($plan['components'])
+                                        ): ?>
 
 
-                            <div
-                                class="
+                                            <div
+                                                class="
                                     text-secondary
                                     small
-                                "
-                            >
-                                ไม่มีรายละเอียดโครงสร้างหน่วยกิต
-                            </div>
+                                ">
+                                                ไม่มีรายละเอียดโครงสร้างหน่วยกิต
+                                            </div>
 
 
-                        <?php else: ?>
+                                        <?php else: ?>
 
 
-                            <div class="table-responsive">
+                                            <div class="table-responsive">
 
 
-                                <table
-                                    class="
+                                                <table
+                                                    class="
                                         table
                                         table-sm
                                         align-middle
                                         mb-0
-                                    "
-                                >
+                                    ">
 
 
-                                    <thead
-                                        class="table-light"
-                                    >
+                                                    <thead
+                                                        class="table-light">
 
-                                        <tr>
+                                                        <tr>
 
-                                            <th>
-                                                หมวด / โครงสร้าง
-                                            </th>
+                                                            <th>
+                                                                หมวด / โครงสร้าง
+                                                            </th>
 
-                                            <th
-                                                style="
+                                                            <th
+                                                                style="
                                                     width:
                                                     120px;
-                                                "
-                                            >
-                                                หน่วยกิต
-                                            </th>
+                                                ">
+                                                                หน่วยกิต
+                                                            </th>
 
-                                            <th
-                                                style="
+                                                            <th
+                                                                style="
                                                     width:
                                                     120px;
-                                                "
-                                            >
-                                                ชั่วโมง
-                                            </th>
+                                                ">
+                                                                ชั่วโมง
+                                                            </th>
 
-                                            <th>
-                                                หมายเหตุ
-                                            </th>
+                                                            <th>
+                                                                หมายเหตุ
+                                                            </th>
 
-                                        </tr>
+                                                        </tr>
 
-                                    </thead>
-
-
-                                    <tbody>
-
-                                        <?php
-                                            renderComponentRows(
-                                                $plan[
-                                                    'components'
-                                                ]
-                                            );
-                                        ?>
-
-                                    </tbody>
+                                                    </thead>
 
 
-                                </table>
+                                                    <tbody>
+
+                                                        <?php
+                                                        renderComponentRows(
+                                                            $plan['components']
+                                                        );
+                                                        ?>
+
+                                                    </tbody>
 
 
-                            </div>
+                                                </table>
 
 
-                        <?php endif; ?>
+                                            </div>
 
 
-                    </div>
+                                        <?php endif; ?>
 
 
-                <?php endforeach; ?>
+                                    </div>
 
 
-            <?php endif; ?>
-
-
-        </div>
-
-    </div>
-
-
-    <!-- ================================================= -->
-    <!-- Requirements -->
-    <!-- ================================================= -->
-
-    <div
-        class="
-            card
-            border-0
-            shadow-sm
-            mb-4
-        "
-    >
-
-        <div class="card-body p-4">
-
-
-            <h2 class="h5 fw-bold mb-4">
-                คุณสมบัติผู้สมัคร
-            </h2>
-
-
-            <?php if (!$requirements): ?>
-
-
-                <p class="text-secondary mb-0">
-                    ไม่มีข้อมูล
-                </p>
-
-
-            <?php else: ?>
-
-
-                <ol class="mb-0">
-
-
-                    <?php foreach (
-                        $requirements as $item
-                    ): ?>
-
-
-                        <li class="mb-3">
-
-
-                            <?php if (
-                                !empty(
-                                    $item[
-                                        'plan_id'
-                                    ]
-                                )
-                            ): ?>
-
-
-                                <span
-                                    class="
-                                        badge
-                                        text-bg-light
-                                        border
-                                        mb-1
-                                    "
-                                >
-
-                                    แผน
-
-                                    <?= htmlspecialchars(
-                                        trim(
-                                            (
-                                                $item[
-                                                    'plan_code'
-                                                ]
-                                                ?? ''
-                                            )
-                                            .
-                                            ' '
-                                            .
-                                            (
-                                                $item[
-                                                    'plan_name'
-                                                ]
-                                                ?? ''
-                                            )
-                                        ),
-                                        ENT_QUOTES,
-                                        'UTF-8'
-                                    ) ?>
-
-                                </span>
-
-
-                                <br>
+                                <?php endforeach; ?>
 
 
                             <?php endif; ?>
 
 
-                            <?= nl2br(
-                                htmlspecialchars(
-                                    $item[
-                                        'requirement_text'
-                                    ],
-                                    ENT_QUOTES,
-                                    'UTF-8'
-                                )
-                            ) ?>
+                        </div>
+
+                    </div>
 
 
-                        </li>
+                    <!-- ================================================= -->
+                    <!-- Requirements -->
+                    <!-- ================================================= -->
 
-
-                    <?php endforeach; ?>
-
-
-                </ol>
-
-
-            <?php endif; ?>
-
-
-        </div>
-
-    </div>
-
-
-    <!-- ================================================= -->
-    <!-- Careers -->
-    <!-- ================================================= -->
-
-    <div
-        class="
+                    <div
+                        class="
             card
             border-0
             shadow-sm
             mb-4
-        "
-    >
+        ">
 
-        <div class="card-body p-4">
-
-
-            <h2 class="h5 fw-bold mb-4">
-                อาชีพหลังสำเร็จการศึกษา
-            </h2>
+                        <div class="card-body p-4">
 
 
-            <?php if (!$careers): ?>
+                            <h2 class="h5 fw-bold mb-4">
+                                คุณสมบัติผู้สมัคร
+                            </h2>
 
 
-                <p class="text-secondary mb-0">
-                    ไม่มีข้อมูล
-                </p>
+                            <?php if (!$requirements): ?>
 
 
-            <?php else: ?>
+                                <p class="text-secondary mb-0">
+                                    ไม่มีข้อมูล
+                                </p>
 
 
-                <ol class="mb-0">
+                            <?php else: ?>
 
 
-                    <?php foreach (
-                        $careers as $career
-                    ): ?>
+                                <ol class="mb-0">
 
 
-                        <li class="mb-2">
-
-                            <?= htmlspecialchars(
-                                $career[
-                                    'career_name'
-                                ],
-                                ENT_QUOTES,
-                                'UTF-8'
-                            ) ?>
-
-                        </li>
+                                    <?php foreach (
+                                        $requirements as $item
+                                    ): ?>
 
 
-                    <?php endforeach; ?>
+                                        <li class="mb-3">
 
 
-                </ol>
+                                            <?php if (
+                                                !empty($item['plan_id'])
+                                            ): ?>
 
 
-            <?php endif; ?>
+                                                <span
+                                                    class="
+                                        badge
+                                        text-bg-light
+                                        border
+                                        mb-1
+                                    ">
+
+                                                    แผน
+
+                                                    <?= htmlspecialchars(
+                                                        trim(
+                                                            (
+                                                                $item['plan_code']
+                                                                ?? ''
+                                                            )
+                                                                .
+                                                                ' '
+                                                                .
+                                                                (
+                                                                    $item['plan_name']
+                                                                    ?? ''
+                                                                )
+                                                        ),
+                                                        ENT_QUOTES,
+                                                        'UTF-8'
+                                                    ) ?>
+
+                                                </span>
 
 
-        </div>
-
-    </div>
+                                                <br>
 
 
-    <!-- ================================================= -->
-    <!-- Course Descriptions -->
-    <!-- ================================================= -->
+                                            <?php endif; ?>
 
-    <div class="card border-0 shadow-sm mb-4">
 
-        <div class="card-body p-4">
+                                            <?= nl2br(
+                                                htmlspecialchars(
+                                                    $item['requirement_text'],
+                                                    ENT_QUOTES,
+                                                    'UTF-8'
+                                                )
+                                            ) ?>
 
-            <div class="section-header mb-4">
-                <div>
-                    <h2 class="h5 fw-bold mb-1">
-                        คำอธิบายรายวิชา
-                    </h2>
-                    <p class="text-secondary small mb-0">
-                        มีข้อมูล <?= number_format($courseCount) ?> รายวิชาในหลักสูตรนี้
-                    </p>
-                </div>
 
-                <div class="d-flex gap-2 flex-wrap">
-                    <a
-                        href="course_descriptions.php?program_id=<?= (int)$program['id'] ?>"
-                        class="btn btn-outline-primary btn-sm"
-                    >
-                        <i class="bi bi-journal-text"></i>
-                        จัดการรายวิชาทั้งหมด
-                    </a>
+                                        </li>
 
-                    <a
-                        href="course_description_save.php?program_id=<?= (int)$program['id'] ?>"
-                        class="btn btn-mbs-primary btn-sm"
-                    >
-                        <i class="bi bi-plus-lg"></i>
-                        เพิ่มรายวิชา
-                    </a>
-                </div>
-            </div>
 
-            <?php if (!$courseDescriptions): ?>
+                                    <?php endforeach; ?>
 
-                <div class="course-empty-state">
-                    <i class="bi bi-journal-x"></i>
-                    <strong>ยังไม่มีคำอธิบายรายวิชา</strong>
-                    <span>สามารถเพิ่มข้อมูลรายวิชาของหลักสูตรนี้ได้จากปุ่มด้านบน</span>
-                </div>
 
-            <?php else: ?>
+                                </ol>
 
-                <div class="table-responsive">
-                    <table class="table table-sm align-middle mb-0">
-                        <thead class="table-light">
-                            <tr>
-                                <th>รหัสวิชา</th>
-                                <th>ชื่อวิชา</th>
-                                <th>หน่วยกิต</th>
-                                <th>กลุ่ม / ประเภท</th>
-                                <th>การประเมิน</th>
-                                <th class="text-end">ดูข้อมูล</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        <?php foreach ($courseDescriptions as $course): ?>
-                            <tr>
-                                <td>
-                                    <span class="program-code">
-                                        <?= htmlspecialchars($course['course_code'], ENT_QUOTES, 'UTF-8') ?>
-                                    </span>
-                                </td>
-                                <td style="min-width: 280px;">
-                                    <div class="fw-semibold">
-                                        <?= htmlspecialchars($course['course_name_th'], ENT_QUOTES, 'UTF-8') ?>
-                                    </div>
-                                    <?php if (!empty($course['course_name_en'])): ?>
-                                        <div class="program-alias mt-1">
-                                            <?= htmlspecialchars($course['course_name_en'], ENT_QUOTES, 'UTF-8') ?>
-                                        </div>
-                                    <?php endif; ?>
-                                </td>
-                                <td>
-                                    <?= htmlspecialchars($course['credits'] ?: '-', ENT_QUOTES, 'UTF-8') ?>
-                                </td>
-                                <td>
-                                    <div>
-                                        <?= htmlspecialchars($course['course_group'] ?: '-', ENT_QUOTES, 'UTF-8') ?>
-                                    </div>
-                                    <?php if (!empty($course['course_type'])): ?>
-                                        <span class="badge text-bg-light border mt-1">
-                                            <?= htmlspecialchars($course['course_type'], ENT_QUOTES, 'UTF-8') ?>
-                                        </span>
-                                    <?php endif; ?>
-                                    <?php if ((int)$course['credit_counted'] === 0): ?>
-                                        <span class="badge text-bg-warning mt-1">ไม่นับหน่วยกิต</span>
-                                    <?php endif; ?>
-                                </td>
-                                <td>
-                                    <?= !empty($course['assessment_type'])
-                                        ? htmlspecialchars($course['assessment_type'], ENT_QUOTES, 'UTF-8')
-                                        : '-' ?>
-                                </td>
-                                <td class="text-end">
-                                    <a
-                                        href="course_description_detail.php?id=<?= (int)$course['id'] ?>"
-                                        class="btn btn-outline-primary btn-sm"
-                                    >
-                                        <i class="bi bi-eye"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-                        </tbody>
-                    </table>
-                </div>
 
-                <?php if ($courseCount > 10): ?>
-                    <div class="text-center mt-3">
-                        <a
-                            href="course_descriptions.php?program_id=<?= (int)$program['id'] ?>"
-                            class="btn btn-outline-primary btn-sm"
-                        >
-                            ดูทั้งหมด <?= number_format($courseCount) ?> รายวิชา
-                            <i class="bi bi-arrow-right"></i>
-                        </a>
+                            <?php endif; ?>
+
+
+                        </div>
+
                     </div>
-                <?php endif; ?>
-
-            <?php endif; ?>
-
-        </div>
-
-    </div>
 
 
-    <!-- ================================================= -->
-    <!-- Objectives -->
-    <!-- ================================================= -->
+                    <!-- ================================================= -->
+                    <!-- Careers -->
+                    <!-- ================================================= -->
 
-    <div
-        class="
+                    <div
+                        class="
+            card
+            border-0
+            shadow-sm
+            mb-4
+        ">
+
+                        <div class="card-body p-4">
+
+
+                            <h2 class="h5 fw-bold mb-4">
+                                อาชีพหลังสำเร็จการศึกษา
+                            </h2>
+
+
+                            <?php if (!$careers): ?>
+
+
+                                <p class="text-secondary mb-0">
+                                    ไม่มีข้อมูล
+                                </p>
+
+
+                            <?php else: ?>
+
+
+                                <ol class="mb-0">
+
+
+                                    <?php foreach (
+                                        $careers as $career
+                                    ): ?>
+
+
+                                        <li class="mb-2">
+
+                                            <?= htmlspecialchars(
+                                                $career['career_name'],
+                                                ENT_QUOTES,
+                                                'UTF-8'
+                                            ) ?>
+
+                                        </li>
+
+
+                                    <?php endforeach; ?>
+
+
+                                </ol>
+
+
+                            <?php endif; ?>
+
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- ================================================= -->
+                    <!-- Course Descriptions -->
+                    <!-- ================================================= -->
+
+                    <div class="card border-0 shadow-sm mb-4">
+
+                        <div class="card-body p-4">
+
+                            <div class="section-header mb-4">
+                                <div>
+                                    <h2 class="h5 fw-bold mb-1">
+                                        คำอธิบายรายวิชา
+                                    </h2>
+                                    <p class="text-secondary small mb-0">
+                                        มีข้อมูล <?= number_format($courseCount) ?> รายวิชาในหลักสูตรนี้
+                                    </p>
+                                </div>
+
+                                <div class="d-flex gap-2 flex-wrap">
+                                    <a
+                                        href="course_descriptions.php?program_id=<?= (int)$program['id'] ?>"
+                                        class="btn btn-outline-primary btn-sm">
+                                        <i class="bi bi-journal-text"></i>
+                                        จัดการรายวิชาทั้งหมด
+                                    </a>
+
+                                    <a
+                                        href="course_description_save.php?program_id=<?= (int)$program['id'] ?>"
+                                        class="btn btn-mbs-primary btn-sm">
+                                        <i class="bi bi-plus-lg"></i>
+                                        เพิ่มรายวิชา
+                                    </a>
+                                </div>
+                            </div>
+
+                            <?php if (!$courseDescriptions): ?>
+
+                                <div class="course-empty-state">
+                                    <i class="bi bi-journal-x"></i>
+                                    <strong>ยังไม่มีคำอธิบายรายวิชา</strong>
+                                    <span>สามารถเพิ่มข้อมูลรายวิชาของหลักสูตรนี้ได้จากปุ่มด้านบน</span>
+                                </div>
+
+                            <?php else: ?>
+
+                                <div class="table-responsive">
+                                    <table class="table table-sm align-middle mb-0">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>รหัสวิชา</th>
+                                                <th>ชื่อวิชา</th>
+                                                <th>หน่วยกิต</th>
+                                                <th>กลุ่ม / ประเภท</th>
+                                                <th>การประเมิน</th>
+                                                <th class="text-end">ดูข้อมูล</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php foreach ($courseDescriptions as $course): ?>
+                                                <tr>
+                                                    <td>
+                                                        <span class="program-code">
+                                                            <?= htmlspecialchars($course['course_code'], ENT_QUOTES, 'UTF-8') ?>
+                                                        </span>
+                                                    </td>
+                                                    <td style="min-width: 280px;">
+                                                        <div class="fw-semibold">
+                                                            <?= htmlspecialchars($course['course_name_th'], ENT_QUOTES, 'UTF-8') ?>
+                                                        </div>
+                                                        <?php if (!empty($course['course_name_en'])): ?>
+                                                            <div class="program-alias mt-1">
+                                                                <?= htmlspecialchars($course['course_name_en'], ENT_QUOTES, 'UTF-8') ?>
+                                                            </div>
+                                                        <?php endif; ?>
+                                                    </td>
+                                                    <td>
+                                                        <?= htmlspecialchars($course['credits'] ?: '-', ENT_QUOTES, 'UTF-8') ?>
+                                                    </td>
+                                                    <td>
+                                                        <div>
+                                                            <?= htmlspecialchars($course['course_group'] ?: '-', ENT_QUOTES, 'UTF-8') ?>
+                                                        </div>
+                                                        <?php if (!empty($course['course_type'])): ?>
+                                                            <span class="badge text-bg-light border mt-1">
+                                                                <?= htmlspecialchars($course['course_type'], ENT_QUOTES, 'UTF-8') ?>
+                                                            </span>
+                                                        <?php endif; ?>
+                                                        <?php if ((int)$course['credit_counted'] === 0): ?>
+                                                            <span class="badge text-bg-warning mt-1">ไม่นับหน่วยกิต</span>
+                                                        <?php endif; ?>
+                                                    </td>
+                                                    <td>
+                                                        <?= !empty($course['assessment_type'])
+                                                            ? htmlspecialchars($course['assessment_type'], ENT_QUOTES, 'UTF-8')
+                                                            : '-' ?>
+                                                    </td>
+                                                    <td class="text-end">
+                                                        <a
+                                                            href="course_description_detail.php?id=<?= (int)$course['id'] ?>"
+                                                            class="btn btn-outline-primary btn-sm">
+                                                            <i class="bi bi-eye"></i>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            <?php endforeach; ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <?php if ($courseCount > 10): ?>
+                                    <div class="text-center mt-3">
+                                        <a
+                                            href="course_descriptions.php?program_id=<?= (int)$program['id'] ?>"
+                                            class="btn btn-outline-primary btn-sm">
+                                            ดูทั้งหมด <?= number_format($courseCount) ?> รายวิชา
+                                            <i class="bi bi-arrow-right"></i>
+                                        </a>
+                                    </div>
+                                <?php endif; ?>
+
+                            <?php endif; ?>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- ================================================= -->
+                    <!-- Objectives -->
+                    <!-- ================================================= -->
+
+                    <div
+                        class="
             card
             border-0
             shadow-sm
             mb-5
-        "
-    >
+        ">
 
-        <div class="card-body p-4">
-
-
-            <h2 class="h5 fw-bold mb-4">
-                วัตถุประสงค์หลักสูตร
-            </h2>
+                        <div class="card-body p-4">
 
 
-            <?php if (!$objectives): ?>
+                            <h2 class="h5 fw-bold mb-4">
+                                วัตถุประสงค์หลักสูตร
+                            </h2>
 
 
-                <p class="text-secondary mb-0">
-                    ไม่มีข้อมูล
-                </p>
+                            <?php if (!$objectives): ?>
 
 
-            <?php else: ?>
+                                <p class="text-secondary mb-0">
+                                    ไม่มีข้อมูล
+                                </p>
 
 
-                <ol class="mb-0">
+                            <?php else: ?>
 
 
-                    <?php foreach (
-                        $objectives as $objective
-                    ): ?>
+                                <ol class="mb-0">
 
 
-                        <li class="mb-3">
-
-                            <?= nl2br(
-                                htmlspecialchars(
-                                    $objective[
-                                        'objective_text'
-                                    ],
-                                    ENT_QUOTES,
-                                    'UTF-8'
-                                )
-                            ) ?>
-
-                        </li>
+                                    <?php foreach (
+                                        $objectives as $objective
+                                    ): ?>
 
 
-                    <?php endforeach; ?>
+                                        <li class="mb-3">
+
+                                            <?= nl2br(
+                                                htmlspecialchars(
+                                                    $objective['objective_text'],
+                                                    ENT_QUOTES,
+                                                    'UTF-8'
+                                                )
+                                            ) ?>
+
+                                        </li>
 
 
-                </ol>
+                                    <?php endforeach; ?>
 
 
-            <?php endif; ?>
+                                </ol>
 
 
+                            <?php endif; ?>
+
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+            </main>
+
+            <footer class="admin-footer">
+                <div>
+                    <strong>MBS UniWise Admin</strong>
+                    <span>คณะการบัญชีและการจัดการ มหาวิทยาลัยมหาสารคาม</span>
+                </div>
+                <span>Mahasarakham Business School</span>
+            </footer>
         </div>
-
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
 
+            const sidebar = document.getElementById('sidebar');
+            const sidebarOverlay = document.getElementById('sidebarOverlay');
+            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+            const sidebarToggle = document.getElementById('sidebarToggle');
 
-</div>
-</main>
+            function openSidebar() {
+                if (sidebar) {
+                    sidebar.classList.add('show');
+                }
 
-<footer class="admin-footer">
-    <div>
-        <strong>MBS UniWise Admin</strong>
-        <span>คณะการบัญชีและการจัดการ มหาวิทยาลัยมหาสารคาม</span>
-    </div>
-    <span>Mahasarakham Business School</span>
-</footer>
-</div>
-</div>
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-
-    const sidebar = document.getElementById('sidebar');
-    const sidebarOverlay = document.getElementById('sidebarOverlay');
-    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-    const sidebarToggle = document.getElementById('sidebarToggle');
-
-    function openSidebar() {
-        if (sidebar) {
-            sidebar.classList.add('show');
-        }
-
-        if (sidebarOverlay) {
-            sidebarOverlay.classList.add('show');
-        }
-    }
-
-    function closeSidebar() {
-        if (sidebar) {
-            sidebar.classList.remove('show');
-        }
-
-        if (sidebarOverlay) {
-            sidebarOverlay.classList.remove('show');
-        }
-    }
-
-    /* โหลดสถานะ Sidebar เดิมบน Desktop */
-    if (
-        localStorage.getItem('mbsSidebarCollapsed') === '1' &&
-        window.innerWidth >= 992
-    ) {
-        document.body.classList.add('sidebar-collapsed');
-    }
-
-    /* ย่อ / ขยาย Sidebar บน Desktop */
-    if (sidebarToggle) {
-        sidebarToggle.addEventListener('click', function () {
-
-            if (window.innerWidth < 992) {
-                return;
+                if (sidebarOverlay) {
+                    sidebarOverlay.classList.add('show');
+                }
             }
 
-            document.body.classList.toggle('sidebar-collapsed');
+            function closeSidebar() {
+                if (sidebar) {
+                    sidebar.classList.remove('show');
+                }
 
-            const collapsed =
-                document.body.classList.contains('sidebar-collapsed');
+                if (sidebarOverlay) {
+                    sidebarOverlay.classList.remove('show');
+                }
+            }
 
-            localStorage.setItem(
-                'mbsSidebarCollapsed',
-                collapsed ? '1' : '0'
-            );
-        });
-    }
-
-    /* เปิด Sidebar บนมือถือ */
-    if (mobileMenuBtn) {
-        mobileMenuBtn.addEventListener('click', openSidebar);
-    }
-
-    /* แตะ Overlay เพื่อปิด Sidebar */
-    if (sidebarOverlay) {
-        sidebarOverlay.addEventListener('click', closeSidebar);
-    }
-
-    /* ปรับสถานะเมื่อเปลี่ยนขนาดหน้าจอ */
-    window.addEventListener('resize', function () {
-
-        if (window.innerWidth >= 992) {
-
-            closeSidebar();
-
+            /* โหลดสถานะ Sidebar เดิมบน Desktop */
             if (
-                localStorage.getItem('mbsSidebarCollapsed') === '1'
+                localStorage.getItem('mbsSidebarCollapsed') === '1' &&
+                window.innerWidth >= 992
             ) {
                 document.body.classList.add('sidebar-collapsed');
-            } else {
-                document.body.classList.remove('sidebar-collapsed');
             }
 
-        } else {
+            /* ย่อ / ขยาย Sidebar บน Desktop */
+            if (sidebarToggle) {
+                sidebarToggle.addEventListener('click', function() {
 
-            document.body.classList.remove('sidebar-collapsed');
-        }
-    });
+                    if (window.innerWidth < 992) {
+                        return;
+                    }
 
-});
-</script>
+                    document.body.classList.toggle('sidebar-collapsed');
 
-<script
-    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-></script>
+                    const collapsed =
+                        document.body.classList.contains('sidebar-collapsed');
+
+                    localStorage.setItem(
+                        'mbsSidebarCollapsed',
+                        collapsed ? '1' : '0'
+                    );
+                });
+            }
+
+            /* เปิด Sidebar บนมือถือ */
+            if (mobileMenuBtn) {
+                mobileMenuBtn.addEventListener('click', openSidebar);
+            }
+
+            /* แตะ Overlay เพื่อปิด Sidebar */
+            if (sidebarOverlay) {
+                sidebarOverlay.addEventListener('click', closeSidebar);
+            }
+
+            /* ปรับสถานะเมื่อเปลี่ยนขนาดหน้าจอ */
+            window.addEventListener('resize', function() {
+
+                if (window.innerWidth >= 992) {
+
+                    closeSidebar();
+
+                    if (
+                        localStorage.getItem('mbsSidebarCollapsed') === '1'
+                    ) {
+                        document.body.classList.add('sidebar-collapsed');
+                    } else {
+                        document.body.classList.remove('sidebar-collapsed');
+                    }
+
+                } else {
+
+                    document.body.classList.remove('sidebar-collapsed');
+                }
+            });
+
+        });
+    </script>
+
+    <script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 
 </body>

@@ -20,7 +20,7 @@ function sendJson(
     echo json_encode(
         $data,
         JSON_UNESCAPED_UNICODE |
-        JSON_PRETTY_PRINT
+            JSON_PRETTY_PRINT
     );
 
     exit;
@@ -247,7 +247,7 @@ try {
             [
                 'success' => false,
                 'message' =>
-                    'degree_level ต้องเป็น bachelor, master หรือ doctoral'
+                'degree_level ต้องเป็น bachelor, master หรือ doctoral'
             ],
             400
         );
@@ -270,6 +270,7 @@ try {
         'credits',
         'curriculum',
         'curriculum_structure',
+        'tuition',
         'study_plan',
         'plans',
 
@@ -314,7 +315,7 @@ try {
             [
                 'success' => false,
                 'message' =>
-                    'active ต้องเป็น 0 หรือ 1'
+                'active ต้องเป็น 0 หรือ 1'
             ],
             400
         );
@@ -489,15 +490,15 @@ try {
                 $programListMap[$key] = [
 
                     'curriculum_name' =>
-                        $curriculumName,
+                    $curriculumName,
 
                     'degree_level' =>
-                        $programDegree,
+                    $programDegree,
 
                     'degree_level_label' =>
-                        getDegreeLabel(
-                            $programDegree
-                        )
+                    getDegreeLabel(
+                        $programDegree
+                    )
                 ];
             }
         }
@@ -520,14 +521,10 @@ try {
                 ];
 
                 $degreeA =
-                    $degreeOrder[
-                        $a['degree_level']
-                    ] ?? 99;
+                    $degreeOrder[$a['degree_level']] ?? 99;
 
                 $degreeB =
-                    $degreeOrder[
-                        $b['degree_level']
-                    ] ?? 99;
+                    $degreeOrder[$b['degree_level']] ?? 99;
 
                 if ($degreeA !== $degreeB) {
                     return $degreeA <=> $degreeB;
@@ -546,45 +543,45 @@ try {
                 'success' => true,
 
                 'count' =>
-                    count($programList),
+                count($programList),
 
                 'record_count' =>
-                    count($programs),
+                count($programs),
 
                 'topic' =>
-                    'program_list',
+                'program_list',
 
                 'filters' => [
 
                     'id' =>
-                        $id,
+                    $id,
 
                     'program_code' =>
-                        $programCode !== ''
-                            ? $programCode
-                            : null,
+                    $programCode !== ''
+                        ? $programCode
+                        : null,
 
                     'degree_level' =>
-                        $degreeLevel !== ''
-                            ? $degreeLevel
-                            : null,
+                    $degreeLevel !== ''
+                        ? $degreeLevel
+                        : null,
 
                     'major_name' =>
-                        $majorName !== ''
-                            ? $majorName
-                            : null,
+                    $majorName !== ''
+                        ? $majorName
+                        : null,
 
                     'search' =>
-                        $search !== ''
-                            ? $search
-                            : null,
+                    $search !== ''
+                        ? $search
+                        : null,
 
                     'active' =>
-                        $active
+                    $active
                 ],
 
                 'data' =>
-                    $programList
+                $programList
             ]
         );
     }
@@ -658,25 +655,25 @@ try {
                 $majorListMap[$key] = [
 
                     'major_name' =>
-                        $majorNameValue,
+                    $majorNameValue,
 
                     'major_name_en' =>
-                        $majorNameEn !== ''
-                            ? $majorNameEn
-                            : null,
+                    $majorNameEn !== ''
+                        ? $majorNameEn
+                        : null,
 
                     'curriculum_name' =>
-                        $curriculumName !== ''
-                            ? $curriculumName
-                            : null,
+                    $curriculumName !== ''
+                        ? $curriculumName
+                        : null,
 
                     'degree_level' =>
-                        $programDegree,
+                    $programDegree,
 
                     'degree_level_label' =>
-                        getDegreeLabel(
-                            $programDegree
-                        )
+                    getDegreeLabel(
+                        $programDegree
+                    )
                 ];
             }
         }
@@ -699,14 +696,10 @@ try {
                 ];
 
                 $degreeA =
-                    $degreeOrder[
-                        $a['degree_level']
-                    ] ?? 99;
+                    $degreeOrder[$a['degree_level']] ?? 99;
 
                 $degreeB =
-                    $degreeOrder[
-                        $b['degree_level']
-                    ] ?? 99;
+                    $degreeOrder[$b['degree_level']] ?? 99;
 
                 if ($degreeA !== $degreeB) {
                     return $degreeA <=> $degreeB;
@@ -725,45 +718,45 @@ try {
                 'success' => true,
 
                 'count' =>
-                    count($majorList),
+                count($majorList),
 
                 'record_count' =>
-                    count($programs),
+                count($programs),
 
                 'topic' =>
-                    'major_list',
+                'major_list',
 
                 'filters' => [
 
                     'id' =>
-                        $id,
+                    $id,
 
                     'program_code' =>
-                        $programCode !== ''
-                            ? $programCode
-                            : null,
+                    $programCode !== ''
+                        ? $programCode
+                        : null,
 
                     'degree_level' =>
-                        $degreeLevel !== ''
-                            ? $degreeLevel
-                            : null,
+                    $degreeLevel !== ''
+                        ? $degreeLevel
+                        : null,
 
                     'major_name' =>
-                        $majorName !== ''
-                            ? $majorName
-                            : null,
+                    $majorName !== ''
+                        ? $majorName
+                        : null,
 
                     'search' =>
-                        $search !== ''
-                            ? $search
-                            : null,
+                    $search !== ''
+                        ? $search
+                        : null,
 
                     'active' =>
-                        $active
+                    $active
                 ],
 
                 'data' =>
-                    $majorList
+                $majorList
             ]
         );
     }
@@ -802,32 +795,50 @@ try {
 
             $program = [
                 'id' =>
-                    $programId,
+                $programId,
 
                 'program_code' =>
-                    $program['program_code'],
+                $program['program_code'],
 
                 'degree_level' =>
-                    $program['degree_level'],
+                $program['degree_level'],
 
                 'degree_level_label' =>
-                    getDegreeLabel(
-                        $program['degree_level']
-                    ),
+                getDegreeLabel(
+                    $program['degree_level']
+                ),
 
                 'curriculum_name' =>
-                    $program['curriculum_name'],
+                $program['curriculum_name'],
 
                 'major_name' =>
-                    $program['major_name'],
+                $program['major_name'],
 
                 'major_name_en' =>
-                    $program['major_name_en']
+                $program['major_name_en']
                     ?? null,
 
                 'curriculum_year' =>
-                    $program['curriculum_year']
+                $program['curriculum_year']
+                    ?? null,
+
+                'curriculum_year' =>
+                $program['curriculum_year']
+                    ?? null,
+
+                'study_period' =>
+                $program['study_period']
+                    ?? null,
+
+                'tuition_fee_per_semester' =>
+                $program['tuition_fee_per_semester']
+                    ?? null,
+
+                'total_tuition_fee' =>
+                $program['total_tuition_fee']
                     ?? null
+
+
             ];
         }
 
@@ -868,7 +879,7 @@ try {
 
             $planParams = [
                 ':program_id' =>
-                    $programId
+                $programId
             ];
 
 
@@ -946,7 +957,7 @@ try {
 
                 $stmtComponent->execute([
                     ':plan_id' =>
-                        $planId
+                    $planId
                 ]);
 
 
@@ -1039,13 +1050,11 @@ try {
 
             $stmtRequirement->execute([
                 ':program_id' =>
-                    $programId
+                $programId
             ]);
 
 
-            $program[
-                'admission_requirements'
-            ] =
+            $program['admission_requirements'] =
                 $stmtRequirement->fetchAll(
                     PDO::FETCH_ASSOC
                 );
@@ -1088,7 +1097,7 @@ try {
 
             $stmtCareer->execute([
                 ':program_id' =>
-                    $programId
+                $programId
             ]);
 
 
@@ -1135,7 +1144,7 @@ try {
 
             $stmtObjective->execute([
                 ':program_id' =>
-                    $programId
+                $programId
             ]);
 
 
@@ -1204,7 +1213,7 @@ try {
 
             $courseParams = [
                 ':program_id' =>
-                    $programId
+                $programId
             ];
 
 
@@ -1329,91 +1338,89 @@ try {
     sendJson(
         [
             'success' =>
-                true,
+            true,
 
             'count' =>
-                count($programs),
+            count($programs),
 
             'topic' =>
-                $topic,
+            $topic,
 
             'filters' => [
 
                 'id' =>
-                    $id,
+                $id,
 
                 'program_code' =>
-                    $programCode !== ''
-                        ? $programCode
-                        : null,
+                $programCode !== ''
+                    ? $programCode
+                    : null,
 
                 'degree_level' =>
-                    $degreeLevel !== ''
-                        ? $degreeLevel
-                        : null,
+                $degreeLevel !== ''
+                    ? $degreeLevel
+                    : null,
 
                 'major_name' =>
-                    $majorName !== ''
-                        ? $majorName
-                        : null,
+                $majorName !== ''
+                    ? $majorName
+                    : null,
 
                 'search' =>
-                    $search !== ''
-                        ? $search
-                        : null,
+                $search !== ''
+                    ? $search
+                    : null,
 
                 'plan_code' =>
-                    $planCode !== ''
-                        ? $planCode
-                        : null,
+                $planCode !== ''
+                    ? $planCode
+                    : null,
 
                 'course_code' =>
-                    $courseCode !== ''
-                        ? $courseCode
-                        : null,
+                $courseCode !== ''
+                    ? $courseCode
+                    : null,
 
                 'course_search' =>
-                    $courseSearch !== ''
-                        ? $courseSearch
-                        : null,
+                $courseSearch !== ''
+                    ? $courseSearch
+                    : null,
 
                 'active' =>
-                    $active
+                $active
             ],
 
             'data' =>
-                $programs
+            $programs
         ]
     );
-
 } catch (PDOException $e) {
 
     sendJson(
         [
             'success' =>
-                false,
+            false,
 
             'message' =>
-                'เกิดข้อผิดพลาดในการดึงข้อมูลจากฐานข้อมูล',
+            'เกิดข้อผิดพลาดในการดึงข้อมูลจากฐานข้อมูล',
 
             'error' =>
-                $e->getMessage()
+            $e->getMessage()
         ],
         500
     );
-
 } catch (Throwable $e) {
 
     sendJson(
         [
             'success' =>
-                false,
+            false,
 
             'message' =>
-                'เกิดข้อผิดพลาดในการประมวลผลข้อมูล',
+            'เกิดข้อผิดพลาดในการประมวลผลข้อมูล',
 
             'error' =>
-                $e->getMessage()
+            $e->getMessage()
         ],
         500
     );
