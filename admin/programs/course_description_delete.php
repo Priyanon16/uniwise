@@ -28,9 +28,9 @@ try {
     }
 
     $actualProgramId = (int)$course['program_id'];
-    if (!$programId) {
-        $programId = $actualProgramId;
-    }
+
+    // ใช้ program_id จากฐานข้อมูลจริงเสมอ
+    $programId = $actualProgramId;
 
     $stmt = $pdo->prepare("\n        DELETE FROM course_descriptions\n        WHERE id = :id\n    ");
     $stmt->execute([':id' => $id]);

@@ -228,17 +228,6 @@ include __DIR__ . '/../includes/sidebar.php';
             </div>
         </div>
     </div>
-
-    <?php if (!empty($course['raw_content'])): ?>
-        <div class="card border-0 shadow-sm mb-5">
-            <div class="card-body p-4">
-                <h2 class="h5 fw-bold mb-4">Raw Content</h2>
-                <div class="course-description-content raw-content-box">
-                    <?= showValue($course['raw_content']) ?>
-                </div>
-            </div>
-        </div>
-    <?php endif; ?>
 </div>
 </main>
 
