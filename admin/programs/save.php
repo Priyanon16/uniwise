@@ -125,6 +125,9 @@ $program = [
     'degree_abbr_en' => '',
     'aliases' => '',
     'curriculum_year' => '',
+    'study_period' => '',
+    'tuition_fee_per_semester' => '',
+    'total_tuition_fee' => '',
     'program_language' => '',
     'admission_info' => '',
     'cooperation_info' => '',
@@ -555,6 +558,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                     ':curriculum_year' =>
                     $curriculumYear ?: null,
+
+                    ':study_period' =>
+                    $studyPeriod ?: null,
+
+                    ':tuition_fee_per_semester' =>
+                    $tuitionFeePerSemester ?: null,
+
+                    ':total_tuition_fee' =>
+                    $totalTuitionFee ?: null,
 
                     ':program_language' =>
                     $programLanguage ?: null,
@@ -1690,21 +1702,52 @@ $objectivesJson =
 
                                     </div>
 
-
                                     <div class="col-md-4">
 
                                         <label class="form-label">
-                                            ปีหลักสูตร
+                                            ระยะเวลาการศึกษา
                                         </label>
 
                                         <input
                                             type="text"
-                                            name="curriculum_year"
+                                            name="study_period"
                                             class="form-control"
                                             value="<?= htmlspecialchars(
-                                                        $program['curriculum_year']
+                                                        $program['study_period']
                                                     ) ?>"
-                                            placeholder="เช่น 2566">
+                                            placeholder="เช่น 4 ปี">
+
+                                    </div>
+
+
+                                    <div class="col-md-6">
+
+                                        <label class="form-label">
+                                            ค่าเล่าเรียนต่อภาคการศึกษา
+                                        </label>
+
+                                        <textarea
+                                            name="tuition_fee_per_semester"
+                                            class="form-control"
+                                            rows="2"><?= htmlspecialchars(
+                                                            $program['tuition_fee_per_semester']
+                                                        ) ?></textarea>
+
+                                    </div>
+
+
+                                    <div class="col-md-6">
+
+                                        <label class="form-label">
+                                            ค่าเล่าเรียนรวมตลอดหลักสูตร
+                                        </label>
+
+                                        <textarea
+                                            name="total_tuition_fee"
+                                            class="form-control"
+                                            rows="2"><?= htmlspecialchars(
+                                                            $program['total_tuition_fee']
+                                                        ) ?></textarea>
 
                                     </div>
 
@@ -1715,408 +1758,400 @@ $objectivesJson =
                                             ชื่อหลักสูตร <span class="required-star">*</span>
                                         </label>
 
-                                        <div class="col-12">
-
-                                            <label class="form-label fw-semibold">
-                                                ชื่อหลักสูตร <span class="required-star">*</span>
-                                            </label>
-
-                                            <input
-                                                type="text"
-                                                name="curriculum_name"
-                                                class="form-control"
-                                                value="<?= htmlspecialchars(
-                                                            $program['curriculum_name']
-                                                        ) ?>"
-                                                required>
-
-                                        </div>
-
-
-
-
-                                        <div class="col-md-6">
-
-                                            <label class="form-label fw-semibold">
-                                                ชื่อสาขาวิชา <span class="required-star">*</span>
-                                            </label>
-
-                                            <input
-                                                type="text"
-                                                name="major_name"
-                                                class="form-control"
-                                                value="<?= htmlspecialchars(
-                                                            $program['major_name']
-                                                        ) ?>"
-                                                required>
-
-                                        </div>
-
-
-                                        <div class="col-md-6">
-
-                                            <label class="form-label">
-                                                ชื่อสาขาวิชาภาษาอังกฤษ
-                                            </label>
-
-                                            <input
-                                                type="text"
-                                                name="major_name_en"
-                                                class="form-control"
-                                                value="<?= htmlspecialchars(
-                                                            $program['major_name_en']
-                                                        ) ?>">
-
-                                        </div>
-
-
-                                        <div class="col-md-6">
-
-                                            <label class="form-label">
-                                                ชื่อปริญญาภาษาไทย
-                                            </label>
-
-                                            <input
-                                                type="text"
-                                                name="degree_name_th"
-                                                class="form-control"
-                                                value="<?= htmlspecialchars(
-                                                            $program['degree_name_th']
-                                                        ) ?>">
-
-                                        </div>
-
-
-                                        <div class="col-md-6">
-
-                                            <label class="form-label">
-                                                อักษรย่อปริญญาภาษาไทย
-                                            </label>
-
-                                            <input
-                                                type="text"
-                                                name="degree_abbr_th"
-                                                class="form-control"
-                                                value="<?= htmlspecialchars(
-                                                            $program['degree_abbr_th']
-                                                        ) ?>">
-
-                                        </div>
-
-
-                                        <div class="col-md-6">
-
-                                            <label class="form-label">
-                                                ชื่อปริญญาภาษาอังกฤษ
-                                            </label>
-
-                                            <input
-                                                type="text"
-                                                name="degree_name_en"
-                                                class="form-control"
-                                                value="<?= htmlspecialchars(
-                                                            $program['degree_name_en']
-                                                        ) ?>">
-
-                                        </div>
-
-
-                                        <div class="col-md-6">
-
-                                            <label class="form-label">
-                                                อักษรย่อปริญญาภาษาอังกฤษ
-                                            </label>
-
-                                            <input
-                                                type="text"
-                                                name="degree_abbr_en"
-                                                class="form-control"
-                                                value="<?= htmlspecialchars(
-                                                            $program['degree_abbr_en']
-                                                        ) ?>">
-
-                                        </div>
-
-
-                                        <div class="col-12">
-
-                                            <label class="form-label">
-                                                Alias / คำค้นอื่น
-                                            </label>
-
-                                            <textarea
-                                                name="aliases"
-                                                class="form-control"
-                                                rows="2"><?= htmlspecialchars(
-                                                                $program['aliases']
-                                                            ) ?></textarea>
-
-                                            <div class="form-text">
-                                                เช่น BC, คอมธุรกิจ, Business Computer
-                                            </div>
-
-                                        </div>
-
-
-                                        <div class="col-12">
-
-                                            <label class="form-label">
-                                                ภาษาที่ใช้ในการเรียนการสอน
-                                            </label>
-
-                                            <textarea
-                                                name="program_language"
-                                                class="form-control"
-                                                rows="2"><?= htmlspecialchars(
-                                                                $program['program_language']
-                                                            ) ?></textarea>
-
-                                        </div>
-
-
-                                        <div class="col-12">
-
-                                            <label class="form-label">
-                                                ข้อมูลการรับเข้า
-                                            </label>
-
-                                            <textarea
-                                                name="admission_info"
-                                                class="form-control"
-                                                rows="3"><?= htmlspecialchars(
-                                                                $program['admission_info']
-                                                            ) ?></textarea>
-
-                                        </div>
-
-
-                                        <div class="col-12">
-
-                                            <label class="form-label">
-                                                ความร่วมมือกับสถาบันอื่น
-                                            </label>
-
-                                            <textarea
-                                                name="cooperation_info"
-                                                class="form-control"
-                                                rows="3"><?= htmlspecialchars(
-                                                                $program['cooperation_info']
-                                                            ) ?></textarea>
-
-                                        </div>
-
-
-                                        <div class="col-12">
-
-                                            <label class="form-label">
-                                                การบูรณาการกับหลักสูตรอื่น
-                                            </label>
-
-                                            <textarea
-                                                name="integration_info"
-                                                class="form-control"
-                                                rows="3"><?= htmlspecialchars(
-                                                                $program['integration_info']
-                                                            ) ?></textarea>
-
-                                        </div>
-
-
-                                        <div class="col-12">
-
-                                            <div class="form-check form-switch">
-
-                                                <input
-                                                    type="checkbox"
-                                                    name="active"
-                                                    class="form-check-input"
-                                                    id="active"
-                                                    <?= (int)$program['active'] === 1
-                                                        ? 'checked'
-                                                        : ''
-                                                    ?>>
-
-                                                <label
-                                                    for="active"
-                                                    class="form-check-label">
-                                                    เปิดใช้งานหลักสูตร
-                                                </label>
-
-                                            </div>
-
-                                        </div>
-
-
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-
-                            <!-- ================================================= -->
-                            <!-- 2. แผน / โครงสร้างหน่วยกิต -->
-                            <!-- ================================================= -->
-
-                            <div class="card border-0 shadow-sm mb-4">
-
-                                <div class="card-body p-4">
-
-
-                                    <div class="section-header">
-
-                                        <div>
-
-                                            <h2 class="h5 fw-bold mb-1">
-                                                2. แผน / โครงสร้างหน่วยกิต
-                                            </h2>
-
-                                            <p class="text-secondary small mb-0">
-
-                                                รองรับโครงสร้างหลายระดับ
-                                                โดยเลือกได้ว่าหัวข้อใดอยู่ภายใต้หัวข้อใด
-
-                                            </p>
-
-                                        </div>
-
-
-                                        <button
-                                            type="button"
-                                            class="btn btn-outline-primary btn-sm"
-                                            onclick="addPlan()">
-                                            + เพิ่มแผน
-                                        </button>
+                                        <input
+                                            type="text"
+                                            name="curriculum_name"
+                                            class="form-control"
+                                            value="<?= htmlspecialchars(
+                                                        $program['curriculum_name']
+                                                    ) ?>"
+                                            required>
 
                                     </div>
 
 
-                                    <div id="plansContainer"></div>
+                                    <div class="col-md-6">
+
+                                        <label class="form-label fw-semibold">
+                                            ชื่อสาขาวิชา <span class="required-star">*</span>
+                                        </label>
+
+                                        <input
+                                            type="text"
+                                            name="major_name"
+                                            class="form-control"
+                                            value="<?= htmlspecialchars(
+                                                        $program['major_name']
+                                                    ) ?>"
+                                            required>
+
+                                    </div>
+
+
+                                    <div class="col-md-6">
+
+                                        <label class="form-label">
+                                            ชื่อสาขาวิชาภาษาอังกฤษ
+                                        </label>
+
+                                        <input
+                                            type="text"
+                                            name="major_name_en"
+                                            class="form-control"
+                                            value="<?= htmlspecialchars(
+                                                        $program['major_name_en']
+                                                    ) ?>">
+
+                                    </div>
+
+
+                                    <div class="col-md-6">
+
+                                        <label class="form-label">
+                                            ชื่อปริญญาภาษาไทย
+                                        </label>
+
+                                        <input
+                                            type="text"
+                                            name="degree_name_th"
+                                            class="form-control"
+                                            value="<?= htmlspecialchars(
+                                                        $program['degree_name_th']
+                                                    ) ?>">
+
+                                    </div>
+
+
+                                    <div class="col-md-6">
+
+                                        <label class="form-label">
+                                            อักษรย่อปริญญาภาษาไทย
+                                        </label>
+
+                                        <input
+                                            type="text"
+                                            name="degree_abbr_th"
+                                            class="form-control"
+                                            value="<?= htmlspecialchars(
+                                                        $program['degree_abbr_th']
+                                                    ) ?>">
+
+                                    </div>
+
+
+                                    <div class="col-md-6">
+
+                                        <label class="form-label">
+                                            ชื่อปริญญาภาษาอังกฤษ
+                                        </label>
+
+                                        <input
+                                            type="text"
+                                            name="degree_name_en"
+                                            class="form-control"
+                                            value="<?= htmlspecialchars(
+                                                        $program['degree_name_en']
+                                                    ) ?>">
+
+                                    </div>
+
+
+                                    <div class="col-md-6">
+
+                                        <label class="form-label">
+                                            อักษรย่อปริญญาภาษาอังกฤษ
+                                        </label>
+
+                                        <input
+                                            type="text"
+                                            name="degree_abbr_en"
+                                            class="form-control"
+                                            value="<?= htmlspecialchars(
+                                                        $program['degree_abbr_en']
+                                                    ) ?>">
+
+                                    </div>
+
+
+                                    <div class="col-12">
+
+                                        <label class="form-label">
+                                            Alias / คำค้นอื่น
+                                        </label>
+
+                                        <textarea
+                                            name="aliases"
+                                            class="form-control"
+                                            rows="2"><?= htmlspecialchars(
+                                                            $program['aliases']
+                                                        ) ?></textarea>
+
+                                        <div class="form-text">
+                                            เช่น BC, คอมธุรกิจ, Business Computer
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="col-12">
+
+                                        <label class="form-label">
+                                            ภาษาที่ใช้ในการเรียนการสอน
+                                        </label>
+
+                                        <textarea
+                                            name="program_language"
+                                            class="form-control"
+                                            rows="2"><?= htmlspecialchars(
+                                                            $program['program_language']
+                                                        ) ?></textarea>
+
+                                    </div>
+
+
+                                    <div class="col-12">
+
+                                        <label class="form-label">
+                                            ข้อมูลการรับเข้า
+                                        </label>
+
+                                        <textarea
+                                            name="admission_info"
+                                            class="form-control"
+                                            rows="3"><?= htmlspecialchars(
+                                                            $program['admission_info']
+                                                        ) ?></textarea>
+
+                                    </div>
+
+
+                                    <div class="col-12">
+
+                                        <label class="form-label">
+                                            ความร่วมมือกับสถาบันอื่น
+                                        </label>
+
+                                        <textarea
+                                            name="cooperation_info"
+                                            class="form-control"
+                                            rows="3"><?= htmlspecialchars(
+                                                            $program['cooperation_info']
+                                                        ) ?></textarea>
+
+                                    </div>
+
+
+                                    <div class="col-12">
+
+                                        <label class="form-label">
+                                            การบูรณาการกับหลักสูตรอื่น
+                                        </label>
+
+                                        <textarea
+                                            name="integration_info"
+                                            class="form-control"
+                                            rows="3"><?= htmlspecialchars(
+                                                            $program['integration_info']
+                                                        ) ?></textarea>
+
+                                    </div>
+
+
+                                    <div class="col-12">
+
+                                        <div class="form-check form-switch">
+
+                                            <input
+                                                type="checkbox"
+                                                name="active"
+                                                class="form-check-input"
+                                                id="active"
+                                                <?= (int)$program['active'] === 1
+                                                    ? 'checked'
+                                                    : ''
+                                                ?>>
+
+                                            <label
+                                                for="active"
+                                                class="form-check-label">
+                                                เปิดใช้งานหลักสูตร
+                                            </label>
+
+                                        </div>
+
+                                    </div>
 
 
                                 </div>
 
                             </div>
 
-
-                            <!-- ================================================= -->
-                            <!-- 3. คุณสมบัติผู้สมัคร -->
-                            <!-- ================================================= -->
-
-                            <div class="card border-0 shadow-sm mb-4">
-
-                                <div class="card-body p-4">
+                        </div>
 
 
-                                    <div class="section-header">
+                        <!-- ================================================= -->
+                        <!-- 2. แผน / โครงสร้างหน่วยกิต -->
+                        <!-- ================================================= -->
 
-                                        <h2 class="h5 fw-bold mb-0">
-                                            3. คุณสมบัติผู้สมัคร
+                        <div class="card border-0 shadow-sm mb-4">
+
+                            <div class="card-body p-4">
+
+
+                                <div class="section-header">
+
+                                    <div>
+
+                                        <h2 class="h5 fw-bold mb-1">
+                                            2. แผน / โครงสร้างหน่วยกิต
                                         </h2>
 
+                                        <p class="text-secondary small mb-0">
 
-                                        <button
-                                            type="button"
-                                            class="btn btn-outline-primary btn-sm"
-                                            onclick="addRequirement()">
-                                            + เพิ่มคุณสมบัติ
-                                        </button>
+                                            รองรับโครงสร้างหลายระดับ
+                                            โดยเลือกได้ว่าหัวข้อใดอยู่ภายใต้หัวข้อใด
 
-                                    </div>
-
-
-                                    <div id="requirementsContainer"></div>
-
-
-                                </div>
-
-                            </div>
-
-
-                            <!-- ================================================= -->
-                            <!-- 4. อาชีพ -->
-                            <!-- ================================================= -->
-
-                            <div class="card border-0 shadow-sm mb-4">
-
-                                <div class="card-body p-4">
-
-
-                                    <div class="section-header">
-
-                                        <h2 class="h5 fw-bold mb-0">
-                                            4. อาชีพหลังสำเร็จการศึกษา
-                                        </h2>
-
-
-                                        <button
-                                            type="button"
-                                            class="btn btn-outline-primary btn-sm"
-                                            onclick="addCareer()">
-                                            + เพิ่มอาชีพ
-                                        </button>
+                                        </p>
 
                                     </div>
 
 
-                                    <div id="careersContainer"></div>
-
-
-                                </div>
-
-                            </div>
-
-
-                            <!-- ================================================= -->
-                            <!-- 5. วัตถุประสงค์ -->
-                            <!-- ================================================= -->
-
-                            <div class="card border-0 shadow-sm mb-4">
-
-                                <div class="card-body p-4">
-
-
-                                    <div class="section-header">
-
-                                        <h2 class="h5 fw-bold mb-0">
-                                            5. วัตถุประสงค์หลักสูตร
-                                        </h2>
-
-
-                                        <button
-                                            type="button"
-                                            class="btn btn-outline-primary btn-sm"
-                                            onclick="addObjective()">
-                                            + เพิ่มวัตถุประสงค์
-                                        </button>
-
-                                    </div>
-
-
-                                    <div id="objectivesContainer"></div>
-
+                                    <button
+                                        type="button"
+                                        class="btn btn-outline-primary btn-sm"
+                                        onclick="addPlan()">
+                                        + เพิ่มแผน
+                                    </button>
 
                                 </div>
 
+
+                                <div id="plansContainer"></div>
+
+
                             </div>
 
-
-                            <div class="d-flex justify-content-end gap-2 mb-5">
-
-                                <a
-                                    href="index.php"
-                                    class="btn btn-outline-secondary px-4">
-                                    ยกเลิก
-                                </a>
+                        </div>
 
 
-                                <button
-                                    type="submit"
-                                    class="btn btn-primary px-5">
-                                    บันทึกทั้งหมด
-                                </button>
+                        <!-- ================================================= -->
+                        <!-- 3. คุณสมบัติผู้สมัคร -->
+                        <!-- ================================================= -->
+
+                        <div class="card border-0 shadow-sm mb-4">
+
+                            <div class="card-body p-4">
+
+
+                                <div class="section-header">
+
+                                    <h2 class="h5 fw-bold mb-0">
+                                        3. คุณสมบัติผู้สมัคร
+                                    </h2>
+
+
+                                    <button
+                                        type="button"
+                                        class="btn btn-outline-primary btn-sm"
+                                        onclick="addRequirement()">
+                                        + เพิ่มคุณสมบัติ
+                                    </button>
+
+                                </div>
+
+
+                                <div id="requirementsContainer"></div>
+
 
                             </div>
+
+                        </div>
+
+
+                        <!-- ================================================= -->
+                        <!-- 4. อาชีพ -->
+                        <!-- ================================================= -->
+
+                        <div class="card border-0 shadow-sm mb-4">
+
+                            <div class="card-body p-4">
+
+
+                                <div class="section-header">
+
+                                    <h2 class="h5 fw-bold mb-0">
+                                        4. อาชีพหลังสำเร็จการศึกษา
+                                    </h2>
+
+
+                                    <button
+                                        type="button"
+                                        class="btn btn-outline-primary btn-sm"
+                                        onclick="addCareer()">
+                                        + เพิ่มอาชีพ
+                                    </button>
+
+                                </div>
+
+
+                                <div id="careersContainer"></div>
+
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- ================================================= -->
+                        <!-- 5. วัตถุประสงค์ -->
+                        <!-- ================================================= -->
+
+                        <div class="card border-0 shadow-sm mb-4">
+
+                            <div class="card-body p-4">
+
+
+                                <div class="section-header">
+
+                                    <h2 class="h5 fw-bold mb-0">
+                                        5. วัตถุประสงค์หลักสูตร
+                                    </h2>
+
+
+                                    <button
+                                        type="button"
+                                        class="btn btn-outline-primary btn-sm"
+                                        onclick="addObjective()">
+                                        + เพิ่มวัตถุประสงค์
+                                    </button>
+
+                                </div>
+
+
+                                <div id="objectivesContainer"></div>
+
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="d-flex justify-content-end gap-2 mb-5">
+
+                            <a
+                                href="index.php"
+                                class="btn btn-outline-secondary px-4">
+                                ยกเลิก
+                            </a>
+
+
+                            <button
+                                type="submit"
+                                class="btn btn-primary px-5">
+                                บันทึกทั้งหมด
+                            </button>
+
+                        </div>
 
 
                     </form>

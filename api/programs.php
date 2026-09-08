@@ -822,10 +822,6 @@ try {
                 $program['curriculum_year']
                     ?? null,
 
-                'curriculum_year' =>
-                $program['curriculum_year']
-                    ?? null,
-
                 'study_period' =>
                 $program['study_period']
                     ?? null,
