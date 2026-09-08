@@ -18,7 +18,8 @@ function safeCount(PDO $pdo, string $table): int
         'academic_calendar_events',
         'academic_guides',
         'faculty_contacts',
-        'admission_schedules'
+        'admission_schedules',
+        'msu_cafes'
     ];
 
     if (!in_array($table, $allowed, true)) {
@@ -42,6 +43,7 @@ $calendarCount = safeCount($pdo, 'academic_calendar_events');
 $guideCount = safeCount($pdo, 'academic_guides');
 $contactCount = safeCount($pdo, 'faculty_contacts');
 $admissionCount = safeCount($pdo, 'admission_schedules');
+$cafeCount = safeCount($pdo, 'msu_cafes');
 
 $internshipDataCount =
     $internshipTypeCount +
@@ -123,6 +125,9 @@ function moduleLabel(string $module): string
 
         'admission' =>
         'รับสมัครนักศึกษา',
+
+        'cafes' =>
+        'ข้อมูลคาเฟ่',
 
         default =>
         $module
