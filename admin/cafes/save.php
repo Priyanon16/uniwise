@@ -128,7 +128,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 ]);
 
                 $cafeId = (int)$postedId;
-
             } else {
 
                 $stmt = $pdo->prepare("
@@ -178,8 +177,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $postedId ? 'update' : 'create',
                 $cafeName,
                 ($postedId ? 'แก้ไข' : 'เพิ่ม') .
-                'ข้อมูลคาเฟ่ ' .
-                $cafeName
+                    'ข้อมูลคาเฟ่ ' .
+                    $cafeName
             );
 
 
@@ -188,11 +187,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             header(
                 "Location: index.php?success=" .
-                ($postedId ? 'edit' : 'create')
+                    ($postedId ? 'edit' : 'create')
             );
 
             exit;
-
         } catch (Throwable $e) {
 
             if ($pdo->inTransaction()) {
@@ -254,412 +252,417 @@ function e($value): string
 
 <body>
 
-<div class="admin-layout">
+    <div class="admin-layout">
 
-<?php
-$activeMenu = 'cafes';
-$basePath   = '../';
+        <?php
+        $activeMenu = 'cafes';
+        $basePath   = '../';
 
-include __DIR__ . '/../includes/sidebar.php';
-?>
+        include __DIR__ . '/../includes/sidebar.php';
+        ?>
 
-<div class="main-shell">
+        <div class="main-shell">
 
-<header class="topbar">
+            <header class="topbar">
 
-    <button
-        type="button"
-        class="mobile-menu-btn"
-        id="mobileMenuBtn"
-        aria-label="เปิดเมนู">
-        <i class="bi bi-list"></i>
-    </button>
+                <button
+                    type="button"
+                    class="mobile-menu-btn"
+                    id="mobileMenuBtn"
+                    aria-label="เปิดเมนู">
+                    <i class="bi bi-list"></i>
+                </button>
 
-    <div class="topbar-title">
+                <div class="topbar-title">
 
-        <span class="topbar-kicker">
-            MBS • MAHASARAKHAM UNIVERSITY
-        </span>
+                    <span class="topbar-kicker">
+                        MBS • MAHASARAKHAM UNIVERSITY
+                    </span>
 
-        <strong>
-            ข้อมูลคาเฟ่
-        </strong>
-
-    </div>
-
-    <a
-        href="javascript:history.back()"
-        class="header-back-btn">
-
-        <i class="bi bi-arrow-left"></i>
-
-        <span>
-            ย้อนกลับ
-        </span>
-
-    </a>
-
-</header>
-
-
-<main class="content-area">
-
-<section class="page-hero">
-
-    <div>
-
-        <span class="hero-badge">
-            <span></span>
-            CAFE EDITOR
-        </span>
-
-        <h1>
-            <?= $isEdit
-                ? 'แก้ไขข้อมูลคาเฟ่'
-                : 'เพิ่มข้อมูลคาเฟ่'
-            ?>
-        </h1>
-
-        <p>
-            กรอกข้อมูลร้านคาเฟ่ให้ครบถ้วนก่อนบันทึก
-        </p>
-
-    </div>
-
-    <div class="hero-decoration">
-        MBS
-    </div>
-
-</section>
-
-
-<div class="page-section">
-
-    <div class="editor-toolbar">
-
-        <a
-            href="index.php"
-            class="btn btn-outline-secondary">
-
-            <i class="bi bi-arrow-left"></i>
-            กลับหน้าคาเฟ่
-
-        </a>
-
-        <span>
-            <?= $isEdit
-                ? 'กำลังแก้ไขข้อมูลเดิม'
-                : 'กำลังสร้างข้อมูลคาเฟ่ใหม่'
-            ?>
-        </span>
-
-    </div>
-
-
-    <?php if ($error): ?>
-
-        <div class="alert alert-danger">
-            <?= e($error) ?>
-        </div>
-
-    <?php endif; ?>
-
-
-    <form method="post">
-
-        <?php if ($isEdit): ?>
-
-            <input
-                type="hidden"
-                name="id"
-                value="<?= (int)$id ?>">
-
-        <?php endif; ?>
-
-
-        <div class="card border-0 shadow-sm mb-4">
-
-            <div class="card-body p-4">
-
-                <h2 class="h5 fw-bold mb-4">
-                    1. ข้อมูลทั่วไป
-                </h2>
-
-                <div class="row g-3">
-
-                    <div class="col-md-8">
-
-                        <label class="form-label fw-semibold">
-                            ชื่อร้าน
-                            <span class="required-star">*</span>
-                        </label>
-
-                        <input
-                            type="text"
-                            name="cafe_name"
-                            class="form-control"
-                            value="<?= e($cafe['cafe_name']) ?>"
-                            placeholder="เช่น The Tree Café"
-                            required>
-
-                    </div>
-
-
-                    <div class="col-md-4">
-
-                        <label class="form-label fw-semibold">
-                            โซน
-                            <span class="required-star">*</span>
-                        </label>
-
-                        <input
-                            type="text"
-                            name="zone"
-                            class="form-control"
-                            value="<?= e($cafe['zone']) ?>"
-                            placeholder="เช่น ฝั่งขามเรียง"
-                            required>
-
-                    </div>
-
-
-                    <div class="col-12">
-
-                        <label class="form-label fw-semibold">
-                            เวลาเปิด-ปิด
-                            <span class="required-star">*</span>
-                        </label>
-
-                        <textarea
-                            name="opening_hours"
-                            class="form-control"
-                            rows="3"
-                            placeholder="เช่น 08:00 - 22:00 น."
-                            required><?= e($cafe['opening_hours']) ?></textarea>
-
-                    </div>
-
-
-                    <div class="col-12">
-
-                        <label class="form-label">
-                            รายละเอียดร้าน
-                        </label>
-
-                        <textarea
-                            name="description"
-                            class="form-control"
-                            rows="4"
-                            placeholder="รายละเอียด จุดเด่น บรรยากาศของร้าน"><?= e($cafe['description']) ?></textarea>
-
-                    </div>
-
-
-                    <div class="col-12">
-
-                        <label class="form-label">
-                            อาหารและเครื่องดื่ม
-                        </label>
-
-                        <textarea
-                            name="food_and_drinks"
-                            class="form-control"
-                            rows="4"
-                            placeholder="เมนูอาหาร เครื่องดื่ม ของหวาน หรือเบเกอรี่"><?= e($cafe['food_and_drinks']) ?></textarea>
-
-                    </div>
+                    <strong>
+                        ข้อมูลคาเฟ่
+                    </strong>
 
                 </div>
 
-            </div>
+                <a
+                    href="javascript:history.back()"
+                    class="header-back-btn">
 
-        </div>
+                    <i class="bi bi-arrow-left"></i>
+
+                    <span>
+                        ย้อนกลับ
+                    </span>
+
+                </a>
+
+            </header>
 
 
-        <div class="card border-0 shadow-sm mb-4">
+            <main class="content-area">
 
-            <div class="card-body p-4">
+                <section class="page-hero">
 
-                <h2 class="h5 fw-bold mb-4">
-                    2. ช่องทางติดต่อและตำแหน่ง
-                </h2>
+                    <div>
 
-                <div class="row g-3">
+                        <span class="hero-badge">
+                            <span></span>
+                            CAFE EDITOR
+                        </span>
 
-                    <div class="col-md-6">
+                        <h1>
+                            <?= $isEdit
+                                ? 'แก้ไขข้อมูลคาเฟ่'
+                                : 'เพิ่มข้อมูลคาเฟ่'
+                            ?>
+                        </h1>
 
-                        <label class="form-label">
-                            เบอร์โทร
-                        </label>
+                        <p>
+                            กรอกข้อมูลร้านคาเฟ่ให้ครบถ้วนก่อนบันทึก
+                        </p>
 
-                        <input
-                            type="text"
-                            name="phone_number"
-                            class="form-control"
-                            value="<?= e($cafe['phone_number']) ?>"
-                            placeholder="เช่น 081 234 5678">
+                    </div>
+
+                    <div class="hero-decoration">
+                        MBS
+                    </div>
+
+                </section>
+
+
+                <div class="page-section">
+
+                    <div class="editor-toolbar">
+
+                        <a
+                            href="index.php"
+                            class="btn btn-outline-secondary">
+
+                            <i class="bi bi-arrow-left"></i>
+                            กลับหน้าคาเฟ่
+
+                        </a>
+
+                        <span>
+                            <?= $isEdit
+                                ? 'กำลังแก้ไขข้อมูลเดิม'
+                                : 'กำลังสร้างข้อมูลคาเฟ่ใหม่'
+                            ?>
+                        </span>
 
                     </div>
 
 
-                    <div class="col-md-6">
+                    <?php if ($error): ?>
 
-                        <label class="form-label">
-                            ช่องทางออนไลน์
-                        </label>
+                        <div class="alert alert-danger">
+                            <?= e($error) ?>
+                        </div>
 
-                        <input
-                            type="text"
-                            name="online_channels"
-                            class="form-control"
-                            value="<?= e($cafe['online_channels']) ?>"
-                            placeholder="เช่น LINEMAN, GRAB">
-
-                    </div>
+                    <?php endif; ?>
 
 
-                    <div class="col-12">
+                    <form method="post">
 
-                        <label class="form-label">
-                            ตำแหน่งบนแผนที่
-                        </label>
+                        <?php if ($isEdit): ?>
 
-                        <input
-                            type="text"
-                            name="maps_location"
-                            class="form-control"
-                            value="<?= e($cafe['maps_location']) ?>"
-                            placeholder="ชื่อสถานที่ หรือ Google Maps URL">
+                            <input
+                                type="hidden"
+                                name="id"
+                                value="<?= (int)$id ?>">
 
-                    </div>
+                        <?php endif; ?>
+
+
+                        <div class="card border-0 shadow-sm mb-4">
+
+                            <div class="card-body p-4">
+
+                                <h2 class="h5 fw-bold mb-4">
+                                    1. ข้อมูลทั่วไป
+                                </h2>
+
+                                <div class="row g-3">
+
+                                    <div class="col-md-8">
+
+                                        <label class="form-label fw-semibold">
+                                            ชื่อร้าน
+                                            <span class="required-star">*</span>
+                                        </label>
+
+                                        <input
+                                            type="text"
+                                            name="cafe_name"
+                                            class="form-control"
+                                            value="<?= e($cafe['cafe_name']) ?>"
+                                            placeholder="เช่น The Tree Café"
+                                            required>
+
+                                    </div>
+
+
+                                    <div class="col-md-4">
+
+                                        <label class="form-label fw-semibold">
+                                            โซน
+                                            <span class="required-star">*</span>
+                                        </label>
+
+                                        <input
+                                            type="text"
+                                            name="zone"
+                                            class="form-control"
+                                            value="<?= e($cafe['zone']) ?>"
+                                            placeholder="เช่น ฝั่งขามเรียง"
+                                            required>
+
+                                    </div>
+
+
+                                    <div class="col-12">
+
+                                        <label class="form-label fw-semibold">
+                                            เวลาเปิด-ปิด
+                                            <span class="required-star">*</span>
+                                        </label>
+
+                                        <textarea
+                                            name="opening_hours"
+                                            class="form-control"
+                                            rows="3"
+                                            placeholder="เช่น 08:00 - 22:00 น."
+                                            required><?= e($cafe['opening_hours']) ?></textarea>
+
+                                    </div>
+
+
+                                    <div class="col-12">
+
+                                        <label class="form-label">
+                                            รายละเอียดร้าน
+                                        </label>
+
+                                        <textarea
+                                            name="description"
+                                            class="form-control"
+                                            rows="4"
+                                            placeholder="รายละเอียด จุดเด่น บรรยากาศของร้าน"><?= e($cafe['description']) ?></textarea>
+
+                                    </div>
+
+
+                                    <div class="col-12">
+
+                                        <label class="form-label">
+                                            อาหารและเครื่องดื่ม
+                                        </label>
+
+                                        <textarea
+                                            name="food_and_drinks"
+                                            class="form-control"
+                                            rows="4"
+                                            placeholder="เมนูอาหาร เครื่องดื่ม ของหวาน หรือเบเกอรี่"><?= e($cafe['food_and_drinks']) ?></textarea>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="card border-0 shadow-sm mb-4">
+
+                            <div class="card-body p-4">
+
+                                <h2 class="h5 fw-bold mb-4">
+                                    2. ช่องทางติดต่อและตำแหน่ง
+                                </h2>
+
+                                <div class="row g-3">
+
+                                    <div class="col-md-6">
+
+                                        <label class="form-label">
+                                            เบอร์โทร
+                                        </label>
+
+                                        <input
+                                            type="text"
+                                            name="phone_number"
+                                            class="form-control"
+                                            value="<?= e($cafe['phone_number']) ?>"
+                                            placeholder="เช่น 081 234 5678">
+
+                                    </div>
+
+
+                                    <div class="col-md-6">
+
+                                        <label class="form-label">
+                                            ช่องทางออนไลน์
+                                        </label>
+
+                                        <input
+                                            type="text"
+                                            name="online_channels"
+                                            class="form-control"
+                                            value="<?= e($cafe['online_channels']) ?>"
+                                            placeholder="เช่น LINEMAN, GRAB">
+
+                                    </div>
+
+
+                                    <div class="col-12">
+
+                                        <label class="form-label">
+                                            Google Maps
+                                        </label>
+
+                                        <input
+                                            type="url"
+                                            name="maps_location"
+                                            class="form-control"
+                                            value="<?= e($cafe['maps_location']) ?>"
+                                            placeholder="https://maps.app.goo.gl/...">
+
+                                        <div class="form-text">
+                                            วางลิงก์ตำแหน่งร้านจาก Google Maps
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="d-flex justify-content-end gap-2 mb-5">
+
+                            <a
+                                href="index.php"
+                                class="btn btn-outline-secondary px-4">
+                                ยกเลิก
+                            </a>
+
+                            <button
+                                type="submit"
+                                class="btn btn-primary px-5">
+                                บันทึกข้อมูล
+                            </button>
+
+                        </div>
+
+                    </form>
 
                 </div>
 
-            </div>
+            </main>
+
+
+            <footer class="admin-footer">
+
+                <div>
+                    <strong>MBS UniWise Admin</strong>
+
+                    <span>
+                        คณะการบัญชีและการจัดการ มหาวิทยาลัยมหาสารคาม
+                    </span>
+                </div>
+
+                <span>
+                    Mahasarakham Business School
+                </span>
+
+            </footer>
 
         </div>
-
-
-        <div class="d-flex justify-content-end gap-2 mb-5">
-
-            <a
-                href="index.php"
-                class="btn btn-outline-secondary px-4">
-                ยกเลิก
-            </a>
-
-            <button
-                type="submit"
-                class="btn btn-primary px-5">
-                บันทึกข้อมูล
-            </button>
-
-        </div>
-
-    </form>
-
-</div>
-
-</main>
-
-
-<footer class="admin-footer">
-
-    <div>
-        <strong>MBS UniWise Admin</strong>
-
-        <span>
-            คณะการบัญชีและการจัดการ มหาวิทยาลัยมหาสารคาม
-        </span>
     </div>
 
-    <span>
-        Mahasarakham Business School
-    </span>
 
-</footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
 
-</div>
-</div>
+            const sidebar = document.getElementById('sidebar');
+            const sidebarOverlay = document.getElementById('sidebarOverlay');
+            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+            const sidebarToggle = document.getElementById('sidebarToggle');
 
-
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-
-    const sidebar = document.getElementById('sidebar');
-    const sidebarOverlay = document.getElementById('sidebarOverlay');
-    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-    const sidebarToggle = document.getElementById('sidebarToggle');
-
-    function openSidebar() {
-        if (sidebar) sidebar.classList.add('show');
-        if (sidebarOverlay) sidebarOverlay.classList.add('show');
-    }
-
-    function closeSidebar() {
-        if (sidebar) sidebar.classList.remove('show');
-        if (sidebarOverlay) sidebarOverlay.classList.remove('show');
-    }
-
-    if (
-        localStorage.getItem('mbsSidebarCollapsed') === '1' &&
-        window.innerWidth >= 992
-    ) {
-        document.body.classList.add('sidebar-collapsed');
-    }
-
-    if (sidebarToggle) {
-        sidebarToggle.addEventListener('click', function () {
-
-            if (window.innerWidth < 992) {
-                return;
+            function openSidebar() {
+                if (sidebar) sidebar.classList.add('show');
+                if (sidebarOverlay) sidebarOverlay.classList.add('show');
             }
 
-            document.body.classList.toggle('sidebar-collapsed');
-
-            const collapsed =
-                document.body.classList.contains('sidebar-collapsed');
-
-            localStorage.setItem(
-                'mbsSidebarCollapsed',
-                collapsed ? '1' : '0'
-            );
-        });
-    }
-
-    if (mobileMenuBtn) {
-        mobileMenuBtn.addEventListener('click', openSidebar);
-    }
-
-    if (sidebarOverlay) {
-        sidebarOverlay.addEventListener('click', closeSidebar);
-    }
-
-    window.addEventListener('resize', function () {
-
-        if (window.innerWidth >= 992) {
-
-            closeSidebar();
+            function closeSidebar() {
+                if (sidebar) sidebar.classList.remove('show');
+                if (sidebarOverlay) sidebarOverlay.classList.remove('show');
+            }
 
             if (
-                localStorage.getItem('mbsSidebarCollapsed') === '1'
+                localStorage.getItem('mbsSidebarCollapsed') === '1' &&
+                window.innerWidth >= 992
             ) {
                 document.body.classList.add('sidebar-collapsed');
-            } else {
-                document.body.classList.remove('sidebar-collapsed');
             }
 
-        } else {
-            document.body.classList.remove('sidebar-collapsed');
-        }
-    });
+            if (sidebarToggle) {
+                sidebarToggle.addEventListener('click', function() {
 
-});
-</script>
+                    if (window.innerWidth < 992) {
+                        return;
+                    }
 
-<script
-    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
-</script>
+                    document.body.classList.toggle('sidebar-collapsed');
+
+                    const collapsed =
+                        document.body.classList.contains('sidebar-collapsed');
+
+                    localStorage.setItem(
+                        'mbsSidebarCollapsed',
+                        collapsed ? '1' : '0'
+                    );
+                });
+            }
+
+            if (mobileMenuBtn) {
+                mobileMenuBtn.addEventListener('click', openSidebar);
+            }
+
+            if (sidebarOverlay) {
+                sidebarOverlay.addEventListener('click', closeSidebar);
+            }
+
+            window.addEventListener('resize', function() {
+
+                if (window.innerWidth >= 992) {
+
+                    closeSidebar();
+
+                    if (
+                        localStorage.getItem('mbsSidebarCollapsed') === '1'
+                    ) {
+                        document.body.classList.add('sidebar-collapsed');
+                    } else {
+                        document.body.classList.remove('sidebar-collapsed');
+                    }
+
+                } else {
+                    document.body.classList.remove('sidebar-collapsed');
+                }
+            });
+
+        });
+    </script>
+
+    <script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
+    </script>
 
 </body>
+
 </html>
