@@ -59,13 +59,11 @@ $basePath   = $basePath ?? '';
         class="sidebar-toggle"
         id="sidebarToggle"
         aria-label="ย่อหรือขยายเมนู"
-        title="ย่อ / ขยายเมนู"
-    >
+        title="ย่อ / ขยายเมนู">
 
         <i
             class="bi bi-chevron-left"
-            id="sidebarToggleIcon"
-        ></i>
+            id="sidebarToggleIcon"></i>
 
     </button>
 
@@ -95,14 +93,12 @@ $basePath   = $basePath ?? '';
                     : ''
                 ?>
             "
-            title="แดชบอร์ด"
-        >
+            title="แดชบอร์ด">
 
             <span class="sidebar-icon">
 
                 <i
-                    class="bi bi-grid-1x2-fill"
-                ></i>
+                    class="bi bi-grid-1x2-fill"></i>
 
             </span>
 
@@ -124,14 +120,12 @@ $basePath   = $basePath ?? '';
                     : ''
                 ?>
             "
-            title="ฝึกงานและสหกิจศึกษา"
-        >
+            title="ฝึกงานและสหกิจศึกษา">
 
             <span class="sidebar-icon">
 
                 <i
-                    class="bi bi-briefcase-fill"
-                ></i>
+                    class="bi bi-briefcase-fill"></i>
 
             </span>
 
@@ -153,14 +147,12 @@ $basePath   = $basePath ?? '';
                     : ''
                 ?>
             "
-            title="หลักสูตรและสาขาวิชา"
-        >
+            title="หลักสูตรและสาขาวิชา">
 
             <span class="sidebar-icon">
 
                 <i
-                    class="bi bi-mortarboard-fill"
-                ></i>
+                    class="bi bi-mortarboard-fill"></i>
 
             </span>
 
@@ -170,7 +162,7 @@ $basePath   = $basePath ?? '';
 
         </a>
 
-                <!-- Admissions -->
+        <!-- Admissions -->
 
         <a
             href="<?= $basePath ?>admissions/index.php"
@@ -181,8 +173,7 @@ $basePath   = $basePath ?? '';
                     : ''
                 ?>
             "
-            title="รับสมัครนักศึกษา"
-        >
+            title="รับสมัครนักศึกษา">
 
             <span class="sidebar-icon">
 
@@ -207,8 +198,7 @@ $basePath   = $basePath ?? '';
                     : ''
                 ?>
             "
-            title="ปฏิทินการศึกษา"
-        >
+            title="ปฏิทินการศึกษา">
 
             <span class="sidebar-icon">
 
@@ -222,7 +212,7 @@ $basePath   = $basePath ?? '';
 
         </a>
 
-                <!-- Academic Guide -->
+        <!-- Academic Guide -->
 
         <a
             href="<?= $basePath ?>academic_guides/index.php"
@@ -233,8 +223,7 @@ $basePath   = $basePath ?? '';
                     : ''
                 ?>
             "
-            title="คู่มือการเรียน"
-        >
+            title="คู่มือการเรียน">
 
             <span class="sidebar-icon">
 
@@ -260,8 +249,7 @@ $basePath   = $basePath ?? '';
                     : ''
                 ?>
             "
-            title="ข้อมูลติดต่อคณะ"
-        >
+            title="ข้อมูลติดต่อคณะ">
 
             <span class="sidebar-icon">
 
@@ -271,6 +259,31 @@ $basePath   = $basePath ?? '';
 
             <span class="sidebar-text">
                 ข้อมูลติดต่อคณะ
+            </span>
+
+        </a>
+
+        <!-- Cafes -->
+
+        <a
+            href="<?= $basePath ?>cafes/index.php"
+            class="
+        sidebar-link
+        <?= $activeMenu === 'cafes'
+            ? 'active'
+            : ''
+        ?>
+    "
+            title="ข้อมูลคาเฟ่">
+
+            <span class="sidebar-icon">
+
+                <i class="bi bi-cup-hot-fill"></i>
+
+            </span>
+
+            <span class="sidebar-text">
+                ข้อมูลคาเฟ่
             </span>
 
         </a>
@@ -286,8 +299,7 @@ $basePath   = $basePath ?? '';
         class="
             sidebar-section-label
             sidebar-system-label
-        "
-    >
+        ">
         ระบบ
     </div>
 
@@ -297,14 +309,12 @@ $basePath   = $basePath ?? '';
         <a
             href="<?= $basePath ?>../"
             class="sidebar-link"
-            title="กลับหน้าเว็บไซต์"
-        >
+            title="กลับหน้าเว็บไซต์">
 
             <span class="sidebar-icon">
 
                 <i
-                    class="bi bi-box-arrow-up-right"
-                ></i>
+                    class="bi bi-box-arrow-up-right"></i>
 
             </span>
 
@@ -352,5 +362,4 @@ $basePath   = $basePath ?? '';
 
 <div
     class="sidebar-overlay"
-    id="sidebarOverlay"
-></div>
+    id="sidebarOverlay"></div>
