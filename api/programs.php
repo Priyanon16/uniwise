@@ -269,6 +269,7 @@ try {
 
         'credits',
         'curriculum',
+        'study_period', 
         'curriculum_structure',
         'tuition',
         'study_plan',
