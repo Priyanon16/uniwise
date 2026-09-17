@@ -269,7 +269,7 @@ try {
 
         'credits',
         'curriculum',
-        'study_period', 
+        'study_period',
         'curriculum_structure',
         'tuition',
         'study_plan',
@@ -1244,21 +1244,80 @@ try {
 
             if ($courseSearch !== '') {
 
-                $courseSql .= "
-                    AND (
-                        course_code LIKE :course_search
-                        OR course_name_th LIKE :course_search
-                        OR course_name_en LIKE :course_search
-                        OR course_group LIKE :course_search
-                        OR course_type LIKE :course_search
-                        OR prerequisite LIKE :course_search
-                        OR description_th LIKE :course_search
-                        OR description_en LIKE :course_search
-                    )
-                ";
+                // =====================================================
+                // ถ้าถามรายละเอียด "รายวิชาเดียว"
+                // ให้ค้นชื่อวิชาแบบตรงชื่อก่อน
+                // ป้องกันคำค้นไปตรงกับ description ของวิชาอื่น
+                // =====================================================
 
-                $courseParams[':course_search'] =
-                    '%' . $courseSearch . '%';
+                if (
+                    in_array(
+                        $topic,
+                        [
+                            'course',
+                            'course_description',
+                            'course_descriptions'
+                        ],
+                        true
+                    )
+                ) {
+
+                    $courseSql .= "
+            AND (
+                REPLACE(
+                    course_code,
+                    ' ',
+                    ''
+                ) = REPLACE(
+                    :course_search_code,
+                    ' ',
+                    ''
+                )
+
+                OR TRIM(course_name_th)
+                    = TRIM(:course_search_name_th)
+
+                OR TRIM(course_name_en)
+                    = TRIM(:course_search_name_en)
+            )
+        ";
+
+                    $courseParams[':course_search_code'] =
+                        $courseSearch;
+
+                    $courseParams[':course_search_name_th'] =
+                        $courseSearch;
+
+                    $courseParams[':course_search_name_en'] =
+                        $courseSearch;
+                }
+
+
+                // =====================================================
+                // ถ้าเป็นการค้นหารายวิชาหลายรายการ
+                // ยังอนุญาต partial search ที่ชื่อวิชาได้
+                // แต่ไม่ค้นใน description / prerequisite
+                // =====================================================
+
+                else {
+
+                    $courseSql .= "
+            AND (
+                course_code LIKE :course_search_code_like
+                OR course_name_th LIKE :course_search_th_like
+                OR course_name_en LIKE :course_search_en_like
+            )
+        ";
+
+                    $courseParams[':course_search_code_like'] =
+                        '%' . $courseSearch . '%';
+
+                    $courseParams[':course_search_th_like'] =
+                        '%' . $courseSearch . '%';
+
+                    $courseParams[':course_search_en_like'] =
+                        '%' . $courseSearch . '%';
+                }
             }
 
 
