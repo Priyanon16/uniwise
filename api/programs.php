@@ -799,43 +799,66 @@ try {
                 $programId,
 
                 'program_code' =>
-                $program['program_code'],
+                $program['program_code'] ?? null,
 
                 'degree_level' =>
-                $program['degree_level'],
+                $program['degree_level'] ?? null,
 
                 'degree_level_label' =>
                 getDegreeLabel(
-                    $program['degree_level']
+                    $program['degree_level'] ?? ''
                 ),
 
                 'curriculum_name' =>
-                $program['curriculum_name'],
+                $program['curriculum_name'] ?? null,
 
                 'major_name' =>
-                $program['major_name'],
+                $program['major_name'] ?? null,
 
                 'major_name_en' =>
-                $program['major_name_en']
-                    ?? null,
+                $program['major_name_en'] ?? null,
 
+                // ---------------------------------------------
+                // ข้อมูลชื่อปริญญา
+                // ---------------------------------------------
+                'degree_name_th' =>
+                $program['degree_name_th'] ?? null,
+
+                'degree_abbr_th' =>
+                $program['degree_abbr_th'] ?? null,
+
+                'degree_name_en' =>
+                $program['degree_name_en'] ?? null,
+
+                'degree_abbr_en' =>
+                $program['degree_abbr_en'] ?? null,
+
+                // ---------------------------------------------
+                // ข้อมูลพื้นฐานของหลักสูตร
+                // ---------------------------------------------
                 'curriculum_year' =>
-                $program['curriculum_year']
-                    ?? null,
+                $program['curriculum_year'] ?? null,
 
                 'study_period' =>
-                $program['study_period']
-                    ?? null,
+                $program['study_period'] ?? null,
 
+                'program_language' =>
+                $program['program_language'] ?? null,
+
+                'cooperation_info' =>
+                $program['cooperation_info'] ?? null,
+
+                'integration_info' =>
+                $program['integration_info'] ?? null,
+
+                // ---------------------------------------------
+                // ค่าเล่าเรียน
+                // ---------------------------------------------
                 'tuition_fee_per_semester' =>
-                $program['tuition_fee_per_semester']
-                    ?? null,
+                $program['tuition_fee_per_semester'] ?? null,
 
                 'total_tuition_fee' =>
-                $program['total_tuition_fee']
-                    ?? null
-
-
+                $program['total_tuition_fee'] ?? null
             ];
         }
 
