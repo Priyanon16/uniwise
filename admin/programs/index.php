@@ -40,8 +40,22 @@ if ($search !== '') {
             OR major_name_en LIKE :search
             OR aliases LIKE :search
             OR curriculum_year LIKE :search
+
+            OR EXISTS (
+                SELECT 1
+                FROM course_descriptions cd_search
+                WHERE cd_search.program_id = academic_programs.id
+                  AND (
+                    cd_search.course_code LIKE :search
+                    OR cd_search.course_name_th LIKE :search
+                    OR cd_search.course_name_en LIKE :search
+                    OR cd_search.course_group LIKE :search
+                    OR cd_search.prerequisite LIKE :search
+                  )
+            )
         )
     ";
+
     $params[':search'] = '%' . $search . '%';
 }
 
@@ -228,7 +242,7 @@ include __DIR__ . '/../includes/sidebar.php';
                         name="search"
                         class="form-control"
                         value="<?= htmlspecialchars($search) ?>"
-                        placeholder="ค้นหารหัส ชื่อหลักสูตร ชื่อสาขา Alias หรือชื่อภาษาอังกฤษ"
+                        placeholder="ค้นหาหลักสูตร สาขา รหัสวิชา หรือชื่อวิชา"
                     >
                 </div>
 
