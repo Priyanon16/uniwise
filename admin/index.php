@@ -16,7 +16,6 @@ function safeCount(PDO $pdo, string $table): int
         'internship_document_requirements',
         'application_periods',
         'academic_calendar_events',
-        'academic_guides',
         'faculty_contacts',
         'admission_schedules'
     ];
@@ -39,7 +38,6 @@ $stepCount = safeCount($pdo, 'internship_steps');
 $documentCount = safeCount($pdo, 'internship_document_requirements');
 $applicationCount = safeCount($pdo, 'application_periods');
 $calendarCount = safeCount($pdo, 'academic_calendar_events');
-$guideCount = safeCount($pdo, 'academic_guides');
 $contactCount = safeCount($pdo, 'faculty_contacts');
 $admissionCount = safeCount($pdo, 'admission_schedules');
 
@@ -114,9 +112,6 @@ function moduleLabel(string $module): string
 
         'calendar' =>
         'ปฏิทินการศึกษา',
-
-        'academic_guide' =>
-        'คู่มือการเรียน',
 
         'contact' =>
         'ข้อมูลติดต่อคณะ',
@@ -408,26 +403,6 @@ function moduleLabel(string $module): string
                                         แจ้งจบ และกำหนดการทางการศึกษา
                                     </p>
 
-                                </div>
-
-                                <span class="quick-go">
-                                    <i class="bi bi-arrow-right"></i>
-                                </span>
-
-                            </a>
-
-                            <a href="academic_guides/index.php" class="quick-card">
-
-                                <div class="quick-icon program">
-                                    <i class="bi bi-journal-text"></i>
-                                </div>
-
-                                <div>
-                                    <h3>คู่มือการเรียน</h3>
-                                    <p>
-                                        จัดการหัวข้อคู่มือ ขั้นตอน เอกสาร
-                                        และกำหนดการที่เกี่ยวข้องกับงานวิชาการ
-                                    </p>
                                 </div>
 
                                 <span class="quick-go">

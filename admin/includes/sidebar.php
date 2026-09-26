@@ -212,32 +212,6 @@ $basePath   = $basePath ?? '';
 
         </a>
 
-        <!-- Academic Guide -->
-
-        <a
-            href="<?= $basePath ?>academic_guides/index.php"
-            class="
-                sidebar-link
-                <?= $activeMenu === 'academic_guides'
-                    ? 'active'
-                    : ''
-                ?>
-            "
-            title="คู่มือการเรียน">
-
-            <span class="sidebar-icon">
-
-                <i class="bi bi-journal-text"></i>
-
-            </span>
-
-            <span class="sidebar-text">
-                คู่มือการเรียน
-            </span>
-
-        </a>
-
-
         <!-- Faculty Contact -->
 
         <a
@@ -259,31 +233,6 @@ $basePath   = $basePath ?? '';
 
             <span class="sidebar-text">
                 ข้อมูลติดต่อคณะ
-            </span>
-
-        </a>
-
-        <!-- Cafes -->
-
-        <a
-            href="<?= $basePath ?>cafes/index.php"
-            class="
-        sidebar-link
-        <?= $activeMenu === 'cafes'
-            ? 'active'
-            : ''
-        ?>
-    "
-            title="ข้อมูลคาเฟ่">
-
-            <span class="sidebar-icon">
-
-                <i class="bi bi-cup-hot-fill"></i>
-
-            </span>
-
-            <span class="sidebar-text">
-                ข้อมูลคาเฟ่
             </span>
 
         </a>
