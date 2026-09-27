@@ -19,6 +19,42 @@ try {
     $documentName = trim($_GET['document_name'] ?? '');
 
     // =====================================================
+    // Normalize semester สำหรับตาราง internship
+    // Database เก็บ semester เป็น 1, 2, 3
+    // แต่ Dify ใช้ first, second, summer
+    // =====================================================
+
+    $semesterMap = [
+        'first' => '1',
+        'second' => '2',
+        'summer' => '3',
+
+        'ภาคต้น' => '1',
+        'ภาคปลาย' => '2',
+        'ภาคฤดูร้อน' => '3',
+
+        'เทอม 1' => '1',
+        'เทอม1' => '1',
+        '1' => '1',
+
+        'เทอม 2' => '2',
+        'เทอม2' => '2',
+        '2' => '2',
+
+        'ฤดูร้อน' => '3',
+        'ซัมเมอร์' => '3',
+        '3' => '3'
+    ];
+
+    if ($semester !== '') {
+        $semesterKey = mb_strtolower($semester, 'UTF-8');
+
+        if (isset($semesterMap[$semesterKey])) {
+            $semester = $semesterMap[$semesterKey];
+        }
+    }
+
+    // =====================================================
     // ตรวจสอบ type
     // =====================================================
 
@@ -37,7 +73,7 @@ try {
         echo json_encode([
             "success" => false,
             "message" =>
-                "type ต้องเป็น internship หรือ coop"
+            "type ต้องเป็น internship หรือ coop"
         ], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
 
         exit;
@@ -327,23 +363,21 @@ try {
 
             "count" => [
                 "types" =>
-                    count($result['types']),
+                count($result['types']),
 
                 "periods" =>
-                    count($result['periods']),
+                count($result['periods']),
 
                 "steps" =>
-                    count($result['steps']),
+                count($result['steps']),
 
                 "documents" =>
-                    count($result['documents']),
+                count($result['documents']),
 
                 "application_periods" =>
-                    count(
-                        $result[
-                            'application_periods'
-                        ]
-                    )
+                count(
+                    $result['application_periods']
+                )
             ],
 
             "data" => $result
@@ -620,7 +654,7 @@ try {
             echo json_encode([
                 "success" => false,
                 "message" =>
-                    "section ไม่ถูกต้อง ต้องเป็น types, documents, periods, steps หรือ application_periods"
+                "section ไม่ถูกต้อง ต้องเป็น types, documents, periods, steps หรือ application_periods"
             ], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
 
             exit;
@@ -653,8 +687,6 @@ try {
         "data" => $data
 
     ], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
-
-
 } catch (PDOException $e) {
 
     http_response_code(500);
@@ -662,9 +694,9 @@ try {
     echo json_encode([
         "success" => false,
         "message" =>
-            "เกิดข้อผิดพลาดในการดึงข้อมูล",
+        "เกิดข้อผิดพลาดในการดึงข้อมูล",
         "error" =>
-            $e->getMessage()
+        $e->getMessage()
 
     ], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
 }
