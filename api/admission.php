@@ -96,24 +96,13 @@ if (
 // =========================================================
 
 $allowedActivityTypes = [
-    'tcas_registration',
-    'school_selection',
     'application',
-    'payment_check',
-    'payment_deadline',
-    'score_check',
-    'interview_eligible',
     'interview',
-    'interview_result',
-    'ability_test_eligible',
-    'ability_test',
-    'screening_confirm',
     'selection_result',
     'tcas_confirm',
     'waiver',
     'admission_eligible',
-    'report',
-    'other'
+    'report'
 ];
 
 if (
