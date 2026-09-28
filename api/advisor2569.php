@@ -14,6 +14,22 @@ header('Cache-Control: no-store, max-age=0');
 $topic = 'อาจารย์ที่ปรึกษาระดับปริญญาตรี ประจำปีการศึกษา 2569';
 $year = '2569';
 
+$requestedYear = trim($_GET['academic_year'] ?? '');
+
+if (
+    $requestedYear !== '' &&
+    $requestedYear !== $year
+) {
+    echo json_encode([
+        'success' => false,
+        'year' => $year,
+        'total' => 0,
+        'data' => [],
+        'message' => 'ไม่มีข้อมูลอาจารย์ที่ปรึกษาของปีการศึกษาที่ระบุ'
+    ], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+
+    exit;
+}
 
 // =========================================================
 // ข้อมูลอาจารย์ที่ปรึกษา
