@@ -29,7 +29,8 @@ $allowedTypes = [
     'email',
     'website',
     'facebook',
-    'office_hours'
+    'office_hours',
+    'address'
 ];
 
 

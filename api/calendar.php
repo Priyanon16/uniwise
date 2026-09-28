@@ -142,69 +142,87 @@ try {
     $academicYear =
         trim(
             $_GET['academic_year']
-            ?? ''
+                ?? ''
         );
 
 
     $degreeLevel =
         trim(
             $_GET['degree_level']
-            ?? ''
+                ?? ''
         );
 
 
     $semester =
         trim(
             $_GET['semester']
-            ?? ''
+                ?? ''
         );
 
 
     $category =
         trim(
             $_GET['category']
-            ?? ''
+                ?? ''
         );
 
 
     $phase =
         trim(
             $_GET['phase']
-            ?? ''
+                ?? ''
         );
 
 
     $yearLevel =
         trim(
             $_GET['year_level']
-            ?? ''
+                ?? ''
         );
 
 
     $studentCode =
         trim(
             $_GET['student_code']
-            ?? ''
+                ?? ''
         );
 
 
     $search =
         trim(
             $_GET['search']
-            ?? ''
+                ?? ''
         );
 
 
     $date =
         trim(
             $_GET['date']
-            ?? ''
+                ?? ''
         );
 
 
     $active =
         $_GET['active']
         ?? '1';
+
+
+    // =====================================
+    // ถ้าไม่ได้ระบุปีการศึกษา
+    // ใช้ปีล่าสุดที่มีข้อมูลในฐานข้อมูล
+    // =====================================
+
+    if ($academicYear === '') {
+
+        $stmtYear = $pdo->query("
+        SELECT MAX(academic_year)
+        FROM academic_calendar_events
+        WHERE active = 1
+    ");
+
+        $academicYear =
+            (string)$stmtYear->fetchColumn();
+    }
 
 
     // =====================================
@@ -459,11 +477,11 @@ try {
         $sql .= "
             AND (
                 " .
-                implode(
-                    "\n OR ",
-                    $yearConditions
-                ) .
-                "
+            implode(
+                "\n OR ",
+                $yearConditions
+            ) .
+            "
             )
         ";
     }
@@ -638,61 +656,61 @@ try {
     // เพิ่มข้อมูลภาษาไทย
     // =====================================
 
-foreach ($rows as &$row) {
+    foreach ($rows as &$row) {
 
-    // =====================================
-    // ชื่อภาคภาษาไทย
-    // =====================================
+        // =====================================
+        // ชื่อภาคภาษาไทย
+        // =====================================
 
-    $row['semester_name_th'] =
-        match ($row['semester']) {
+        $row['semester_name_th'] =
+            match ($row['semester']) {
 
-            'first' =>
+                'first' =>
                 'ภาคต้น',
 
-            'second' =>
+                'second' =>
                 'ภาคปลาย',
 
-            'summer' =>
+                'summer' =>
                 'ภาคฤดูร้อน',
 
-            default =>
+                default =>
                 null
-        };
+            };
 
 
-    // =====================================
-    // สถานะภาษาไทย
-    // =====================================
+        // =====================================
+        // สถานะภาษาไทย
+        // =====================================
 
-    $row['status_name_th'] =
-        $row['event_status'] === 'no_activity'
-        ? 'ไม่มีกิจกรรม'
-        : 'มีกิจกรรม';
-
-
-    // =====================================
-    // วันที่ภาษาไทย
-    // =====================================
-
-    $row['start_date_th'] =
-        thaiDate(
-            $row['start_date'] ?? null
-        );
+        $row['status_name_th'] =
+            $row['event_status'] === 'no_activity'
+            ? 'ไม่มีกิจกรรม'
+            : 'มีกิจกรรม';
 
 
-    $row['end_date_th'] =
-        thaiDate(
-            $row['end_date'] ?? null
-        );
+        // =====================================
+        // วันที่ภาษาไทย
+        // =====================================
+
+        $row['start_date_th'] =
+            thaiDate(
+                $row['start_date'] ?? null
+            );
 
 
-    $row['date_range_th'] =
-        thaiDateRange(
-            $row['start_date'] ?? null,
-            $row['end_date'] ?? null
-        );
-}
+        $row['end_date_th'] =
+            thaiDate(
+                $row['end_date'] ?? null
+            );
+
+
+        $row['date_range_th'] =
+            thaiDateRange(
+                $row['start_date'] ?? null,
+                $row['end_date'] ?? null
+            );
+    }
 
 
     unset($row);
@@ -705,63 +723,61 @@ foreach ($rows as &$row) {
     echo json_encode(
         [
             'success' =>
-                true,
+            true,
 
             'count' =>
-                count($rows),
+            count($rows),
 
             'filters' => [
 
                 'id' =>
-                    $id,
+                $id,
 
                 'academic_year' =>
-                    $academicYear
+                $academicYear
                     ?: null,
 
                 'degree_level' =>
-                    $degreeLevel
+                $degreeLevel
                     ?: null,
 
                 'semester' =>
-                    $semester
+                $semester
                     ?: null,
 
                 'category' =>
-                    $category
+                $category
                     ?: null,
 
                 'phase' =>
-                    $phase
+                $phase
                     ?: null,
 
                 'year_level' =>
-                    $yearLevel
+                $yearLevel
                     ?: null,
 
                 'student_code' =>
-                    $studentCode
+                $studentCode
                     ?: null,
 
                 'search' =>
-                    $search
+                $search
                     ?: null,
 
                 'date' =>
-                    $date
+                $date
                     ?: null
             ],
 
             'data' =>
-                $rows
+            $rows
         ],
 
         JSON_UNESCAPED_UNICODE
-        |
-        JSON_PRETTY_PRINT
+            |
+            JSON_PRETTY_PRINT
     );
-
-
 } catch (PDOException $e) {
 
 
@@ -773,17 +789,17 @@ foreach ($rows as &$row) {
     echo json_encode(
         [
             'success' =>
-                false,
+            false,
 
             'message' =>
-                'เกิดข้อผิดพลาดในการดึงข้อมูล',
+            'เกิดข้อผิดพลาดในการดึงข้อมูล',
 
             'error' =>
-                $e->getMessage()
+            $e->getMessage()
         ],
 
         JSON_UNESCAPED_UNICODE
-        |
-        JSON_PRETTY_PRINT
+            |
+            JSON_PRETTY_PRINT
     );
 }
