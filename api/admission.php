@@ -154,6 +154,7 @@ try {
 
         $sql = "
             SELECT
+                MIN(id) AS source_id,
                 academic_year,
                 round_number,
                 round_name,
@@ -178,6 +179,9 @@ try {
 
 
         foreach ($rows as &$row) {
+
+            $row['source_id'] =
+                (int)$row['source_id'];
 
             $row['academic_year'] =
                 (int)$row['academic_year'];
@@ -216,7 +220,8 @@ try {
     if ($mode === 'projects') {
 
         $sql = "
-            SELECT DISTINCT
+            SELECT
+                MIN(id) AS source_id,
                 academic_year,
                 round_number,
                 round_name,
@@ -266,6 +271,12 @@ try {
 
 
         $sql .= "
+            GROUP BY
+                academic_year,
+                round_number,
+                round_name,
+                quota_type
+
             ORDER BY
                 round_number ASC,
                 quota_type ASC
@@ -280,6 +291,9 @@ try {
 
 
         foreach ($rows as &$row) {
+
+            $row['source_id'] =
+                (int)$row['source_id'];
 
             $row['academic_year'] =
                 (int)$row['academic_year'];
