@@ -11,7 +11,7 @@ RUN pip install --no-cache-dir -r /app/requirements_external_retriever.txt
 
 COPY retriever_service.py /app/
 
-RUN mkdir -p /app/.retriever_cache
+RUN mkdir -p /app/.retriever_cache /app/data
 
 EXPOSE 8000
 

@@ -1,0 +1,19 @@
+MBS External Retriever - Automatic Document Reload Patch
+
+Changed:
+- Watches data/dify_segments.csv using SHA-256 content hash.
+- Rebuilds BM25 automatically when the CSV changes.
+- Keeps Dense embeddings synchronized with the same corpus.
+- Reuses cached Dense embeddings when document text is unchanged.
+- Keeps the previous known-good corpus if a new CSV is invalid or embedding refresh fails.
+- Adds health fields: corpus_version, corpus_hash, loaded_at_epoch, last_reload_error, auto_reload_seconds.
+- Docker Compose now mounts ./data as a directory so file replacements are visible in the container.
+
+Default:
+AUTO_RELOAD_SECONDS=2
+SEGMENTS_CSV=/app/data/dify_segments.csv
+
+Normal document edit workflow:
+1. Edit/replace data/dify_segments.csv
+2. Wait up to a few seconds or call /health
+3. No retriever restart required

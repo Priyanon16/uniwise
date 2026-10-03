@@ -35,6 +35,7 @@ import math
 import os
 import re
 import secrets
+import threading
 import time
 import unicodedata
 from collections import Counter
@@ -101,6 +102,11 @@ BM25_K1 = float(
 
 BM25_B = float(
     os.getenv("BM25_B", "0.75")
+)
+
+AUTO_RELOAD_SECONDS = max(
+    0.0,
+    float(os.getenv("AUTO_RELOAD_SECONDS", "2")),
 )
 
 CACHE_DIR = Path(
@@ -490,7 +496,7 @@ def cohere_rerank(
 
 
 # ============================================================
-# Corpus load + dense cache
+# Corpus load + automatic reload + dense cache
 # ============================================================
 
 def corpus_signature(
@@ -510,6 +516,21 @@ def corpus_signature(
             "utf-8"
         )
     ).hexdigest()[:20]
+
+
+def file_sha256(
+    path: Path,
+) -> str:
+    h = hashlib.sha256()
+
+    with path.open("rb") as f:
+        for chunk in iter(
+            lambda: f.read(1024 * 1024),
+            b"",
+        ):
+            h.update(chunk)
+
+    return h.hexdigest()
 
 
 def load_segments() -> pd.DataFrame:
@@ -544,65 +565,31 @@ def load_segments() -> pd.DataFrame:
 
     df = df.fillna("")
 
+    # segment_id must be present and unique so evidence provenance
+    # remains deterministic after an automatic reload.
+    segment_ids = [
+        str(x).strip()
+        for x in df["segment_id"].tolist()
+    ]
+
+    if any(not sid for sid in segment_ids):
+        raise RuntimeError(
+            "Segments CSV contains an empty segment_id."
+        )
+
+    if len(set(segment_ids)) != len(segment_ids):
+        raise RuntimeError(
+            "Segments CSV contains duplicate segment_id values."
+        )
+
     return df
 
 
-SEGMENTS_DF = load_segments()
-
-SEGMENT_UUIDS = [
-    str(x).strip()
-    for x
-    in SEGMENTS_DF[
-        "segment_id"
-    ].tolist()
-]
-
-SEGMENT_EVIDENCE_IDS = [
-    DOC_PREFIX + sid
-    for sid in SEGMENT_UUIDS
-]
-
-SEGMENT_TEXTS = [
-    str(x)
-    for x
-    in SEGMENTS_DF[
-        "content"
-    ].tolist()
-]
-
-SEGMENT_TITLES = [
-    str(x).strip()
-    or "ข้อมูลคู่มือการเรียน"
-    for x
-    in (
-        SEGMENTS_DF[
-            "document_name"
-        ].tolist()
-        if "document_name"
-        in SEGMENTS_DF.columns
-        else [
-            "ข้อมูลคู่มือการเรียน"
-        ]
-        * len(
-            SEGMENTS_DF
-        )
-    )
-]
-
-BM25_INDEX = BM25(
-    [
-        tokenize(text)
-        for text
-        in SEGMENT_TEXTS
-    ],
-    k1=BM25_K1,
-    b=BM25_B,
-)
-
-
-def get_doc_embeddings() -> np.ndarray:
+def get_doc_embeddings(
+    texts: List[str],
+) -> np.ndarray:
     sig = corpus_signature(
-        SEGMENT_TEXTS
+        texts
     )
 
     cache_path = (
@@ -615,12 +602,15 @@ def get_doc_embeddings() -> np.ndarray:
     )
 
     if cache_path.exists():
-        return np.load(
+        vectors = np.load(
             cache_path
         )
 
+        if vectors.shape[0] == len(texts):
+            return vectors
+
     vectors = embed_texts(
-        SEGMENT_TEXTS
+        texts
     )
 
     np.save(
@@ -631,8 +621,182 @@ def get_doc_embeddings() -> np.ndarray:
     return vectors
 
 
-DOC_EMBEDDINGS = get_doc_embeddings()
+# Live corpus state.  The object references are replaced only after a
+# complete new index has been built successfully, so an invalid CSV or
+# provider error does not corrupt the currently serving corpus.
+CORPUS_LOCK = threading.RLock()
+SEGMENTS_DF = pd.DataFrame()
+SEGMENT_UUIDS: List[str] = []
+SEGMENT_EVIDENCE_IDS: List[str] = []
+SEGMENT_TEXTS: List[str] = []
+SEGMENT_TITLES: List[str] = []
+BM25_INDEX = BM25([], k1=BM25_K1, b=BM25_B)
+DOC_EMBEDDINGS = np.empty((0, 0), dtype=np.float32)
+CORPUS_FILE_HASH = ""
+CORPUS_VERSION = 0
+CORPUS_LOADED_AT = 0.0
+LAST_RELOAD_CHECK = 0.0
+LAST_RELOAD_ERROR = ""
 
+
+def _build_corpus_state():
+    df = load_segments()
+
+    uuids = [
+        str(x).strip()
+        for x in df["segment_id"].tolist()
+    ]
+
+    evidence_ids = [
+        DOC_PREFIX + sid
+        for sid in uuids
+    ]
+
+    texts = [
+        str(x)
+        for x in df["content"].tolist()
+    ]
+
+    titles = [
+        str(x).strip()
+        or "ข้อมูลคู่มือการเรียน"
+        for x in (
+            df["document_name"].tolist()
+            if "document_name" in df.columns
+            else [
+                "ข้อมูลคู่มือการเรียน"
+            ] * len(df)
+        )
+    ]
+
+    bm25 = BM25(
+        [
+            tokenize(text)
+            for text in texts
+        ],
+        k1=BM25_K1,
+        b=BM25_B,
+    )
+
+    embeddings = get_doc_embeddings(
+        texts
+    )
+
+    if embeddings.shape[0] != len(texts):
+        raise RuntimeError(
+            "Dense embedding count does not match segment count."
+        )
+
+    return (
+        df,
+        uuids,
+        evidence_ids,
+        texts,
+        titles,
+        bm25,
+        embeddings,
+    )
+
+
+def reload_corpus_if_changed(
+    force: bool = False,
+    raise_on_error: bool = False,
+) -> bool:
+    global SEGMENTS_DF
+    global SEGMENT_UUIDS
+    global SEGMENT_EVIDENCE_IDS
+    global SEGMENT_TEXTS
+    global SEGMENT_TITLES
+    global BM25_INDEX
+    global DOC_EMBEDDINGS
+    global CORPUS_FILE_HASH
+    global CORPUS_VERSION
+    global CORPUS_LOADED_AT
+    global LAST_RELOAD_CHECK
+    global LAST_RELOAD_ERROR
+
+    now = time.monotonic()
+
+    # A tiny throttle avoids hashing the CSV on every burst request.
+    if (
+        not force
+        and AUTO_RELOAD_SECONDS > 0
+        and (now - LAST_RELOAD_CHECK) < AUTO_RELOAD_SECONDS
+    ):
+        return False
+
+    with CORPUS_LOCK:
+        now = time.monotonic()
+
+        if (
+            not force
+            and AUTO_RELOAD_SECONDS > 0
+            and (now - LAST_RELOAD_CHECK) < AUTO_RELOAD_SECONDS
+        ):
+            return False
+
+        LAST_RELOAD_CHECK = now
+
+        try:
+            if not SEGMENTS_CSV.exists():
+                raise RuntimeError(
+                    f"Segments CSV not found: {SEGMENTS_CSV.resolve()}"
+                )
+
+            new_file_hash = file_sha256(
+                SEGMENTS_CSV
+            )
+
+            if (
+                not force
+                and new_file_hash == CORPUS_FILE_HASH
+            ):
+                LAST_RELOAD_ERROR = ""
+                return False
+
+            (
+                new_df,
+                new_uuids,
+                new_evidence_ids,
+                new_texts,
+                new_titles,
+                new_bm25,
+                new_embeddings,
+            ) = _build_corpus_state()
+
+            # Atomic-at-request-level swap: retrieval takes a snapshot of
+            # these references under the same lock before ranking.
+            SEGMENTS_DF = new_df
+            SEGMENT_UUIDS = new_uuids
+            SEGMENT_EVIDENCE_IDS = new_evidence_ids
+            SEGMENT_TEXTS = new_texts
+            SEGMENT_TITLES = new_titles
+            BM25_INDEX = new_bm25
+            DOC_EMBEDDINGS = new_embeddings
+            CORPUS_FILE_HASH = new_file_hash
+            CORPUS_VERSION += 1
+            CORPUS_LOADED_AT = time.time()
+            LAST_RELOAD_ERROR = ""
+
+            return True
+
+        except Exception as exc:
+            LAST_RELOAD_ERROR = (
+                f"{type(exc).__name__}: {exc}"
+            )
+
+            if raise_on_error or CORPUS_VERSION == 0:
+                raise
+
+            # Keep serving the previous known-good corpus.
+            return False
+
+
+# Initial startup must succeed. Subsequent file edits are hot-reloaded.
+reload_corpus_if_changed(
+    force=True,
+    raise_on_error=True,
+)
 
 # ============================================================
 # Ranking
@@ -653,6 +817,7 @@ def unit_normalize(
 
 def cosine_scores(
     query_vec: np.ndarray,
+    doc_embeddings: np.ndarray,
 ) -> List[float]:
 
     q = unit_normalize(
@@ -661,7 +826,7 @@ def cosine_scores(
         )
     )
 
-    docs = DOC_EMBEDDINGS.astype(
+    docs = doc_embeddings.astype(
         np.float32
     )
 
@@ -753,9 +918,11 @@ def embed_query_cached(
 def hybrid_candidates(
     query: str,
     candidate_k: int,
+    bm25_index: BM25,
+    doc_embeddings: np.ndarray,
 ) -> List[int]:
 
-    bm25_scores = BM25_INDEX.scores(
+    bm25_scores = bm25_index.scores(
         tokenize(
             query
         )
@@ -774,7 +941,8 @@ def hybrid_candidates(
 
     dense_rank = rank_from_scores(
         cosine_scores(
-            query_vec
+            query_vec,
+            doc_embeddings,
         )
     )
 
@@ -797,8 +965,23 @@ def retrieve(
     if not query.strip():
         return []
 
+    # Detect a changed dify_segments.csv before every retrieval burst.
+    # BM25 is rebuilt automatically; Dense is synchronized from cache or
+    # recomputed only when the document text signature changed.
+    reload_corpus_if_changed()
+
+    with CORPUS_LOCK:
+        segment_df = SEGMENTS_DF
+        segment_uuids = SEGMENT_UUIDS
+        segment_evidence_ids = SEGMENT_EVIDENCE_IDS
+        segment_texts = SEGMENT_TEXTS
+        segment_titles = SEGMENT_TITLES
+        bm25_index = BM25_INDEX
+        doc_embeddings = DOC_EMBEDDINGS
+        corpus_version = CORPUS_VERSION
+
     n_docs = len(
-        SEGMENT_TEXTS
+        segment_texts
     )
 
     if n_docs == 0:
@@ -816,6 +999,8 @@ def retrieve(
         hybrid_candidates(
             query,
             candidate_k,
+            bm25_index,
+            doc_embeddings,
         )
     )
 
@@ -823,7 +1008,7 @@ def retrieve(
         cohere_rerank(
             query,
             [
-                SEGMENT_TEXTS[i]
+                segment_texts[i]
                 for i
                 in candidate_indices
             ],
@@ -871,17 +1056,17 @@ def retrieve(
         ):
             continue
 
-        row = SEGMENTS_DF.iloc[
+        row = segment_df.iloc[
             corpus_index
         ]
 
         metadata = {
             "segment_id":
-                SEGMENT_UUIDS[
+                segment_uuids[
                     corpus_index
                 ],
             "evidence_id":
-                SEGMENT_EVIDENCE_IDS[
+                segment_evidence_ids[
                     corpus_index
                 ],
             "document_id":
@@ -892,7 +1077,7 @@ def retrieve(
                     )
                 ),
             "document_name":
-                SEGMENT_TITLES[
+                segment_titles[
                     corpus_index
                 ],
             "position":
@@ -908,12 +1093,14 @@ def retrieve(
                 OPENAI_EMBED_MODEL,
             "rerank_model":
                 COHERE_RERANK_MODEL,
+            "corpus_version":
+                corpus_version,
         }
 
         output.append(
             RetrievalRecord(
                 content=(
-                    SEGMENT_TEXTS[
+                    segment_texts[
                         corpus_index
                     ]
                 ),
@@ -925,7 +1112,7 @@ def retrieve(
                     ),
                 ),
                 title=(
-                    SEGMENT_TITLES[
+                    segment_titles[
                         corpus_index
                     ]
                 ),
@@ -981,21 +1168,36 @@ def verify_bearer(
 
 @app.get("/health")
 def health():
-    return {
-        "status": "ok",
-        "knowledge_id":
-            EXTERNAL_KNOWLEDGE_ID,
-        "chunks":
-            len(
-                SEGMENT_TEXTS
-            ),
-        "pipeline":
-            "BM25+Dense_RRF+Cohere_Rerank",
-        "embedding_model":
-            OPENAI_EMBED_MODEL,
-        "rerank_model":
-            COHERE_RERANK_MODEL,
-    }
+    # Docker health checks also keep the corpus synchronized even when
+    # no user retrieval request arrives.
+    reload_corpus_if_changed()
+
+    with CORPUS_LOCK:
+        return {
+            "status": "ok",
+            "knowledge_id":
+                EXTERNAL_KNOWLEDGE_ID,
+            "chunks":
+                len(
+                    SEGMENT_TEXTS
+                ),
+            "pipeline":
+                "BM25+Dense_RRF+Cohere_Rerank",
+            "embedding_model":
+                OPENAI_EMBED_MODEL,
+            "rerank_model":
+                COHERE_RERANK_MODEL,
+            "auto_reload_seconds":
+                AUTO_RELOAD_SECONDS,
+            "corpus_version":
+                CORPUS_VERSION,
+            "corpus_hash":
+                CORPUS_FILE_HASH[:12],
+            "loaded_at_epoch":
+                CORPUS_LOADED_AT,
+            "last_reload_error":
+                LAST_RELOAD_ERROR,
+        }
 
 
 @app.post(

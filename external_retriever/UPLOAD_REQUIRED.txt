@@ -1,0 +1,9 @@
+Before starting on ReadyIDC, copy your real file named:
+
+dify_segments.csv
+
+into the data/ directory:
+
+data/dify_segments.csv
+
+The retriever watches this file automatically. After the service is started, editing/replacing this CSV does not require a container restart.
