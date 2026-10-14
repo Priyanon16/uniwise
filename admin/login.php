@@ -38,7 +38,6 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
     }
 }
 function h(string $x): string { return htmlspecialchars($x, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); }
-$https = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off';
 ?><!doctype html>
 <html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>เข้าสู่ระบบ | MBS UniWise Admin</title>
@@ -50,7 +49,6 @@ body{min-height:100vh;display:grid;place-items:center;background:linear-gradient
 .brand{font-weight:800;color:#07518f;font-size:24px}.muted{color:#5d6f80;font-size:14px}
 </style></head><body><main class="login-card">
 <div class="brand mb-1">MBS UniWise</div><div class="muted mb-4">Admin Management — เข้าสู่ระบบครั้งเดียว ใช้ได้ทุกเมนู</div>
-<?php if (!$https): ?><div class="alert alert-danger">การเชื่อมต่อยังไม่ใช่ HTTPS กรุณาตั้งค่า HTTPS ก่อนกรอกรหัสผ่านจริง</div><?php endif; ?>
 <?php if ($error): ?><div class="alert alert-danger"><?=h($error)?></div><?php endif; ?>
 <form method="post" autocomplete="on">
 <input type="hidden" name="csrf" value="<?=h((string)$_SESSION['mbs_admin_login_csrf'])?>">

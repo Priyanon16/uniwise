@@ -1,7 +1,10 @@
 <?php
 declare(strict_types=1);
 
-// CSV-only document segment admin; no MySQL dependency.
+// CSV-only document segment admin; shared MBS UniWise PHP session (no second login).
+require_once __DIR__ . '/../includes/auth.php';
+mbs_admin_require_login();
+
 $cfgFile = __DIR__ . '/config.php';
 if (!is_file($cfgFile)) {
     http_response_code(503);
@@ -9,19 +12,6 @@ if (!is_file($cfgFile)) {
 }
 $cfg = require $cfgFile;
 $csv = (string)($cfg['csv_path'] ?? '');
-$passHash = (string)($cfg['admin_password_hash'] ?? '');
-$username = (string)($cfg['admin_user'] ?? '');
-if (!$username || str_contains($passHash, 'PASTE_') || !$passHash || !str_starts_with($passHash, '$2') && !str_starts_with($passHash, '$argon')) {
-    http_response_code(503);
-    exit('โปรดตั้งชื่อผู้ใช้และ password hash ใน config.php ให้เรียบร้อย');
-}
-$givenUser = (string)($_SERVER['PHP_AUTH_USER'] ?? '');
-$givenPass = (string)($_SERVER['PHP_AUTH_PW'] ?? '');
-if (!hash_equals($username, $givenUser) || !password_verify($givenPass, $passHash)) {
-    header('WWW-Authenticate: Basic realm="MBS Data Segments"');
-    http_response_code(401);
-    exit('ต้องเข้าสู่ระบบเพื่อจัดการ Data Segment');
-}
 if (!$csv || !is_file($csv)) {
     http_response_code(503);
     exit('ไม่พบ CSV ตาม csv_path ใน config.php กรุณาตรวจสอบ path บนเซิร์ฟเวอร์');
@@ -33,6 +23,16 @@ if ($realCsv === false || strtolower(pathinfo($realCsv, PATHINFO_EXTENSION)) !==
 }
 $requiredColumns = ['segment_id', 'content'];
 $defaultColumns = ['segment_id', 'evidence_id', 'document_id', 'document_name', 'position', 'word_count', 'tokens', 'content'];
+function dsContains(string $haystack, string $needle): bool {
+    if (function_exists('mb_stripos')) return mb_stripos($haystack, $needle, 0, 'UTF-8') !== false;
+    return stripos($haystack, $needle) !== false;
+}
+function dsPreview(string $s): string {
+    if (function_exists('mb_strimwidth')) return mb_strimwidth($s, 0, 280, '…', 'UTF-8');
+    $chars = preg_split('//u', $s, -1, PREG_SPLIT_NO_EMPTY);
+    if (!is_array($chars)) return substr($s, 0, 250);
+    return count($chars) > 200 ? implode('', array_slice($chars, 0, 200)) . '…' : $s;
+}
 function e(mixed $v): string { return htmlspecialchars((string)$v, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); }
 function readCsv(string $path): array {
     $f = fopen($path, 'rb');
@@ -155,7 +155,7 @@ function selfId(): string {
 try { [$columns,$rows] = readCsv($realCsv); }
 catch (Throwable $exc) { http_response_code(500); exit('CSV ไม่ถูกต้อง: '.e($exc->getMessage())); }
 $q = trim((string)($_GET['q'] ?? ''));
-$filtered = $q === '' ? $rows : array_values(array_filter($rows, fn($r) => mb_stripos(implode(' ', $r), $q) !== false));
+$filtered = $q === '' ? $rows : array_values(array_filter($rows, fn($r) => dsContains(implode(' ', $r), $q)));
 $editId = (string)($_GET['edit'] ?? '');
 $editing = null;
 foreach ($rows as $r) if ($r['segment_id'] === $editId) { $editing = $r; break; }
@@ -180,7 +180,7 @@ $flash = $_SESSION['segment_flash'] ?? ''; unset($_SESSION['segment_flash']);
 <hr><form method="get" class="row g-2"><div class="col-md-9"><input class="form-control" name="q" placeholder="ค้นหา Segment ID, ชื่อเอกสาร หรือข้อความ" value="<?=e($q)?>"></div><div class="col-md-3"><button class="btn btn-outline-secondary w-100">ค้นหา</button></div></form></div>
 <?php if ($formOpen): ?><div class="ds-card"><h5><?= $editing ? 'แก้ไข Segment' : 'เพิ่ม Segment ใหม่' ?></h5><form method="post"><input type="hidden" name="csrf" value="<?=e($_SESSION['segment_csrf'])?>"><input type="hidden" name="action" value="save"><input type="hidden" name="old_id" value="<?=e($editing['segment_id']??'')?>"><div class="row g-3"><?php foreach ($columns as $col): ?><div class="col-12 <?= $col === 'content' ? '' : 'col-lg-6' ?>"><label class="form-label fw-semibold"><?=e($col)?></label><?php if ($col==='content'): ?><textarea class="form-control ds-content" name="field[<?=e($col)?>]" required><?=e($editing[$col]??'')?></textarea><?php else: ?><input class="form-control" name="field[<?=e($col)?>]" value="<?=e($editing[$col]??'')?>" <?=($col==='segment_id' && $editing)?'readonly':''?> <?=($col==='segment_id')?'placeholder="ว่างไว้เพื่อสร้าง UUID อัตโนมัติ"':''?>></input><?php endif; ?></div><?php endforeach; ?></div><div class="mt-3 d-flex gap-2"><button type="submit" class="btn btn-primary">บันทึก CSV</button><a class="btn btn-outline-secondary" href="index.php">ยกเลิก</a></div></form></div><?php endif; ?>
 <div class="ds-card"><h5>นำเข้า CSV (แทนที่ข้อมูลทั้งหมด)</h5><p class="ds-meta">ต้องมีชื่อและลำดับคอลัมน์ตรงกับ CSV เดิม ระบบตรวจ ID ซ้ำและสำรองข้อมูลก่อนแทนที่ ใช้ไฟล์ .csv UTF-8 ไม่ใช่ .xlsx</p><form method="post" enctype="multipart/form-data" onsubmit="return confirm('ยืนยันแทนที่ข้อมูลทั้งหมดด้วยไฟล์ที่นำเข้า?')"><input type="hidden" name="csrf" value="<?=e($_SESSION['segment_csrf'])?>"><div class="d-flex flex-wrap gap-2"><input type="file" name="csv_file" accept=".csv,text/csv" class="form-control" style="max-width:420px" required><button class="btn btn-outline-danger" name="action" value="import">นำเข้าและแทนที่</button></div></form></div>
-<div class="ds-card"><h5>รายการ Segments (<?=count($filtered)?>)</h5><div class="table-responsive"><table class="table table-hover align-middle ds-table"><thead><tr><th>Segment ID</th><th>เอกสาร</th><th>เนื้อหา</th><th>จัดการ</th></tr></thead><tbody><?php foreach (array_slice($filtered,0,500) as $r): ?><tr><td style="max-width:210px;word-break:break-all"><?=e($r['segment_id'])?></td><td><?=e($r['document_name']??'-')?></td><td><div class="ds-preview"><?=e(mb_strimwidth((string)$r['content'],0,280,'…','UTF-8'))?></div></td><td><div class="d-flex gap-1"><a class="btn btn-sm btn-outline-primary" href="?edit=<?=urlencode($r['segment_id'])?>">แก้ไข</a><form method="post" onsubmit="return confirm('ยืนยันลบ Segment นี้?')"><input type="hidden" name="csrf" value="<?=e($_SESSION['segment_csrf'])?>"><input type="hidden" name="id" value="<?=e($r['segment_id'])?>"><button class="btn btn-sm btn-outline-danger" name="action" value="delete">ลบ</button></form></div></td></tr><?php endforeach;?></tbody></table></div><?php if(count($filtered)>500): ?><div class="alert alert-info">แสดง 500 รายการแรก โปรดค้นหาเพื่อจำกัดผลลัพธ์</div><?php endif;?></div></div></main></div></div>
+<div class="ds-card"><h5>รายการ Segments (<?=count($filtered)?>)</h5><div class="table-responsive"><table class="table table-hover align-middle ds-table"><thead><tr><th>Segment ID</th><th>เอกสาร</th><th>เนื้อหา</th><th>จัดการ</th></tr></thead><tbody><?php foreach (array_slice($filtered,0,500) as $r): ?><tr><td style="max-width:210px;word-break:break-all"><?=e($r['segment_id'])?></td><td><?=e($r['document_name']??'-')?></td><td><div class="ds-preview"><?=e(dsPreview((string)$r['content']))?></div></td><td><div class="d-flex gap-1"><a class="btn btn-sm btn-outline-primary" href="?edit=<?=urlencode($r['segment_id'])?>">แก้ไข</a><form method="post" onsubmit="return confirm('ยืนยันลบ Segment นี้?')"><input type="hidden" name="csrf" value="<?=e($_SESSION['segment_csrf'])?>"><input type="hidden" name="id" value="<?=e($r['segment_id'])?>"><button class="btn btn-sm btn-outline-danger" name="action" value="delete">ลบ</button></form></div></td></tr><?php endforeach;?></tbody></table></div><?php if(count($filtered)>500): ?><div class="alert alert-info">แสดง 500 รายการแรก โปรดค้นหาเพื่อจำกัดผลลัพธ์</div><?php endif;?></div></div></main></div></div>
 <script>
 document.addEventListener('DOMContentLoaded',()=>{const s=document.getElementById('sidebar'),o=document.getElementById('sidebarOverlay');if(localStorage.getItem('mbsSidebarCollapsed')==='1'&&innerWidth>=992)document.body.classList.add('sidebar-collapsed');document.getElementById('sidebarToggle')?.addEventListener('click',()=>{document.body.classList.toggle('sidebar-collapsed');localStorage.setItem('mbsSidebarCollapsed',document.body.classList.contains('sidebar-collapsed')?'1':'0')});document.getElementById('mobileMenuBtn')?.addEventListener('click',()=>{document.body.classList.toggle('sidebar-open')});o?.addEventListener('click',()=>document.body.classList.remove('sidebar-open'))});
 </script></body></html>
