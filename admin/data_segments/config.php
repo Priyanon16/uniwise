@@ -11,5 +11,5 @@ return [
     'http://127.0.0.1:18081/admin/segment-metadata',
 
     'metadata_api_key' =>
-    'omG1_xTqSNqClW57TiU_v0ai5EHWTgR3KvulOpy7AbE',
+    'rhQNr6ss_U3XxQQ9v-MUI1hmusKcbK7DUgqo3lPlH28',
 ];
