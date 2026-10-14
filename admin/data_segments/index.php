@@ -178,7 +178,50 @@ $flash = $_SESSION['segment_flash'] ?? ''; unset($_SESSION['segment_flash']);
 <?php if ($flash): ?><div class="alert alert-success"><?=e($flash)?></div><?php endif; ?>
 <div class="ds-card"><div class="d-flex flex-wrap justify-content-between gap-2 align-items-center"><div><h5 class="mb-1">ข้อมูลทั้งหมด <?=count($rows)?> Segments</h5><div class="ds-meta">ไฟล์: <?=e(basename($realCsv))?> | แก้ไขไฟล์ CSV ต้นฉบับโดยตรง (มี Backup ก่อนเขียน)</div></div><div class="d-flex flex-wrap gap-2"><a href="?new=1" class="btn btn-primary"><i class="bi bi-plus-lg"></i> เพิ่ม Segment</a><form method="post"><input type="hidden" name="csrf" value="<?=e($_SESSION['segment_csrf'])?>"><button class="btn btn-outline-primary" name="action" value="export"><i class="bi bi-download"></i> ส่งออก CSV</button></form></div></div>
 <hr><form method="get" class="row g-2"><div class="col-md-9"><input class="form-control" name="q" placeholder="ค้นหา Segment ID, ชื่อเอกสาร หรือข้อความ" value="<?=e($q)?>"></div><div class="col-md-3"><button class="btn btn-outline-secondary w-100">ค้นหา</button></div></form></div>
-<?php if ($formOpen): ?><div class="ds-card"><h5><?= $editing ? 'แก้ไข Segment' : 'เพิ่ม Segment ใหม่' ?></h5><form method="post"><input type="hidden" name="csrf" value="<?=e($_SESSION['segment_csrf'])?>"><input type="hidden" name="action" value="save"><input type="hidden" name="old_id" value="<?=e($editing['segment_id']??'')?>"><div class="row g-3"><?php foreach ($columns as $col): ?><div class="col-12 <?= $col === 'content' ? '' : 'col-lg-6' ?>"><label class="form-label fw-semibold"><?=e($col)?></label><?php if ($col==='content'): ?><textarea class="form-control ds-content" name="field[<?=e($col)?>]" required><?=e($editing[$col]??'')?></textarea><?php else: ?><input class="form-control" name="field[<?=e($col)?>]" value="<?=e($editing[$col]??'')?>" <?=($col==='segment_id' && $editing)?'readonly':''?> <?=($col==='segment_id')?'placeholder="ว่างไว้เพื่อสร้าง UUID อัตโนมัติ"':''?>></input><?php endif; ?></div><?php endforeach; ?></div><div class="mt-3 d-flex gap-2"><button type="submit" class="btn btn-primary">บันทึก CSV</button><a class="btn btn-outline-secondary" href="index.php">ยกเลิก</a></div></form></div><?php endif; ?>
+<?php if ($formOpen): ?>
+<div class="ds-card">
+    <h5><?= $editing ? 'แก้ไข Segment' : 'เพิ่ม Segment ใหม่' ?></h5>
+    <form method="post">
+        <input type="hidden" name="csrf" value="<?=e($_SESSION['segment_csrf'])?>">
+        <input type="hidden" name="action" value="save">
+        <input type="hidden" name="old_id" value="<?=e($editing['segment_id']??'')?>">
+        <div class="row g-3">
+            <?php foreach ($columns as $col): ?>
+                <div class="col-12 <?= $col === 'content' ? '' : 'col-lg-6' ?>">
+                    <label class="form-label fw-semibold" for="field-<?=e($col)?>"><?=e($col)?></label>
+                    <?php if ($col === 'content'): ?>
+                        <textarea id="field-<?=e($col)?>" class="form-control ds-content" name="field[<?=e($col)?>]" required><?=e($editing[$col]??'')?></textarea>
+                    <?php else: ?>
+                        <input
+                            id="field-<?=e($col)?>"
+                            class="form-control"
+                            name="field[<?=e($col)?>]"
+                            value="<?=e($editing[$col]??'')?>"
+                            <?= ($col === 'segment_id' && $editing) ? 'readonly' : '' ?>
+                            <?= ($col === 'segment_id' && !$editing) ? 'placeholder="ไม่ต้องกรอก ระบบจะสร้างให้อัตโนมัติ"' : '' ?>
+                            <?= ($col === 'segment_id') ? 'aria-describedby="segment-id-help"' : '' ?>
+                        >
+                        <?php if ($col === 'segment_id'): ?>
+                            <div id="segment-id-help" class="form-text text-primary fw-semibold">
+                                <i class="bi bi-info-circle"></i>
+                                <?php if ($editing): ?>
+                                    Segment ID เดิม ระบบล็อกไว้เพื่อรักษาการอ้างอิงข้อมูล ไม่ต้องแก้ไข
+                                <?php else: ?>
+                                    ไม่ต้องกรอก ระบบจะสร้าง Segment ID ให้อัตโนมัติเมื่อกดบันทึก
+                                <?php endif; ?>
+                            </div>
+                        <?php endif; ?>
+                    <?php endif; ?>
+                </div>
+            <?php endforeach; ?>
+        </div>
+        <div class="mt-3 d-flex gap-2">
+            <button type="submit" class="btn btn-primary">บันทึก CSV</button>
+            <a class="btn btn-outline-secondary" href="index.php">ยกเลิก</a>
+        </div>
+    </form>
+</div>
+<?php endif; ?>
 <div class="ds-card"><h5>นำเข้า CSV (แทนที่ข้อมูลทั้งหมด)</h5><p class="ds-meta">ต้องมีชื่อและลำดับคอลัมน์ตรงกับ CSV เดิม ระบบตรวจ ID ซ้ำและสำรองข้อมูลก่อนแทนที่ ใช้ไฟล์ .csv UTF-8 ไม่ใช่ .xlsx</p><form method="post" enctype="multipart/form-data" onsubmit="return confirm('ยืนยันแทนที่ข้อมูลทั้งหมดด้วยไฟล์ที่นำเข้า?')"><input type="hidden" name="csrf" value="<?=e($_SESSION['segment_csrf'])?>"><div class="d-flex flex-wrap gap-2"><input type="file" name="csv_file" accept=".csv,text/csv" class="form-control" style="max-width:420px" required><button class="btn btn-outline-danger" name="action" value="import">นำเข้าและแทนที่</button></div></form></div>
 <div class="ds-card"><h5>รายการ Segments (<?=count($filtered)?>)</h5><div class="table-responsive"><table class="table table-hover align-middle ds-table"><thead><tr><th>Segment ID</th><th>เอกสาร</th><th>เนื้อหา</th><th>จัดการ</th></tr></thead><tbody><?php foreach (array_slice($filtered,0,500) as $r): ?><tr><td style="max-width:210px;word-break:break-all"><?=e($r['segment_id'])?></td><td><?=e($r['document_name']??'-')?></td><td><div class="ds-preview"><?=e(dsPreview((string)$r['content']))?></div></td><td><div class="d-flex gap-1"><a class="btn btn-sm btn-outline-primary" href="?edit=<?=urlencode($r['segment_id'])?>">แก้ไข</a><form method="post" onsubmit="return confirm('ยืนยันลบ Segment นี้?')"><input type="hidden" name="csrf" value="<?=e($_SESSION['segment_csrf'])?>"><input type="hidden" name="id" value="<?=e($r['segment_id'])?>"><button class="btn btn-sm btn-outline-danger" name="action" value="delete">ลบ</button></form></div></td></tr><?php endforeach;?></tbody></table></div><?php if(count($filtered)>500): ?><div class="alert alert-info">แสดง 500 รายการแรก โปรดค้นหาเพื่อจำกัดผลลัพธ์</div><?php endif;?></div></div></main></div></div>
 <script>

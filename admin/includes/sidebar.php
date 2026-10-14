@@ -212,22 +212,6 @@ $basePath   = $basePath ?? '';
 
         </a>
 
-        <!-- Document Data Segments -->
-        <a href="<?= $basePath ?>data_segments/index.php"
-           class="sidebar-link <?= $activeMenu === 'segments' ? 'active' : '' ?>"
-           title="จัดการ Data Segment">
-            <span class="sidebar-icon"><i class="bi bi-file-earmark-text-fill"></i></span>
-            <span class="sidebar-text">จัดการ Data Segment</span>
-        </a>
-
-        <!-- Academic guide -->
-        <a href="<?= $basePath ?>academic_guides/index.php"
-           class="sidebar-link <?= $activeMenu === 'academic_guides' ? 'active' : '' ?>"
-           title="คู่มือการเรียน">
-            <span class="sidebar-icon"><i class="bi bi-journal-text"></i></span>
-            <span class="sidebar-text">คู่มือการเรียน</span>
-        </a>
-
         <!-- Faculty Contact -->
 
         <a
@@ -251,6 +235,14 @@ $basePath   = $basePath ?? '';
                 ข้อมูลติดต่อคณะ
             </span>
 
+        </a>
+
+        <!-- Document Data Segments -->
+        <a href="<?= $basePath ?>data_segments/index.php"
+           class="sidebar-link <?= $activeMenu === 'segments' ? 'active' : '' ?>"
+           title="ข้อมูลคู่มือการเรียน">
+            <span class="sidebar-icon"><i class="bi bi-file-earmark-text-fill"></i></span>
+            <span class="sidebar-text">ข้อมูลคู่มือการเรียน</span>
         </a>
 
     </nav>
