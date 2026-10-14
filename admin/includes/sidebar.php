@@ -212,6 +212,14 @@ $basePath   = $basePath ?? '';
 
         </a>
 
+        <!-- Document Data Segments -->
+        <a href="<?= $basePath ?>data_segments/index.php"
+           class="sidebar-link <?= $activeMenu === 'segments' ? 'active' : '' ?>"
+           title="จัดการ Data Segment">
+            <span class="sidebar-icon"><i class="bi bi-file-earmark-text-fill"></i></span>
+            <span class="sidebar-text">จัดการ Data Segment</span>
+        </a>
+
         <!-- Faculty Contact -->
 
         <a
