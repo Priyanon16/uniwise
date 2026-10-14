@@ -1,4 +1,7 @@
 <?php
+require_once __DIR__ . '/includes/auth.php';
+mbs_admin_require_login();
+
 require_once "../api/db.php";
 
 function e($value)
