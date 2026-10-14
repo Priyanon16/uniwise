@@ -49,6 +49,7 @@ import requests
 from fastapi import FastAPI, Header, HTTPException
 from pydantic import BaseModel, Field
 from dotenv import load_dotenv
+import tiktoken
 
 try:
     from pythainlp.tokenize import word_tokenize
@@ -1164,6 +1165,40 @@ def verify_bearer(
             status_code=401,
             detail="Unauthorized",
         )
+
+
+class SegmentMetadataRequest(BaseModel):
+    # Small enough for admin form preview; larger documents must be chunked.
+    content: str = Field(min_length=1, max_length=100000)
+
+
+@lru_cache(maxsize=8)
+def metadata_encoding(model: str):
+    # For text-embedding-3-small this is cl100k_base.
+    # Fail if a future embedding model has no known tokenizer mapping.
+    return tiktoken.encoding_for_model(model)
+
+
+@app.post("/admin/segment-metadata")
+def segment_metadata(
+    payload: SegmentMetadataRequest,
+    authorization: Optional[str] = Header(default=None),
+):
+    verify_bearer(authorization)
+    content = payload.content
+    if not content.strip():
+        raise HTTPException(status_code=422, detail="Empty segment content")
+    if not HAVE_THAI:
+        raise HTTPException(status_code=503, detail="PyThaiNLP is required for exact Thai word segmentation")
+    try:
+        enc = metadata_encoding(OPENAI_EMBED_MODEL)
+    except KeyError:
+        raise HTTPException(status_code=503, detail="No tiktoken mapping for current embedding model")
+    # Thai lexical word count follows the retriever's newmm word-segmentation engine.
+    words = sum(1 for token in word_tokenize(content, engine="newmm", keep_whitespace=False) if token.strip())
+    # Embedding token count, not BM25 lexical token count or estimated character count.
+    token_count = len(enc.encode(content, disallowed_special=()))
+    return {"word_count": words, "tokens": token_count, "tokenizer": enc.name, "model": OPENAI_EMBED_MODEL}
 
 
 @app.get("/health")
