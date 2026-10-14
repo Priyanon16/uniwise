@@ -220,6 +220,14 @@ $basePath   = $basePath ?? '';
             <span class="sidebar-text">จัดการ Data Segment</span>
         </a>
 
+        <!-- Academic guide -->
+        <a href="<?= $basePath ?>academic_guides/index.php"
+           class="sidebar-link <?= $activeMenu === 'academic_guides' ? 'active' : '' ?>"
+           title="คู่มือการเรียน">
+            <span class="sidebar-icon"><i class="bi bi-journal-text"></i></span>
+            <span class="sidebar-text">คู่มือการเรียน</span>
+        </a>
+
         <!-- Faculty Contact -->
 
         <a
@@ -262,6 +270,15 @@ $basePath   = $basePath ?? '';
 
 
     <nav class="sidebar-nav">
+
+        <form method="post" action="<?= $basePath ?>logout.php" style="margin:0">
+            <input type="hidden" name="csrf" value="<?= htmlspecialchars((string)($_SESSION['mbs_admin_logout_csrf'] ?? ''), ENT_QUOTES, 'UTF-8') ?>">
+            <button type="submit" class="sidebar-link" title="ออกจากระบบ"
+                style="width:100%;border:0;background:transparent;color:inherit;font:inherit;text-align:left;cursor:pointer">
+                <span class="sidebar-icon"><i class="bi bi-box-arrow-right"></i></span>
+                <span class="sidebar-text">ออกจากระบบ</span>
+            </button>
+        </form>
 
         <a
             href="<?= $basePath ?>../"
