@@ -1,289 +1,308 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#0b4aaa">
+  <meta name="theme-color" content="#1155b7">
   <meta name="description" content="MBS UniWise AI ผู้ช่วยตอบคำถามคณะการบัญชีและการจัดการ มหาวิทยาลัยมหาสารคาม">
-  <title>MBS UniWise AI | ผู้ช่วยอัจฉริยะ</title>
-  <link rel="icon" href="https://acad-mbs.msu.ac.th/mbs.png" type="image/png">
+  <title>MBS UniWise AI | ผู้ช่วยตอบคำถามอัจฉริยะ</title>
+  <link rel="icon" type="image/png" href="https://acad-mbs.msu.ac.th/mbs.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --blue: #1768e9; --darkblue: #0b438f; --ink: #1d2b45;
-      --muted: #718099; --line: #e5ebf3; --surface: #f6f9fd;
+      color-scheme: light;
+      --navy: #153256;
+      --blue: #155ecb;
+      --blue-strong: #0d4fae;
+      --muted: #6a7a93;
+      --line: #e3eaf4;
+      --cloud: #f5f8fd;
       --safe-top: env(safe-area-inset-top, 0px);
       --safe-bottom: env(safe-area-inset-bottom, 0px);
     }
-    * { box-sizing: border-box; }
-    html, body { width: 100%; height: 100%; margin: 0; }
-    body { font-family: 'Prompt', Tahoma, sans-serif; color: var(--ink); background: #edf3fc; }
-    button, a { font: inherit; }
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { height: 100%; width: 100%; margin: 0; }
+    body { background: #eaf2fc; color: var(--navy); font: 400 14px/1.65 'Prompt', Tahoma, sans-serif; }
+    button, a, textarea { font: inherit; }
     button { cursor: pointer; }
-    button:focus-visible, a:focus-visible { outline: 3px solid #9dc6ff; outline-offset: 3px; }
-    a { text-decoration: none; }
-
-    .app {
-      display: grid; grid-template-columns: 258px minmax(0, 1fr);
-      width: min(1600px, calc(100% - 38px));
-      height: calc(100vh - 38px); height: calc(100dvh - 38px);
-      min-height: 510px; margin: 19px auto; overflow: hidden;
-      border: 1px solid #dce7f5; border-radius: 22px; background: #fff;
-      box-shadow: 0 20px 75px rgba(30, 67, 119, .11);
+    a { color: inherit; text-decoration: none; }
+    button:focus-visible, a:focus-visible, textarea:focus-visible {
+      outline: 3px solid #98c3ff; outline-offset: 3px;
     }
-    /* Navigation area on large screens */
+    .layout {
+      display: grid; grid-template-columns: 300px minmax(0, 1fr);
+      width: min(1540px, calc(100% - 36px));
+      height: calc(100vh - 36px); height: calc(100dvh - 36px);
+      margin: 18px auto; overflow: hidden;
+      border: 1px solid #dfebf8; border-radius: 22px;
+      background: #fff; box-shadow: 0 22px 75px rgba(25, 66, 137, .10);
+    }
     .sidebar {
-      display: flex; flex-direction: column; gap: 21px; min-height: 0;
-      padding: 23px 17px 18px; background: #f8faff;
-      border-right: 1px solid var(--line);
+      display: flex; flex-direction: column; min-height: 0; padding: 22px 16px 16px;
+      background: #fbfcff; border-right: 1px solid var(--line);
     }
-    .identity { display: flex; gap: 11px; align-items: center; padding: 3px 5px; }
-    .logo-wrap {
-      display: grid; place-items: center; flex: 0 0 54px;
-      width: 54px; height: 54px; padding: 5px; background: white;
-      border: 1px solid #e0e8f5; border-radius: 17px;
-      box-shadow: 0 3px 10px rgba(24, 75, 146, .06);
+    .identity { display: flex; align-items: center; gap: 12px; padding: 5px 5px 17px; }
+    .logo {
+      display: grid; place-items: center; flex: 0 0 57px; width: 57px; height: 57px;
+      background: #fff; padding: 5px; border: 1px solid #e3ebf8; border-radius: 16px;
+      box-shadow: 0 4px 18px rgba(34, 76, 138, .05);
     }
-    .logo-wrap img { width: 100%; height: 100%; object-fit: contain; }
-    .identity-name { font-size: 15px; font-weight: 700; color: #123e85; line-height: 1.4; }
-    .identity-sub { font-size: 10px; color: var(--muted); line-height: 1.5; }
-    .section-label { margin: 0 11px 8px; font-size: 11px; color: #7e8da5; font-weight: 500; }
-    .nav-item {
-      display: flex; align-items: center; gap: 11px; width: 100%; min-height: 45px;
-      padding: 11px 13px; border: 0; border-radius: 13px; color: #455c7c;
-      background: transparent; text-align: left; font-size: 12px;
+    .logo img { width: 100%; height: 100%; object-fit: contain; }
+    .identity h2 { font-size: 16px; margin: 0 0 1px; color: #114c9e; line-height: 1.25; }
+    .identity p { margin: 0; font-size: 10px; color: var(--muted); line-height: 1.45; }
+    .divider { height: 1px; background: var(--line); flex: 0 0 auto; }
+    .side-nav { display: grid; gap: 9px; padding: 19px 2px 16px; }
+    .nav-link {
+      display: block; border: 1px solid var(--line); border-radius: 12px;
+      padding: 12px 14px; background: #fff; color: #38506f; font-weight: 500;
+      font-size: 12px; transition: background .15s ease, border-color .15s ease;
     }
-    .nav-item svg { width: 19px; height: 19px; flex: 0 0 auto; }
-    .nav-item.active { background: #e7f0ff; color: #1256c0; font-weight: 600; }
-    .nav-item:hover { background: #eaf1fa; }
-    .topic-area { min-height: 0; overflow-y: auto; }
-    .topic-list { display: grid; gap: 9px; padding: 0 4px; }
-    .topic {
-      display: flex; align-items: center; gap: 10px;
-      padding: 11px 12px; border: 1px solid #e7edf6;
-      border-radius: 12px; background: #fff; color: #526580;
-      font-size: 11px; line-height: 1.55;
+    .nav-link:hover { background: #eff6ff; border-color: #cbdcf7; }
+    .nav-link.primary { color: var(--blue-strong); background: #eaf2ff; border-color: #d8e7ff; font-weight: 600; }
+    .nav-link strong { display: block; margin-bottom: 1px; }
+    .nav-link small { display: block; color: #7385a0; font-weight: 400; line-height: 1.5; font-size: 10px; }
+    .topics { display: flex; flex: 1; flex-direction: column; min-height: 0; }
+    .topics h3 { font-size: 12px; font-weight: 600; margin: 14px 7px 5px; }
+    .topics > p { margin: 0 7px 11px; color: var(--muted); font-size: 10px; }
+    .topic-list { flex: 1; min-height: 0; overflow-y: auto; display: grid; align-content: start; gap: 9px; padding: 2px 3px 12px; scrollbar-width: thin; }
+    .question {
+      display: block; width: 100%; text-align: left; background: #fff; padding: 12px 13px;
+      border: 1px solid var(--line); border-radius: 13px; color: #233b5a;
+      transition: border-color .15s, box-shadow .15s;
     }
-    .topic span { font-size: 17px; flex: 0 0 auto; }
-    .side-bottom { margin-top: auto; }
-    .notice {
-      display: flex; align-items: flex-start; gap: 9px; margin-top: 12px;
-      padding: 13px 12px; border: 1px solid #e6ecf6; border-radius: 13px;
-      background: #fff; color: #8090aa; font-size: 10px; line-height: 1.85;
-    }
-    .notice svg { width: 16px; height: 16px; flex: 0 0 auto; margin-top: 2px; }
-
-    /* Chat area */
-    .main { display: flex; flex-direction: column; min-width: 0; min-height: 0; }
+    .question:hover { border-color: #a8c8f9; box-shadow: 0 3px 12px rgba(42, 90, 166, .06); }
+    .question .category { display: block; font-size: 11px; font-weight: 600; color: #1557b4; margin-bottom: 3px; }
+    .question .example { display: block; font-size: 10px; line-height: 1.7; color: #667891; }
+    .side-note { padding: 12px 5px 0; border-top: 1px solid var(--line); color: #7e8aa0; font-size: 10px; }
+    .main { min-width: 0; min-height: 0; display: flex; flex-direction: column; }
     .topbar {
-      display: flex; justify-content: space-between; align-items: center; gap: 13px;
-      min-height: 80px; padding: 15px 24px;
-      border-bottom: 1px solid var(--line); background: #fff;
+      min-height: 79px; display: flex; align-items: center; justify-content: space-between;
+      gap: 12px; padding: 14px 23px; border-bottom: 1px solid var(--line); background: #fff;
     }
-    .heading { display: flex; align-items: center; min-width: 0; gap: 12px; }
-    .bot-icon {
-      display: grid; place-items: center; flex: 0 0 46px;
-      width: 46px; height: 46px; border-radius: 15px; color: white;
-      background: linear-gradient(150deg, #248bff, #0d53c7);
-      box-shadow: 0 7px 17px rgba(23, 104, 233, .23);
+    .topbar h1 { font-size: 19px; margin: 0; font-weight: 700; line-height: 1.3; letter-spacing: -.3px; }
+    .topbar p { margin: 5px 0 0; font-size: 11px; color: var(--muted); }
+    .top-title { min-width: 0; }
+    .top-actions { display: flex; align-items: center; gap: 8px; }
+    .action {
+      display: inline-flex; align-items: center; justify-content: center; min-height: 39px;
+      padding: 7px 14px; border: 1px solid #dfe8f4; border-radius: 11px;
+      background: #fff; color: #3d597d; white-space: nowrap; font-size: 11px; font-weight: 500;
     }
-    .bot-icon svg { width: 25px; height: 25px; }
-    .heading-info { min-width: 0; }
-    .heading h1 { margin: 0; font-size: 17px; line-height: 1.4; font-weight: 700; }
-    .heading p { display: flex; align-items: center; gap: 6px; margin: 4px 0 0; font-size: 11px; color: var(--muted); }
-    .online-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #22b889; }
-    .tools { display: flex; gap: 8px; }
-    .icon-btn {
-      display: inline-flex; align-items: center; justify-content: center; gap: 7px;
-      min-height: 39px; min-width: 39px; padding: 0 11px; border-radius: 12px;
-      border: 1px solid var(--line); background: #fff; color: #596d89;
-      transition: background .16s, color .16s;
+    .action:hover { background: #f2f7ff; }
+    .action.primary { background: var(--blue); border-color: var(--blue); color: #fff; }
+    .action.primary:hover { background: var(--blue-strong); }
+    .menu-toggle { display: none; }
+    .mobile-logo { display: none; }
+    .chat-area { display: flex; min-height: 0; flex: 1; padding: 15px; background: var(--cloud); }
+    .chat-frame {
+      flex: 1; min-height: 0; position: relative; border-radius: 16px; overflow: hidden;
+      border: 1px solid #e4ebf4; background: white;
+      box-shadow: 0 7px 28px rgba(53, 89, 138, .045);
     }
-    .icon-btn:hover { background: #f0f6ff; color: var(--blue); }
-    .icon-btn svg { height: 18px; width: 18px; flex: 0 0 auto; }
-    .open-btn { color: #1459c4; background: #edf4ff; border-color: #dfebff; font-weight: 500; font-size: 11px; }
-    .menu-btn { display: none; }
-    .chat-space { display: flex; flex: 1; min-height: 0; padding: 16px; background: var(--surface); }
-    .chat-shell {
-      position: relative; flex: 1; min-height: 0; overflow: hidden;
-      border: 1px solid #e7edf6; border-radius: 16px; background: #fff;
-      box-shadow: 0 4px 18px rgba(37, 69, 113, .045);
+    #difyFrame { display: block; width: 100%; height: 100%; min-height: 0; border: none; background: #fff; }
+    .footer { flex: 0 0 auto; text-align: center; padding: 0 10px 11px; background: var(--cloud); color: #8b98ab; font-size: 10px; }
+    .footer a { color: var(--blue); }
+    .mobile-scrim { display: none; }
+    .toast {
+      position: fixed; bottom: calc(26px + var(--safe-bottom)); left: 50%; z-index: 100;
+      transform: translate(-50%, 20px); padding: 12px 18px; border-radius: 12px;
+      box-shadow: 0 10px 40px rgba(23, 51, 83, .22); background: #193f70; color: #fff;
+      font-size: 12px; opacity: 0; pointer-events: none; transition: .2s ease; text-align: center;
+      max-width: min(90vw, 470px);
     }
-    iframe { display: block; width: 100%; height: 100%; border: 0; background: white; }
-    .chat-foot {
-      flex: 0 0 auto; padding: 0 14px 11px;
-      background: var(--surface); color: #8b98ad; text-align: center;
-      font-size: 10px;
-    }
-    .chat-foot a { color: #326cc4; }
-    .screen { display: none; }
+    .toast.visible { opacity: 1; transform: translate(-50%, 0); }
+    dialog { border: 1px solid var(--line); border-radius: 16px; width: min(500px, calc(100vw - 28px)); padding: 22px; box-shadow: 0 30px 70px rgba(18, 44, 80, .22); }
+    dialog::backdrop { background: rgba(24, 49, 84, .5); }
+    dialog h3 { margin: 0 0 5px; font-size: 16px; }
+    dialog p { margin: 0 0 13px; font-size: 12px; color: var(--muted); }
+    dialog textarea { width: 100%; min-height: 95px; padding: 12px; border: 1px solid var(--line); border-radius: 10px; resize: none; color: var(--navy); }
+    dialog .dialog-actions { display: flex; justify-content: flex-end; margin-top: 14px; }
 
-    /* iPad and small laptop */
-    @media (max-width: 1024px) {
-      .app { width: 100%; height: 100vh; height: 100dvh; min-height: 0; margin: 0; border: 0; border-radius: 0; }
+    @media (max-width: 1100px) {
+      .layout { width: 100%; height: 100vh; height: 100dvh; margin: 0; border: none; border-radius: 0; grid-template-columns: 264px minmax(0, 1fr); }
       .sidebar { padding-inline: 13px; }
-      .app { grid-template-columns: 220px minmax(0,1fr); }
-      .topbar { padding-inline: 18px; }
-      .chat-space { padding: 10px; }
+      .topbar { padding-inline: 15px; }
+      .chat-area { padding: 10px; }
     }
-    /* Phones & narrow tablets: full width chat and accessible menu */
-    @media (max-width: 720px) {
-      .app { display: block; }
+    @media (max-width: 780px) {
+      .layout { display: block; }
       .main { height: 100%; }
       .sidebar {
-        position: fixed; inset: 0 auto 0 0; width: min(310px, 85vw);
-        height: 100vh; height: 100dvh; z-index: 30;
-        padding-top: calc(20px + var(--safe-top));
-        transform: translateX(-103%); transition: transform .22s ease;
-        box-shadow: 15px 0 45px rgba(9, 38, 87, .13);
+        position: fixed; top: 0; left: 0; z-index: 50; width: min(345px, 88vw);
+        height: 100vh; height: 100dvh; padding-top: calc(16px + var(--safe-top));
+        box-shadow: 16px 0 44px rgba(20, 48, 87, .16);
+        transform: translateX(-106%); transition: transform .22s ease;
       }
-      body.menu-open .sidebar { transform: translateX(0); }
-      .screen {
-        position: fixed; inset: 0; z-index: 20; display: block;
-        background: rgba(16, 37, 70, .4); border: 0;
-        opacity: 0; visibility: hidden; transition: opacity .22s, visibility .22s;
-      }
-      body.menu-open .screen { opacity: 1; visibility: visible; }
-      .menu-btn { display: inline-flex; }
-      .topbar { min-height: 71px; padding: calc(9px + var(--safe-top)) 12px 10px; }
-      .heading { gap: 9px; }
-      .bot-icon { width: 42px; height: 42px; flex-basis: 42px; border-radius: 13px; }
-      .heading h1 { font-size: 14px; }
-      .heading p { font-size: 10px; }
-      .tools { gap: 5px; }
-      .icon-btn { min-width: 36px; min-height: 36px; padding: 0 8px; }
-      .open-btn span { display: none; }
-      .chat-space { padding: 0; }
-      .chat-shell { border: 0; border-radius: 0; box-shadow: none; }
-      .chat-foot { display: none; }
+      body.nav-open .sidebar { transform: translateX(0); }
+      .mobile-scrim { position: fixed; inset: 0; z-index: 45; display: block; background: rgba(12, 32, 64, .48); border: 0; opacity: 0; visibility: hidden; transition: .22s ease; }
+      body.nav-open .mobile-scrim { opacity: 1; visibility: visible; }
+      .menu-toggle { display: inline-flex; }
+      .mobile-logo { display: block; height: 32px; width: 32px; object-fit: contain; flex: 0 0 32px; }
+      .topbar { min-height: 68px; padding: calc(10px + var(--safe-top)) 12px 10px; gap: 8px; }
+      .topbar h1 { font-size: 15px; }
+      .topbar p { font-size: 9px; margin-top: 2px; }
+      .top-actions { gap: 5px; }
+      .action { min-height: 35px; padding: 6px 10px; font-size: 10px; }
+      .chat-area { padding: 0; }
+      .chat-frame { border: none; border-radius: 0; box-shadow: none; }
+      .footer { display: none; }
     }
-    @media (max-width: 380px) {
-      .topbar { padding-left: 8px; padding-right: 8px; gap: 5px; }
-      .heading h1 { font-size: 12px; }
-      .heading p { font-size: 9px; }
-      .bot-icon { width: 36px; height: 36px; flex-basis: 36px; }
-      .bot-icon svg { width: 21px; height: 21px; }
-      .icon-btn { min-width: 32px; min-height: 34px; padding: 0 6px; }
+    @media (max-width: 390px) {
+      .topbar { padding-inline: 7px; gap: 4px; }
+      .topbar h1 { font-size: 13px; }
+      .topbar p { max-width: 140px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-size: 8px; }
+      .action { padding: 6px 7px; font-size: 9px; }
     }
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after { transition: none !important; }
-    }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; } }
   </style>
 </head>
 <body>
-  <!-- เปลี่ยนเพียง URL นี้หาก Public URL ของ Dify เปลี่ยน -->
-  <script>
-    const DIFY_CHAT_URL = 'http://119.10.140.166:8081/chatbot/hnT1vRNUKawcbPCk';
-  </script>
-
-  <div class="app">
-    <aside class="sidebar" id="sidebar" aria-label="เมนูหลัก">
+  <div class="layout">
+    <aside class="sidebar" id="sidebar" aria-label="เมนู MBS UniWise AI">
       <div class="identity">
-        <div class="logo-wrap">
-          <img src="https://acad-mbs.msu.ac.th/mbs.png" alt="ตราคณะการบัญชีและการจัดการ มหาวิทยาลัยมหาสารคาม" onerror="this.style.display='none';this.parentNode.textContent='MBS'">
-        </div>
+        <div class="logo"><img src="https://acad-mbs.msu.ac.th/mbs.png" alt="ตราคณะการบัญชีและการจัดการ มหาวิทยาลัยมหาสารคาม" onerror="this.style.display='none';this.parentElement.textContent='MBS'"></div>
         <div>
-          <div class="identity-name">MBS UniWise AI</div>
-          <div class="identity-sub">Mahasarakham Business School</div>
+          <h2>MBS UniWise AI</h2>
+          <p>คณะการบัญชีและการจัดการ<br>มหาวิทยาลัยมหาสารคาม</p>
         </div>
       </div>
-
-      <nav aria-label="ทางลัด">
-        <p class="section-label">เมนู</p>
-        <a class="nav-item active" href="#chat" onclick="closeMenu()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7A8.38 8.38 0 0 1 4 11.5 8.5 8.5 0 0 1 8.7 3.9a8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5Z"/></svg>
-          สนทนากับ AI
+      <div class="divider"></div>
+      <nav class="side-nav" aria-label="หน้าสนทนาและประวัติ">
+        <a href="#chat" class="nav-link primary" id="sidebarChat">สนทนากับ AI</a>
+        <a id="historySide" class="nav-link" href="#" target="_blank" rel="noopener noreferrer">
+          <strong>ประวัติการสนทนา Dify</strong>
+          <small>เปิดหน้าประวัติของ Dify โดยตรง</small>
         </a>
-        <a class="nav-item" href="https://mbs.msu.ac.th/th2024/index.php" target="_blank" rel="noopener noreferrer">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"/></svg>
-          เว็บไซต์คณะ MBS
-        </a>
+        <a id="fullChatSide" class="nav-link" href="#" target="_blank" rel="noopener noreferrer">เปิดแชทเต็มหน้า</a>
       </nav>
-
-      <section class="topic-area" aria-label="หมวดหมู่คำถามที่แนะนำ">
-        <p class="section-label">ลองถามเกี่ยวกับ</p>
-        <div class="topic-list">
-          <div class="topic"><span>🎓</span> หลักสูตรและสาขาวิชา</div>
-          <div class="topic"><span>📝</span> การสมัครเข้าศึกษา</div>
-          <div class="topic"><span>📅</span> ปฏิทินการศึกษา</div>
-          <div class="topic"><span>💼</span> สหกิจศึกษาและฝึกงาน</div>
-          <div class="topic"><span>👨‍🏫</span> อาจารย์และบุคลากร</div>
-          <div class="topic"><span>📍</span> ช่องทางติดต่อคณะ</div>
+      <div class="divider"></div>
+      <section class="topics" aria-labelledby="questionHeading">
+        <h3 id="questionHeading">ลองถามเกี่ยวกับ</h3>
+        <p>แตะตัวอย่างเพื่อคัดลอก แล้วนำไปวางในแชท</p>
+        <div class="topic-list" id="questions">
+          <button class="question" type="button" data-question="คณะการบัญชีและการจัดการมีสาขาวิชาระดับปริญญาตรีอะไรบ้าง"><span class="category">หลักสูตรและสาขาวิชา</span><span class="example">เช่น คณะมีสาขาวิชาระดับปริญญาตรีอะไรบ้าง?</span></button>
+          <button class="question" type="button" data-question="สาขาคอมพิวเตอร์ธุรกิจต้องเรียนทั้งหมดกี่หน่วยกิต"><span class="category">หน่วยกิตและแผนการเรียน</span><span class="example">เช่น สาขาคอมพิวเตอร์ธุรกิจต้องเรียนกี่หน่วยกิต?</span></button>
+          <button class="question" type="button" data-question="การสมัครเข้าศึกษาคณะการบัญชีและการจัดการมีขั้นตอนอย่างไร"><span class="category">การรับสมัครเข้าศึกษา</span><span class="example">เช่น สมัครเข้าศึกษามีขั้นตอนอย่างไร?</span></button>
+          <button class="question" type="button" data-question="ภาคเรียนที่ 2 ปีการศึกษา 2569 ลงทะเบียนเรียนวันไหน"><span class="category">ปฏิทินการศึกษา</span><span class="example">เช่น ภาคเรียน 2/2569 ลงทะเบียนวันไหน?</span></button>
+          <button class="question" type="button" data-question="การลาพักการศึกษาต้องดำเนินการอย่างไร"><span class="category">คู่มือและระเบียบการเรียน</span><span class="example">เช่น ถ้าจะลาพักการศึกษา ต้องทำอย่างไร?</span></button>
+          <button class="question" type="button" data-question="เอกสารที่ต้องใช้สำหรับสมัครสหกิจศึกษามีอะไรบ้าง"><span class="category">สหกิจศึกษาและฝึกงาน</span><span class="example">เช่น สมัครสหกิจศึกษาต้องใช้เอกสารอะไรบ้าง?</span></button>
+          <button class="question" type="button" data-question="อาจารย์ประจำสาขาคอมพิวเตอร์ธุรกิจมีใครบ้าง"><span class="category">อาจารย์และบุคลากร</span><span class="example">เช่น อาจารย์สาขาคอมพิวเตอร์ธุรกิจมีใครบ้าง?</span></button>
+          <button class="question" type="button" data-question="อาจารย์ที่ปรึกษาสาขาคอมพิวเตอร์ธุรกิจปีการศึกษา 2569 มีใครบ้าง"><span class="category">อาจารย์ที่ปรึกษา</span><span class="example">เช่น ปี 2569 มีอาจารย์ที่ปรึกษากลุ่มไหนบ้าง?</span></button>
+          <button class="question" type="button" data-question="ช่องทางติดต่อคณะการบัญชีและการจัดการมีอะไรบ้าง"><span class="category">ช่องทางติดต่อคณะ</span><span class="example">เช่น เบอร์โทรหรือช่องทางติดต่อคณะคืออะไร?</span></button>
         </div>
       </section>
-
-      <div class="side-bottom">
-        <a class="nav-item" id="directChatLink" href="#" target="_blank" rel="noopener noreferrer">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6M10 14 20 4"/><path d="M20 13v6a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h6"/></svg>
-          เปิดแชทเต็มหน้า
-        </a>
-        <div class="notice">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 7.5v1"/></svg>
-          คำตอบสร้างโดย AI ควรตรวจสอบข้อมูลสำคัญกับประกาศทางการอีกครั้ง
-        </div>
-      </div>
+      <p class="side-note">คำตอบจาก AI ควรตรวจสอบกับประกาศทางการเมื่อเป็นข้อมูลสำคัญ</p>
     </aside>
 
-    <button class="screen" id="screen" aria-label="ปิดเมนู" onclick="closeMenu()"></button>
+    <button class="mobile-scrim" id="scrim" type="button" aria-label="ปิดเมนูตัวอย่างคำถาม"></button>
 
     <main class="main" id="chat">
       <header class="topbar">
-        <div class="heading">
-          <button class="icon-btn menu-btn" id="menuButton" aria-label="เปิดเมนู" aria-controls="sidebar" aria-expanded="false" onclick="toggleMenu()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
-          </button>
-          <div class="bot-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="7" width="16" height="13" rx="5"/><path d="M12 3v4M9 3h6M8 12h.01M16 12h.01M9 16c1.8 1 4.2 1 6 0"/></svg>
-          </div>
-          <div class="heading-info">
+        <div class="top-actions" style="min-width:0">
+          <button type="button" class="action menu-toggle" id="menuButton" aria-label="เปิดเมนูและตัวอย่างคำถาม" aria-controls="sidebar" aria-expanded="false">เมนู</button>
+          <img class="mobile-logo" src="https://acad-mbs.msu.ac.th/mbs.png" alt="โลโก้คณะการบัญชีและการจัดการ" onerror="this.style.display='none'">
+          <div class="top-title">
             <h1>MBS UniWise AI</h1>
-            <p><span class="online-dot" aria-hidden="true"></span> ผู้ช่วยตอบคำถามคณะการบัญชีและการจัดการ</p>
+            <p>ผู้ช่วยตอบคำถามคณะการบัญชีและการจัดการ</p>
           </div>
         </div>
-        <div class="tools">
-          <button class="icon-btn" onclick="refreshChat()" title="รีเฟรชหน้าแชท" aria-label="รีเฟรชหน้าแชท">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11a8 8 0 1 1-2.3-5.7M20 4v6h-6"/></svg>
-          </button>
-          <a class="icon-btn open-btn" id="openChat" href="#" target="_blank" rel="noopener noreferrer" title="เปิดแชทเต็มหน้า" aria-label="เปิดแชทเต็มหน้า">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6M10 14 20 4"/><path d="M20 13v6a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h6"/></svg>
-            <span>เปิดเต็มหน้า</span>
-          </a>
+        <div class="top-actions">
+          <button type="button" class="action" id="reloadChat" title="โหลดหน้าแชทใหม่ ไม่ได้ลบประวัติ">รีเฟรช</button>
+          <a class="action primary" id="historyTop" href="#" target="_blank" rel="noopener noreferrer" title="เปิดหน้า Dify แบบมีประวัติการสนทนา">ดูประวัติ</a>
         </div>
       </header>
-
-      <div class="chat-space">
-        <div class="chat-shell">
-          <iframe id="difyFrame" title="แชทบอต MBS UniWise AI" allow="microphone; clipboard-write" loading="eager" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+      <section class="chat-area" aria-label="พื้นที่สนทนากับ Dify">
+        <div class="chat-frame">
+          <!-- /chatbot/ เป็นหน้าแชทฝังที่เคยใช้งานได้บนเว็บนี้ -->
+          <iframe id="difyFrame" title="MBS UniWise AI Chatflow" loading="eager" scrolling="yes" allow="microphone; clipboard-write" referrerpolicy="strict-origin-when-cross-origin"></iframe>
         </div>
-      </div>
-      <footer class="chat-foot">MBS UniWise AI • คณะการบัญชีและการจัดการ มหาวิทยาลัยมหาสารคาม · หากแชทไม่แสดง <a id="footerOpen" href="#" target="_blank" rel="noopener noreferrer">เปิดแชทแยกหน้าต่าง</a></footer>
+      </section>
+      <footer class="footer">หากแชทไม่แสดงหรือข้อความต้อนรับถูกตัด <a id="fullChat" href="#" target="_blank" rel="noopener noreferrer">เปิดแชทเต็มหน้า</a> · ใช้ Dify Chatflow เดิม</footer>
     </main>
   </div>
 
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <dialog id="manualCopy">
+    <h3>คัดลอกตัวอย่างคำถาม</h3>
+    <p>เลือกข้อความด้านล่างแล้วคัดลอกไปวางในช่องพิมพ์ของ Dify</p>
+    <textarea id="copyText" readonly></textarea>
+    <div class="dialog-actions"><button type="button" class="action primary" id="closeCopy">ปิด</button></div>
+  </dialog>
   <script>
-    const frame = document.getElementById('difyFrame');
-    frame.src = DIFY_CHAT_URL; // ใช้ /chatbot/ ที่มีอยู่จริง ไม่ใช่ /chat/ ที่แสดงข้อผิดพลาด
-    ['directChatLink', 'openChat', 'footerOpen'].forEach(id => {
-      document.getElementById(id).href = DIFY_CHAT_URL;
+    /* ===== ตั้งค่า Dify ที่ใช้อยู่จริง: ไม่ต้องใช้ PHP / API Key ===== */
+    const DIFY_BASE = 'http://119.10.140.166:8081';
+    const DIFY_APP_TOKEN = 'hnT1vRNUKawcbPCk';
+    const DIFY_EMBED_URL = `${DIFY_BASE}/chatbot/${DIFY_APP_TOKEN}`;
+    // หน้านี้ของ Dify ใช้แสดงรายการประวัติสนทนา (ไม่ฝังลง iframe เพื่อเลี่ยงหน้าสีเทา)
+    const DIFY_HISTORY_URL = `${DIFY_BASE}/chat/${DIFY_APP_TOKEN}`;
+
+    const iframe = document.getElementById('difyFrame');
+    iframe.src = DIFY_EMBED_URL;
+    document.getElementById('fullChat').href = DIFY_EMBED_URL;
+    document.getElementById('fullChatSide').href = DIFY_EMBED_URL;
+    for (const id of ['historyTop', 'historySide']) {
+      document.getElementById(id).href = DIFY_HISTORY_URL;
+    }
+    document.getElementById('reloadChat').addEventListener('click', () => {
+      // ไม่ใช้ location.reload() เพื่อไม่ให้หน้าเว็บเลื่อนกลับโดยไม่จำเป็น
+      iframe.src = DIFY_EMBED_URL;
+      showToast('โหลดหน้าแชทใหม่แล้ว การรีเฟรชไม่ได้ลบประวัติใน Dify');
     });
-    function refreshChat() {
-      // การรีเฟรชไม่ใช่การเริ่มบทสนทนาใหม่ และไม่ได้ลบประวัติใน Dify
-      frame.src = DIFY_CHAT_URL;
+
+    function setMenuOpen(open) {
+      document.body.classList.toggle('nav-open', open);
+      const button = document.getElementById('menuButton');
+      button.setAttribute('aria-expanded', String(open));
+      button.textContent = open ? 'ปิดเมนู' : 'เมนู';
     }
-    function toggleMenu() {
-      const open = document.body.classList.toggle('menu-open');
-      document.getElementById('menuButton').setAttribute('aria-expanded', String(open));
-      document.getElementById('menuButton').setAttribute('aria-label', open ? 'ปิดเมนู' : 'เปิดเมนู');
+    document.getElementById('menuButton').addEventListener('click', () => {
+      setMenuOpen(!document.body.classList.contains('nav-open'));
+    });
+    document.getElementById('scrim').addEventListener('click', () => setMenuOpen(false));
+    document.getElementById('sidebarChat').addEventListener('click', () => setMenuOpen(false));
+    document.addEventListener('keydown', event => { if (event.key === 'Escape') setMenuOpen(false); });
+    window.addEventListener('resize', () => { if (window.innerWidth > 780) setMenuOpen(false); });
+
+    let toastTimer;
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.classList.add('visible');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove('visible'), 3500);
     }
-    function closeMenu() {
-      document.body.classList.remove('menu-open');
-      document.getElementById('menuButton').setAttribute('aria-expanded', 'false');
-      document.getElementById('menuButton').setAttribute('aria-label', 'เปิดเมนู');
+    async function copySample(text) {
+      try {
+        // บน HTTPS หรือ localhost ใช้ Clipboard API; บน HTTP ให้ใช้วิธีสำรอง
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(text);
+        } else {
+          const helper = document.createElement('textarea');
+          helper.value = text;
+          helper.style.position = 'fixed'; helper.style.opacity = '0';
+          document.body.appendChild(helper);
+          helper.select();
+          const copied = document.execCommand('copy');
+          helper.remove();
+          if (!copied) throw new Error('Copy not available');
+        }
+        setMenuOpen(false);
+        showToast('คัดลอกคำถามแล้ว นำไปวางในช่องพิมพ์ของแชทได้เลย');
+      } catch (error) {
+        const dialog = document.getElementById('manualCopy');
+        const field = document.getElementById('copyText');
+        field.value = text;
+        setMenuOpen(false);
+        dialog.showModal();
+        field.focus(); field.select();
+      }
     }
-    document.addEventListener('keydown', event => { if (event.key === 'Escape') closeMenu(); });
-    window.addEventListener('resize', () => { if (window.innerWidth > 720) closeMenu(); });
+    document.querySelectorAll('.question').forEach(button => {
+      button.addEventListener('click', () => copySample(button.dataset.question));
+    });
+    document.getElementById('closeCopy').addEventListener('click', () => document.getElementById('manualCopy').close());
   </script>
 </body>
 </html>
