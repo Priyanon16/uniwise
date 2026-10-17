@@ -1,0 +1,4 @@
+<FilesMatch "^(config\.(local|example)\.php|.*\.(log|json|env))$">
+  Require all denied
+</FilesMatch>
+Options -Indexes
