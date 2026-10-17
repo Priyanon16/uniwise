@@ -608,7 +608,7 @@
       if(!health.ready)throw Error(health.message||'เซิร์ฟเวอร์ยังไม่พร้อม');
       $('statusDot').classList.add('ready');$('statusText').textContent='พร้อมให้บริการ';
       await refreshHistory();loaded=true;
-    }catch(e){displayError='ยังเชื่อมต่อ Dify ไม่ได้';list();$('statusText').textContent='ยังไม่ได้เชื่อมต่อ';$('statusAlert').textContent=e.message+' — โปรดตรวจสอบ api/config.local.php';$('statusAlert').classList.add('visible')}
+    }catch(e){displayError='ยังเชื่อมต่อ Dify ไม่ได้';list();$('statusText').textContent='ยังไม่ได้เชื่อมต่อ';$('statusAlert').textContent=e.message+' — โปรดตรวจสอบ api/config.php';$('statusAlert').classList.add('visible')}
   })();
 </script>
 </body>
