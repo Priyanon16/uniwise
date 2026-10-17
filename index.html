@@ -48,7 +48,11 @@
     .history-row{display:flex;align-items:center;gap:0;min-width:0;min-height:40px;border-radius:10px;margin:3px 0}
     .history-row:hover{background:#eaf0f9}
     .history-row.active{background:#e5edfa}
-    .history-open{display:block;text-align:left;flex:1;min-width:0;background:transparent;border:0;padding:10px 8px 10px 12px;font-size:11.5px;line-height:1.55;color:#334155;text-overflow:ellipsis;white-space:nowrap;overflow:hidden}
+    .history-open{display:flex;align-items:center;gap:7px;text-align:left;flex:1;min-width:0;background:transparent;border:0;padding:10px 8px 10px 12px;font-size:11.5px;line-height:1.55;color:#334155;white-space:nowrap;overflow:hidden}
+    .history-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+    .history-pin-icon{width:13px;height:13px;flex:none;fill:none;stroke:var(--primary);stroke-width:1.8;stroke-linejoin:round;stroke-linecap:round}
+    .pin-heading{display:flex;align-items:center;gap:6px;color:var(--primary)}
+    .pin-heading svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
     .history-row.active .history-open{color:#0d4da7;font-weight:600}
     .more-button{font-size:18px;line-height:1;flex:none;width:31px;height:32px;margin-right:3px;border:0;background:transparent;color:#738298;border-radius:8px}
     .more-button:hover{background:#dbe6f7;color:#1a4e92}
@@ -113,9 +117,21 @@
     .message-actions{margin:7px 0 0;display:flex;gap:8px}
     .copy-btn{font-size:10px;color:#8c9caf;border:0;padding:4px 0;background:transparent}
     .copy-btn:hover{color:#1558c7}
-    .thinking .message-copy{color:#8898ad}
-    .dots::after{content:' ';display:inline-block;vertical-align:middle;width:24px;height:9px;background:radial-gradient(circle,#8b9db9 55%,transparent 60%) 0 50%/8px 8px repeat-x;animation:pulse 1.1s infinite alternate}
-    @keyframes pulse{from{opacity:.35}to{opacity:1}}
+    /* Faculty avatar stays visible beside messages, including while the assistant is typing. */
+    .assistant-avatar{width:38px;height:38px;flex:0 0 38px;display:grid;place-items:center;border:1px solid var(--line);border-radius:13px;background:#fff;box-shadow:0 2px 10px rgba(25,50,86,.06);position:relative}
+    .assistant-avatar img{display:block;width:30px;height:30px;object-fit:contain}
+    .assistant-avatar-fallback{display:none;font-size:10px;font-weight:700;color:#175fdf}
+    .message.generating .assistant-avatar::after{content:'';position:absolute;inset:-4px;border:1.5px solid #70a7fa;border-radius:16px;animation:avatar-pulse 1.7s ease-in-out infinite;pointer-events:none}
+    .message.generating:not(.thinking) .message-label::after{content:'•••';display:inline-block;vertical-align:middle;letter-spacing:2px;margin-left:8px;color:var(--primary);animation:label-pulse 1.1s ease-in-out infinite}
+    @keyframes label-pulse{0%,100%{opacity:.3}50%{opacity:1}}
+    .thinking .message-copy{color:var(--muted)}
+    .typing-status{display:flex;align-items:center;flex-wrap:wrap;gap:10px;padding:3px 0;min-height:32px;font-size:12px;line-height:1.6;color:var(--muted)}
+    .typing-dots{display:inline-flex;align-items:center;gap:4px;height:17px}
+    .typing-dots span{width:6px;height:6px;border-radius:50%;background:var(--primary);animation:typing-bounce 1.1s ease-in-out infinite}
+    .typing-dots span:nth-child(2){animation-delay:.16s}
+    .typing-dots span:nth-child(3){animation-delay:.32s}
+    @keyframes typing-bounce{0%,65%,100%{transform:translateY(0);opacity:.35}30%{transform:translateY(-4px);opacity:1}}
+    @keyframes avatar-pulse{0%,100%{opacity:.25;transform:scale(.96)}50%{opacity:.9;transform:scale(1.025)}}
     .composer-area{flex:none;padding:11px 24px max(13px,env(safe-area-inset-bottom));background:#fff}
     .composer-wrap{max-width:760px;margin:0 auto}
     .composer{display:flex;align-items:flex-end;gap:8px;padding:9px 10px 9px 16px;min-height:61px;background:#fff;border:1px solid #e2e8f1;border-radius:19px;box-shadow:0 3px 21px rgba(25,46,71,.095)}
@@ -153,6 +169,7 @@
       .composer{border-radius:17px;min-height:55px}.send-btn{height:37px;width:37px}
     }
     @media(max-width:375px){.header{padding-inline:8px}.header-sub{display:none}.header-title{font-size:13px}.header-actions{gap:0}.text-btn{padding:8px;font-size:10px}.chat-content{padding-inline:11px}.welcome h1{font-size:21px}.prompt-grid{gap:7px}.composer-note{font-size:9px}}
+    @media(max-width:375px){.assistant-avatar{width:32px;height:32px;flex-basis:32px;border-radius:11px}.assistant-avatar img{width:26px;height:26px}.message{gap:8px}}
     @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
 
     /* Theme tokens and dark-mode overrides */
@@ -220,6 +237,9 @@
     .options-popup button{display:block;border:0;background:transparent;width:100%;text-align:left;padding:10px;border-radius:7px;font-size:12px;color:var(--ink)}
     .options-popup button:hover{background:var(--hover)}
     .options-popup .delete-option{color:#dd7180}
+    .options-popup .pin-option{color:var(--primary);font-weight:600}
+    :root[data-theme="dark"] .assistant-avatar{background:#fff;border-color:#2b3c52;box-shadow:none}
+    :root[data-theme="dark"] .message.generating .assistant-avatar::after{border-color:#9ec4ff}
     @media(max-width:740px){.theme-menu{right:0;top:calc(100% + 10px)}}
 
   </style>
@@ -340,6 +360,31 @@
   let userId;
   try {userId=localStorage.getItem(STORE);if(!/^mbs-[a-f0-9]{32}$/.test(userId||'')){userId=anonymousId();localStorage.setItem(STORE,userId)}}
   catch {userId=anonymousId()}
+  // Dify stores the conversation and messages. Pin order is a browser-only preference.
+  const PIN_STORE='mbs_uniwise_pinned_conversations_v1_'+userId;
+  let pinnedIds=new Set();
+  try{
+    const stored=JSON.parse(localStorage.getItem(PIN_STORE)||'[]');
+    if(Array.isArray(stored))pinnedIds=new Set(stored.filter(id=>typeof id==='string').slice(0,1500));
+  }catch(_){pinnedIds=new Set()}
+  function savePin(conversationId){
+    const next=new Set(pinnedIds);
+    if(next.has(conversationId))next.delete(conversationId);
+    else next.add(conversationId);
+    // Save first to avoid showing success when storage is unavailable.
+    localStorage.setItem(PIN_STORE,JSON.stringify([...next]));
+    pinnedIds=next;
+    list();
+    toast(pinnedIds.has(conversationId)?'ปักหมุดบทสนทนาแล้ว':'เลิกปักหมุดแล้ว');
+  }
+  function pinSvg(cssClass){
+    const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');
+    svg.setAttribute('viewBox','0 0 24 24');svg.setAttribute('aria-hidden','true');
+    if(cssClass)svg.setAttribute('class',cssClass);
+    const path=document.createElementNS('http://www.w3.org/2000/svg','path');
+    path.setAttribute('d','M16 4l4 4-3 1-2 5 2 2-1 1-5-3-4 4-1-1 4-4-3-5 1-1 2 2 5-2 1-3z');
+    svg.append(path);return svg;
+  }
   let current='',conversations=[],sending=false,loadEpoch=0,loaded=false,displayError='';
   const history=$('history'),chat=$('chatContent'),scroll=$('chatScroll'),question=$('question');
   function toast(message){const old=document.querySelector('.toast');if(old)old.remove();const node=document.createElement('div');node.className='toast';node.role='status';node.textContent=message;document.body.append(node);setTimeout(()=>node.remove(),4300)}
@@ -390,10 +435,25 @@
   function bubble(role,text,autos=true){
     const follow=nearBottom(),node=document.createElement('article');node.className='message '+role;
     const inner=document.createElement('div');inner.className='message-inner';
-    if(role==='assistant'){const label=document.createElement('div');label.className='message-label';label.textContent='MBS UniWise AI';inner.append(label)}
+    if(role==='assistant'){
+      const avatar=document.createElement('span');avatar.className='assistant-avatar';avatar.setAttribute('aria-hidden','true');
+      const logo=document.createElement('img');logo.src='https://acad-mbs.msu.ac.th/mbs.png';logo.alt='';
+      const fallback=document.createElement('span');fallback.className='assistant-avatar-fallback';fallback.textContent='MBS';
+      logo.onerror=()=>{logo.style.display='none';fallback.style.display='block'};
+      avatar.append(logo,fallback);node.append(avatar);
+      const label=document.createElement('div');label.className='message-label';label.textContent='MBS UniWise AI';inner.append(label);
+    }
     const value=document.createElement('div');value.className='message-copy';value.textContent=text||'';
     inner.append(value);node.append(inner);chat.append(node);if(autos&&follow)scrollBottom(true);
     return {node,body:value,inner};
+  }
+  function typingIndicator(entry,message){
+    entry.node.classList.add('thinking','generating');
+    const container=document.createElement('div');container.className='typing-status';container.setAttribute('role','status');
+    const label=document.createElement('span');label.textContent=message;
+    const dots=document.createElement('span');dots.className='typing-dots';dots.setAttribute('aria-hidden','true');
+    for(let i=0;i<3;i++)dots.append(document.createElement('span'));
+    container.append(label,dots);entry.body.replaceChildren(container);
   }
   function finishedAnswer(entry){
     const actions=document.createElement('div');actions.className='message-actions';
@@ -429,15 +489,23 @@
   }
   function list(){
     history.replaceChildren();const term=$('search').value.toLocaleLowerCase('th').trim();
-    const filtered=conversations.filter(c=>(c.name||'').toLocaleLowerCase('th').includes(term));
+    const filtered=conversations.filter(c=>(c.name||'').toLocaleLowerCase('th').includes(term))
+      .sort((a,b)=>Number(pinnedIds.has(b.id))-Number(pinnedIds.has(a.id)));
     if(!filtered.length){const p=document.createElement('p');p.className='hint-empty';p.textContent=term?'ไม่พบชื่อแชทที่ค้นหา':displayError||'ยังไม่มีประวัติการสนทนา เริ่มแชทใหม่ได้เลยค่ะ';history.append(p);return}
     let lastGroup='';
     for(const c of filtered){
-      const group=groupName(c.updated_at||c.created_at);
-      if(group!==lastGroup){lastGroup=group;const label=document.createElement('div');label.className='section-title';label.textContent=group;history.append(label)}
+      const pinned=pinnedIds.has(c.id);
+      const group=pinned?'ปักหมุด':groupName(c.updated_at||c.created_at);
+      if(group!==lastGroup){
+        lastGroup=group;const label=document.createElement('div');label.className='section-title'+(pinned?' pin-heading':'');
+        if(pinned)label.append(pinSvg());
+        label.append(document.createTextNode(group));history.append(label);
+      }
       const row=document.createElement('div');row.className='history-row'+(c.id===current?' active':'');
-      const open=document.createElement('button');open.className='history-open';open.type='button';open.textContent=c.name||'บทสนทนาใหม่';open.title=c.name||'บทสนทนาใหม่';open.onclick=()=>openHistory(c.id);
-      const more=document.createElement('button');more.className='more-button';more.type='button';more.title='เปลี่ยนชื่อหรือลบ';more.setAttribute('aria-label','จัดการบทสนทนา '+(c.name||''));more.textContent='⋯';more.onclick=()=>optionsFor(c);
+      const open=document.createElement('button');open.className='history-open';open.type='button';open.title=c.name||'บทสนทนาใหม่';open.onclick=()=>openHistory(c.id);
+      if(pinned)open.append(pinSvg('history-pin-icon'));
+      const title=document.createElement('span');title.className='history-name';title.textContent=c.name||'บทสนทนาใหม่';open.append(title);
+      const more=document.createElement('button');more.className='more-button';more.type='button';more.title='จัดการบทสนทนา';more.setAttribute('aria-label','จัดการบทสนทนา '+(c.name||''));more.textContent='⋯';more.onclick=()=>optionsFor(c);
       row.append(open,more);history.append(row);
     }
   }
@@ -497,21 +565,36 @@
     const pick=await new Promise(resolve=>{
       const menu=document.createElement('div');
       menu.className='options-popup';
-      const row=[['เปลี่ยนชื่อ','rename'],['ลบบทสนทนา','delete']];
-      const target=document.activeElement.getBoundingClientRect();menu.style.left=Math.min(window.innerWidth-170,Math.max(8,target.left-112))+'px';menu.style.top=Math.min(window.innerHeight-104,target.bottom+3)+'px';
+      const row=[[pinnedIds.has(c.id)?'เลิกปักหมุด':'ปักหมุด','pin'],['เปลี่ยนชื่อ','rename'],['ลบบทสนทนา','delete']];
+      const target=document.activeElement.getBoundingClientRect();
+      menu.style.left=Math.max(8,Math.min(window.innerWidth-169,target.left-112))+'px';
+      menu.style.top=Math.max(8,Math.min(window.innerHeight-158,target.bottom+3))+'px';
       let closed=false;const close=value=>{if(closed)return;closed=true;document.removeEventListener('pointerdown',outside,true);menu.remove();resolve(value)};
       const outside=e=>{if(!menu.contains(e.target))close(null)};
-      for(const [label,type] of row){const b=document.createElement('button');b.type='button';b.textContent=label;if(type==='delete')b.classList.add('delete-option');b.onclick=()=>close(type);menu.append(b)}
+      for(const [label,type] of row){
+        const b=document.createElement('button');b.type='button';b.textContent=label;
+        if(type==='delete')b.classList.add('delete-option');
+        if(type==='pin')b.classList.add('pin-option');
+        b.onclick=()=>close(type);menu.append(b);
+      }
       document.body.append(menu);setTimeout(()=>document.addEventListener('pointerdown',outside,true),0);
     });
     if(!pick)return;
+    if(pick==='pin'){
+      try{savePin(c.id)}catch(_){toast('ไม่สามารถบันทึกหมุดได้ กรุณาอนุญาตการจัดเก็บข้อมูลเว็บไซต์')}
+      return;
+    }
     const result=await askDialog(pick,c);if(result===null)return;
     try{
       if(pick==='rename'){
         if(!result){toast('กรุณาระบุชื่อบทสนทนา');return}
         await api('rename',{conversation_id:c.id,name:result},'POST');toast('เปลี่ยนชื่อแล้ว');
       }else{
-        await api('delete',{conversation_id:c.id},'POST');if(current===c.id)newChat();toast('ลบบทสนทนาแล้ว');
+        await api('delete',{conversation_id:c.id},'POST');
+        if(pinnedIds.delete(c.id)){
+          try{localStorage.setItem(PIN_STORE,JSON.stringify([...pinnedIds]))}catch(_){}
+        }
+        if(current===c.id)newChat();toast('ลบบทสนทนาแล้ว');
       }
       await refreshHistory();
     }catch(e){toast('ดำเนินการไม่สำเร็จ: '+e.message)}
@@ -543,22 +626,23 @@
     }
     if(!total&&!ended)throw Error('ไม่ได้รับคำตอบจาก Dify กรุณาตรวจสอบการเชื่อมต่อ');
     if(!total)entry.body.textContent='Dify ประมวลผลเสร็จแล้ว แต่ไม่ได้ส่งข้อความคำตอบกลับมา';
-    entry.node.classList.remove('thinking');return nextId;
+    entry.node.classList.remove('thinking','generating');return nextId;
   }
   $('form').addEventListener('submit',async event=>{
     event.preventDefault();const text=question.value.trim();if(!text||sending)return;
     question.value='';resize();
     if(!current)chat.replaceChildren();
-    bubble('user',text);const waiting=bubble('assistant','กำลังค้นหาข้อมูลและเรียบเรียงคำตอบ');waiting.node.classList.add('thinking');waiting.body.classList.add('dots');
+    bubble('user',text);
+    const waiting=bubble('assistant','');typingIndicator(waiting,'กำลังค้นหาข้อมูลและเรียบเรียงคำตอบ...');
     setBusy(true);scrollBottom(true);
     try{
       const response=await api('send',{query:text,conversation_id:current},'POST');
-      waiting.body.classList.remove('dots');waiting.body.textContent='กำลังสร้างคำตอบ...';
+      typingIndicator(waiting,'กำลังสร้างคำตอบ...');
       const id=await readStream(response,waiting);if(id)current=id;
       finishedAnswer(waiting);
       try{await refreshHistory()}catch(err){toast('ตอบแล้ว แต่โหลดประวัติไม่สำเร็จ: '+err.message)}
       setTimeout(()=>refreshHistory().catch(()=>{}),1300);
-    }catch(err){waiting.node.classList.remove('thinking');waiting.body.classList.remove('dots');waiting.body.textContent='เกิดข้อผิดพลาด: '+err.message;toast('ส่งคำถามไม่สำเร็จ: '+err.message)}
+    }catch(err){waiting.node.classList.remove('thinking','generating');waiting.body.textContent='เกิดข้อผิดพลาด: '+err.message;toast('ส่งคำถามไม่สำเร็จ: '+err.message)}
     finally{setBusy(false);scrollBottom(true);if(!mobile())question.focus()}
   });
   $('fullscreen').onclick=async()=>{try{if(!document.fullscreenElement)await document.documentElement.requestFullscreen();else await document.exitFullscreen()}catch{toast('เบราว์เซอร์นี้ไม่อนุญาตให้เปิดเต็มหน้าจอ')}};
