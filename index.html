@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#ffffff">
+  <meta name="color-scheme" content="light dark">
   <script>
     // Apply the preferred colour scheme before the page paints.
     try {
@@ -13,7 +14,7 @@
     } catch (_) {document.documentElement.dataset.theme = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';}
   </script>
   <meta name="description" content="MBS UniWise AI ผู้ช่วยตอบคำถามคณะการบัญชีและการจัดการ มหาวิทยาลัยมหาสารคาม">
-  <title>MBS UniWise AI</title>
+  <title>MBS UniWise AI — แชทและประวัติการสนทนา</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -114,6 +115,22 @@
     .message-label{font-size:10.5px;font-weight:600;color:#54677e;margin:2px 0 7px}
     .message-copy{font-size:14px;line-height:2.0;white-space:pre-wrap;overflow-wrap:anywhere;color:#2c3747}
     .message.user .message-copy{background:#eff4fb;border:1px solid #ebf0f8;border-radius:17px;padding:10px 16px;font-size:13px;line-height:1.85}
+    /* Answer Markdown: clickable citations, real lists and clean spacing */
+    .message.assistant .message-copy{white-space:normal;line-height:1.85}
+    .message.assistant .message-copy p{margin:0 0 12px}
+    .message.assistant .message-copy p:last-child{margin-bottom:0}
+    .message.assistant .message-copy ol,.message.assistant .message-copy ul{padding-left:1.7em;margin:8px 0 14px}
+    .message.assistant .message-copy li{padding-left:.2em;margin:3px 0}
+    .message.assistant .message-copy li::marker{color:var(--muted)}
+    .message.assistant .message-copy h2,.message.assistant .message-copy h3,.message.assistant .message-copy h4{font-size:1.06em;font-weight:700;line-height:1.65;margin:15px 0 8px;color:var(--title)}
+    .message.assistant .message-copy a{color:var(--primary);text-decoration:underline;text-underline-offset:3px;overflow-wrap:anywhere;cursor:pointer}
+    .message.assistant .message-copy a:hover{filter:brightness(.78)}
+    .message.assistant .message-copy a:focus-visible{outline:2px solid var(--primary);outline-offset:3px;border-radius:2px}
+    .message.assistant .message-copy code{font-family:ui-monospace,Consolas,monospace;font-size:.9em;background:var(--surface-subtle);padding:1px 5px;border-radius:5px}
+    .message.assistant .message-copy pre{white-space:pre-wrap;overflow-wrap:anywhere;background:var(--surface-subtle);border:1px solid var(--line);padding:12px;border-radius:10px;margin:8px 0 14px}
+    .message.assistant .message-copy pre code{padding:0;background:transparent}
+    .message.assistant .message-copy blockquote{margin:10px 0;padding:2px 12px;border-left:3px solid var(--primary);color:var(--muted)}
+
     .message-actions{margin:7px 0 0;display:flex;gap:8px}
     .copy-btn{font-size:10px;color:#8c9caf;border:0;padding:4px 0;background:transparent}
     .copy-btn:hover{color:#1558c7}
@@ -186,6 +203,43 @@
 
     /* Theme tokens and dark-mode overrides */
     :root { --surface:#fff;--surface-subtle:#f7f9fc;--hover:#f0f4f9;--panel:#fff;--line:#e8edf3;--bubble:#eff4fb;--bubble-edge:#e9eef7;--title:#1d314e;--body-copy:#2c3747;--label:#54677e;--note:#8492a4;--pop-shadow:0 16px 40px rgba(19,33,60,.16); }
+    /* Explicit light selection beats the operating system's dark preference.
+       `only light` also prevents supported browsers auto-darkening the page. */
+    :root[data-theme="light"] {
+      color-scheme:only light;
+      --primary:#1558c7;--primary-soft:#eaf2ff;--ink:#1e293b;--muted:#68778a;
+      --stroke:#e8edf3;--sidebar:#f7f9fc;--main:#ffffff;--shadow:0 6px 28px rgba(22,49,81,.07);
+      --surface:#ffffff;--surface-subtle:#f7f9fc;--hover:#f0f4f9;--panel:#ffffff;
+      --line:#e8edf3;--bubble:#eff4fb;--bubble-edge:#e9eef7;--title:#1d314e;
+      --body-copy:#2c3747;--label:#54677e;--note:#8492a4;--pop-shadow:0 16px 40px rgba(19,33,60,.16);
+    }
+    :root[data-theme="light"] body,
+    :root[data-theme="light"] .layout,
+    :root[data-theme="light"] .main,
+    :root[data-theme="light"] .composer-area,
+    :root[data-theme="light"] .header {background:var(--main);color:var(--ink)}
+    :root[data-theme="light"] .sidebar {background:var(--sidebar)}
+    :root[data-theme="light"] .header {border-bottom-color:var(--stroke)}
+    :root[data-theme="light"] .search-box input,
+    :root[data-theme="light"] .composer,
+    :root[data-theme="light"] .text-btn,
+    :root[data-theme="light"] .prompt,
+    :root[data-theme="light"] .dialog,
+    :root[data-theme="light"] .dialog input,
+    :root[data-theme="light"] .theme-menu,
+    :root[data-theme="light"] .options-popup,
+    :root[data-theme="light"] .dialog-button:not(.primary):not(.danger){background:#ffffff;color:var(--ink);border-color:var(--line)}
+    :root[data-theme="light"] .message.user .message-copy {background:var(--bubble);border-color:var(--bubble-edge);color:var(--body-copy)}
+    :root[data-theme="light"] .welcome h1,
+    :root[data-theme="light"] .dialog h2 {color:var(--title)}
+    :root[data-theme="light"] .message-copy,
+    :root[data-theme="light"] #question {color:var(--body-copy)}
+    :root[data-theme="light"] .message-label {color:var(--label)}
+    :root[data-theme="light"] .theme-option {color:var(--ink)}
+    :root[data-theme="light"] .theme-option:hover,
+    :root[data-theme="light"] .theme-option[aria-checked="true"]{background:var(--hover)}
+    :root[data-theme="light"] .theme-option[aria-checked="true"]{color:var(--primary)}
+
     :root[data-theme="dark"] {
       color-scheme:dark;
       --primary:#86b3ff;--primary-soft:#142947;--ink:#e8eef7;--muted:#a7b5c9;
@@ -336,7 +390,10 @@
   try {const saved=localStorage.getItem(THEME_STORE);if(['system','light','dark'].includes(saved))themeChoice=saved} catch(_){}
   function applyTheme(){
     const active=themeChoice==='system'?(systemTheme.matches?'dark':'light'):themeChoice;
+    // A manual choice always overrides prefers-color-scheme from the device.
     document.documentElement.dataset.theme=active;
+    document.documentElement.dataset.themeChoice=themeChoice;
+    document.documentElement.style.colorScheme=active==='dark'?'dark':'only light';
     document.querySelector('meta[name="theme-color"]').content=active==='dark'?'#0c111b':'#ffffff';
     document.querySelectorAll('.theme-option').forEach(el=>el.setAttribute('aria-checked',String(el.dataset.mode===themeChoice)));
     $('themeToggle').title='ธีมปัจจุบัน: '+(themeChoice==='system'?'ตามเครื่อง':themeChoice==='dark'?'มืด':'สว่าง');
@@ -446,6 +503,106 @@
   }
   function nearBottom(){return scroll.scrollHeight-scroll.scrollTop-scroll.clientHeight<160}
   function scrollBottom(force=false){if(force||nearBottom())scroll.scrollTop=scroll.scrollHeight}
+  // Render Dify Markdown safely using DOM nodes, not innerHTML.
+  // Only HTTP(S) destinations become clickable (javascript:/data: are rejected).
+  function answerUrl(raw){
+    try{const url=new URL(raw);return ['http:','https:'].includes(url.protocol)?url.href:null}
+    catch(_){return null}
+  }
+  function appendAnswerInline(target,raw){
+    const text=String(raw||'');let pos=0;
+    const appendText=value=>{if(value)target.append(document.createTextNode(value))};
+    const link=(label,url)=>{
+      const href=answerUrl(url);
+      if(!href){appendText(label);return}
+      const a=document.createElement('a');a.href=href;
+      a.target='_blank';a.rel='noopener noreferrer';a.textContent=label||url;
+      a.title='เปิดลิงก์ในแท็บใหม่: '+href;
+      target.append(a);
+    };
+    while(pos<text.length){
+      const rest=text.slice(pos);let match;
+      // [ลิงก์](https://example.org) and [https://...](https://...)
+      if((match=rest.match(/^\[([^\]\n]+)\]\(\s*(https?:\/\/[^\s)]+)\s*\)/i))){
+        // Show the actual URL as the clickable text, never a generic “ลิงก์” label.
+        // A Markdown [label](URL) pair produces exactly one visible URL.
+        link(match[2],match[2]);pos+=match[0].length;continue;
+      }
+      if((match=rest.match(/^<((?:https?:\/\/)[^\s<>]+)>/i))){
+        link(match[1],match[1]);pos+=match[0].length;continue;
+      }
+      if((match=rest.match(/^`([^`\n]+)`/))){
+        const code=document.createElement('code');code.textContent=match[1];target.append(code);pos+=match[0].length;continue;
+      }
+      if((match=rest.match(/^\*\*([^*\n]+)\*\*/))){
+        const strong=document.createElement('strong');appendAnswerInline(strong,match[1]);target.append(strong);pos+=match[0].length;continue;
+      }
+      if((match=rest.match(/^\*([^*\n]+)\*/))){
+        const em=document.createElement('em');appendAnswerInline(em,match[1]);target.append(em);pos+=match[0].length;continue;
+      }
+      if((match=rest.match(/^https?:\/\/[^\s<>"'`]+/i))){
+        // Trim prose punctuation; don't absorb the enclosing ')' into the URL.
+        const url=match[0].replace(/[.,!?;:\]\u0E2F\u0E46)}]+$/g,'');
+        if(url){link(url,url);pos+=url.length;continue}
+      }
+      // Copy plain characters in one batch instead of generating thousands of nodes.
+      let next=pos+1;
+      while(next<text.length && !/[\[<*`hH]/.test(text[next]))next++;
+      appendText(text.slice(pos,next));pos=next;
+    }
+  }
+  function renderAnswer(target,markdown){
+    const value=String(markdown||'').replace(/\r\n?/g,'\n');
+    const fragment=document.createDocumentFragment();
+    const lines=value.split('\n');
+    let index=0;
+    while(index<lines.length){
+      const line=lines[index];
+      if(!line.trim()){index++;continue}
+      if(/^\s*```/.test(line)){
+        index++;const codeLines=[];
+        while(index<lines.length&&!/^\s*```/.test(lines[index]))codeLines.push(lines[index++]);
+        if(index<lines.length)index++;
+        const pre=document.createElement('pre'),code=document.createElement('code');
+        code.textContent=codeLines.join('\n');pre.append(code);fragment.append(pre);continue;
+      }
+      const heading=line.match(/^\s{0,3}(#{1,4})\s+(.+)$/);
+      if(heading){const h=document.createElement('h'+Math.max(2,heading[1].length));appendAnswerInline(h,heading[2]);fragment.append(h);index++;continue}
+      const ordered=line.match(/^\s{0,3}(\d+)[.)]\s+(.+)$/);
+      const bullet=line.match(/^\s{0,3}[-*+]\s+(.+)$/);
+      if(ordered||bullet){
+        const list=document.createElement(ordered?'ol':'ul');
+        if(ordered)list.start=Number(ordered[1]);
+        while(index<lines.length){
+          const itemLine=lines[index];
+          const item=ordered?itemLine.match(/^\s{0,3}\d+[.)]\s+(.+)$/):itemLine.match(/^\s{0,3}[-*+]\s+(.+)$/);
+          if(!item)break;
+          const li=document.createElement('li');appendAnswerInline(li,item[1]);list.append(li);index++;
+          // Indented continuation lines belong to the previous list item.
+          while(index<lines.length && /^\s{4,}\S/.test(lines[index]) && !/^\s*```/.test(lines[index])){
+            li.append(document.createElement('br'));appendAnswerInline(li,lines[index].trim());index++;
+          }
+        }
+        fragment.append(list);continue;
+      }
+      if(/^\s*>\s?/.test(line)){
+        const q=document.createElement('blockquote');appendAnswerInline(q,line.replace(/^\s*>\s?/,''));fragment.append(q);index++;continue;
+      }
+      const p=document.createElement('p');
+      while(index<lines.length){
+        if(!lines[index].trim())break;
+        if(p.childNodes.length && (/^\s*```/.test(lines[index])||/^\s{0,3}(?:#{1,4}\s+|\d+[.)]\s+|[-*+]\s+|>\s?)/.test(lines[index])))break;
+        if(p.childNodes.length)p.append(document.createElement('br'));
+        appendAnswerInline(p,lines[index]);index++;
+      }
+      fragment.append(p);
+    }
+    target.replaceChildren(fragment);
+  }
+  function setAnswer(entry,text){
+    entry.raw=String(text||'');
+    renderAnswer(entry.body,entry.raw);
+  }
   function bubble(role,text,autos=true){
     const follow=nearBottom(),node=document.createElement('article');node.className='message '+role;
     const inner=document.createElement('div');inner.className='message-inner';
@@ -459,7 +616,8 @@
     }
     const value=document.createElement('div');value.className='message-copy';value.textContent=text||'';
     inner.append(value);node.append(inner);chat.append(node);if(autos&&follow)scrollBottom(true);
-    const entry={node,body:value,inner};
+    const entry={node,body:value,inner,raw:String(text||'')};
+    if(role==='assistant'&&text)setAnswer(entry,text);
     if(role==='user')addActions(entry,'user',text||'');
     return entry;
   }
@@ -487,7 +645,7 @@
     if(entry.inner.querySelector('.message-actions'))return;
     const bar=document.createElement('div');bar.className='message-actions';
     const copy=document.createElement('button');copy.type='button';copy.className='copy-btn';copy.textContent=role==='user'?'คัดลอกคำถาม':'คัดลอกคำตอบ';
-    copy.onclick=()=>copyText(role==='user'?original:entry.body.textContent);
+    copy.onclick=()=>copyText(role==='user'?original:entry.raw||entry.body.textContent);
     bar.append(copy);
     if(role==='user'){
       const edit=document.createElement('button');edit.type='button';edit.textContent='แก้ไขและส่งใหม่';
@@ -496,7 +654,7 @@
     }
     entry.inner.append(bar);
   }
-  function finishedAnswer(entry){addActions(entry,'assistant',entry.body.textContent)}
+  function finishedAnswer(entry){addActions(entry,'assistant',entry.raw||entry.body.textContent)}
   function showEdit(value){editDraft=value;$('editNotice').hidden=!editDraft}
   function startEdit(text){
     if(sending){toast('กรุณารอให้ตอบเสร็จหรือกดหยุดก่อนแก้ไขคำถาม');return}
@@ -701,13 +859,13 @@
       if(g.stopRequested)return;
       if(event.event==='message'||event.event==='agent_message'){
         if(typeof event.answer==='string'){
-          total+=event.answer;entry.body.textContent=total;
+          total+=event.answer;setAnswer(entry,total);
           entry.node.classList.remove('thinking');
           if(entry.node.isConnected)scrollBottom();
         }
       }else if(event.event==='message_replace'){
         total=typeof event.answer==='string'?event.answer:total;
-        entry.body.textContent=total;
+        setAnswer(entry,total);
         entry.node.classList.remove('thinking');
         if(entry.node.isConnected)scrollBottom();
       }else if(event.event==='message_end')ended=true;
@@ -749,7 +907,7 @@
       const id=await readStream(response,waiting,g);
       if(viewEpoch===loadEpoch&&id)current=id;
       if(g.stopRequested){
-        waiting.body.textContent=waiting.node.classList.contains('thinking')?'หยุดสร้างคำตอบแล้ว':waiting.body.textContent||'หยุดสร้างคำตอบแล้ว';
+        setAnswer(waiting,waiting.node.classList.contains('thinking')?'หยุดสร้างคำตอบแล้ว':waiting.raw||'หยุดสร้างคำตอบแล้ว');
         if(g.stopConfirmed)toast('หยุดการสร้างคำตอบที่ Dify แล้ว');
         else if(g.stopError)toast('หยุดแสดงผลแล้ว แต่ยังยืนยันว่า Dify หยุดงานไม่ได้');
       }
@@ -757,7 +915,7 @@
       try{await refreshHistory()}catch(err){toast('ตอบแล้ว แต่โหลดประวัติไม่สำเร็จ: '+err.message)}
     }catch(err){
       if(g.stopRequested){
-        waiting.body.textContent=waiting.node.classList.contains('thinking')?'หยุดสร้างคำตอบแล้ว':waiting.body.textContent||'หยุดสร้างคำตอบแล้ว';
+        setAnswer(waiting,waiting.node.classList.contains('thinking')?'หยุดสร้างคำตอบแล้ว':waiting.raw||'หยุดสร้างคำตอบแล้ว');
         finishedAnswer(waiting);
         if(g.stopConfirmed)toast('หยุดการสร้างคำตอบที่ Dify แล้ว');
         else toast('หยุดการแสดงผลแล้ว แต่ยังไม่ยืนยันการหยุดบน Dify');
