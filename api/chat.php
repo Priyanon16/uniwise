@@ -33,7 +33,7 @@ if ($origin!=='') {
 }
 $method=$_SERVER['REQUEST_METHOD']??'GET';
 if (!in_array($method,['GET','POST'],true)) fail(405,'ไม่รองรับวิธีเรียกนี้');
-$configFile=__DIR__.'/config.local.php';
+$configFile=__DIR__.'/config.php';
 $config=is_file($configFile)?require $configFile:[];
 if(!is_array($config)) $config=[];
 $base=rtrim(trim((string)(getenv('DIFY_API_BASE')?:($config['dify_api_base']??''))),'/');
@@ -42,7 +42,7 @@ $ready=$base!==''&&$key!==''&&$key!=='YOUR_DIFY_API_KEY';
 $action=(string)($_GET['action']??'');
 if ($action==='health') {
     if ($method!=='GET') fail(405,'health ใช้ GET เท่านั้น');
-    out($ready?200:503,['ready'=>$ready,'message'=>$ready?'ตั้งค่าเซิร์ฟเวอร์แล้ว':'ยังไม่ได้ตั้งค่า Dify API Key ใน api/config.local.php']);
+    out($ready?200:503,['ready'=>$ready,'message'=>$ready?'ตั้งค่าเซิร์ฟเวอร์แล้ว':'ยังไม่ได้ตั้งค่า Dify API Key ใน api/config.php']);
 }
 if (!$ready) fail(503,'ยังไม่ได้ตั้งค่า Dify API Key บนเซิร์ฟเวอร์ กรุณาเปิดคู่มือติดตั้ง');
 if(!preg_match('~^https?://[^/]+(?:/[^?#]*)?/v1$~i',$base))fail(500,'DIFY_API_BASE ต้องลงท้ายด้วย /v1');
