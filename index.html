@@ -53,15 +53,30 @@
     .more-button{font-size:18px;line-height:1;flex:none;width:31px;height:32px;margin-right:3px;border:0;background:transparent;color:#738298;border-radius:8px}
     .more-button:hover{background:#dbe6f7;color:#1a4e92}
     .hint-empty{color:#8693a7;font-size:11px;line-height:1.9;padding:14px 12px}
-    .side-guide{border-top:1px solid var(--stroke);padding:14px 15px 17px;flex:none}
-    .guide-summary{display:flex;align-items:center;justify-content:space-between;font-size:11px;font-weight:600;color:#496484;cursor:pointer;list-style:none;padding:2px 0}
-    .guide-summary::-webkit-details-marker{display:none}
-    .guide-summary::after{content:'⌄';font-size:17px;color:#8b98ad}
-    details[open] .guide-summary::after{content:'⌃'}
-    .guide-list{display:grid;gap:5px;padding:9px 0 0;max-height:185px;overflow-y:auto}
-    .guide-item{background:#fff;border:1px solid #e6edf6;border-radius:9px;text-align:left;font-size:10.5px;line-height:1.65;color:#476385;padding:8px 10px}
-    .guide-item:hover{border-color:#a1bff1;color:#1658bb}
-    .side-meta{font-size:9.5px;color:#9ca8b8;line-height:1.7;margin:10px 0 0}
+    /* One compact sidebar action; the examples open in their own accessible panel. */
+    .side-guide{border-top:1px solid var(--stroke);padding:12px 12px 16px;flex:none}
+    .examples-launch{width:100%;display:flex;align-items:center;gap:10px;text-align:left;background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:12px 13px;color:var(--ink);transition:background .15s,border-color .15s}
+    .examples-launch:hover{background:var(--hover);border-color:#9ebce9}
+    .examples-launch-copy{flex:1;min-width:0;display:grid;gap:3px}
+    .examples-launch-title{font-size:12px;font-weight:600;line-height:1.5}
+    .examples-launch-caption{font-size:10px;color:var(--muted);line-height:1.6}
+    .examples-launch-arrow{font-size:19px;color:var(--muted);line-height:1}
+    .side-meta{font-size:9.5px;color:#9ca8b8;line-height:1.7;margin:10px 4px 0}
+    .examples-dialog{width:min(650px,calc(100vw - 32px));max-height:min(84dvh,790px);padding:0;border:1px solid var(--line);border-radius:19px;background:var(--panel);color:var(--ink);box-shadow:0 24px 80px #14244244;overflow:hidden}
+    .examples-dialog::backdrop{background:rgba(12,28,54,.53);backdrop-filter:blur(2px)}
+    .examples-shell{display:flex;flex-direction:column;max-height:min(84dvh,790px)}
+    .examples-header{flex:none;padding:20px 22px 16px;border-bottom:1px solid var(--line);display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
+    .examples-header h2{font-size:19px;line-height:1.5;margin:0 0 4px;font-weight:600;color:var(--title)}
+    .examples-header p{font-size:11.5px;line-height:1.8;margin:0;color:var(--muted)}
+    .examples-close{flex:none;width:34px;height:34px;display:grid;place-items:center;border:0;border-radius:10px;background:var(--hover);color:var(--ink);font-size:19px;line-height:1}
+    .examples-close:hover{background:var(--primary-soft)}
+    .examples-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;padding:19px 22px 22px;overflow-y:auto;overscroll-behavior:contain}
+    .example-card{display:flex;flex-direction:column;gap:8px;align-items:flex-start;min-height:103px;text-align:left;padding:13px 15px;border:1px solid var(--line);border-radius:13px;background:var(--surface);color:var(--ink);transition:background .15s,border-color .15s}
+    .example-card:hover{background:var(--hover);border-color:#9bb9e5}
+    .example-title{color:var(--title);font-size:12px;font-weight:600;line-height:1.55}
+    .example-question{color:var(--muted);font-size:11px;line-height:1.7}
+    @media(max-width:620px){.examples-dialog{width:calc(100vw - 22px);max-height:88dvh;border-radius:16px}.examples-shell{max-height:88dvh}.examples-header{padding:16px 16px 13px}.examples-header h2{font-size:16px}.examples-grid{grid-template-columns:1fr;padding:12px 14px 18px;gap:8px}.example-card{min-height:0;gap:5px;padding:12px 13px}}
+
     .main{flex:1;min-width:0;min-height:0;display:flex;flex-direction:column;position:relative;background:#fff}
     .header{flex:none;min-height:66px;border-bottom:1px solid #f1f3f7;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 22px}
     .header-left{display:flex;align-items:center;gap:12px;min-width:0}
@@ -167,13 +182,11 @@
     :root[data-theme="dark"] .icon-btn:hover{background:var(--hover);color:var(--ink)}
     :root[data-theme="dark"] .history-row.active{background:#213651}
     :root[data-theme="dark"] .history-open,
-    :root[data-theme="dark"] .guide-summary,
     :root[data-theme="dark"] .icon-btn{color:#c1d0e5}
     :root[data-theme="dark"] .history-row.active .history-open{color:#9fc5ff}
     :root[data-theme="dark"] .more-button{color:#a1b1c5}
     :root[data-theme="dark"] .more-button:hover{background:#31435b;color:white}
     :root[data-theme="dark"] .search-box input,
-    :root[data-theme="dark"] .guide-item,
     :root[data-theme="dark"] .text-btn,
     :root[data-theme="dark"] .prompt,
     :root[data-theme="dark"] .composer,
@@ -181,9 +194,7 @@
     :root[data-theme="dark"] .dialog input,
     :root[data-theme="dark"] .dialog-button:not(.primary):not(.danger){background:var(--panel);border-color:var(--line);color:var(--ink)}
     :root[data-theme="dark"] .prompt:hover,
-    :root[data-theme="dark"] .guide-item:hover,
     :root[data-theme="dark"] .text-btn:hover{background:#24334b;border-color:#48678c;color:#d4e7ff}
-    :root[data-theme="dark"] .guide-item{color:#bdd2ed}
     :root[data-theme="dark"] .welcome h1,
     :root[data-theme="dark"] .dialog h2{color:var(--title)}
     :root[data-theme="dark"] .message-copy,
@@ -205,20 +216,11 @@
     .theme-option[aria-checked="true"]{font-weight:600;color:var(--primary)}
     .theme-option[aria-checked="true"]::after{content:'✓';font-size:14px}
     #themeToggle[aria-expanded="true"]{background:var(--hover)}
-    .mic-btn{position:relative;width:39px;height:39px;margin-bottom:1px;border:0;border-radius:12px;background:transparent;color:var(--label);display:grid;place-items:center;flex:none}
-    .mic-btn:hover{background:var(--hover);color:var(--primary)}
-    .mic-btn svg{width:21px;height:21px;stroke:currentColor;stroke-width:1.8;fill:none;stroke-linecap:round;stroke-linejoin:round}
-    .mic-btn.listening{background:#dcecff;color:#145fcb}
-    :root[data-theme="dark"] .mic-btn.listening{background:#174574;color:#a8ceff}
-    .mic-btn.listening::after{content:'';pointer-events:none;position:absolute;inset:-4px;border:2px solid currentColor;border-radius:15px;animation:micPulse 1s ease-in-out infinite alternate}
-    @keyframes micPulse{from{opacity:.25;transform:scale(.96)}to{opacity:.85;transform:scale(1.03)}}
-    #micStatus{display:block;min-height:0;margin:3px auto 0;text-align:center;font-size:11px;color:var(--primary);line-height:1.6}
-    #micStatus:empty{display:none}
     .options-popup{position:fixed;z-index:50;background:var(--panel);border:1px solid var(--line);box-shadow:var(--pop-shadow);border-radius:12px;padding:6px;min-width:152px}
     .options-popup button{display:block;border:0;background:transparent;width:100%;text-align:left;padding:10px;border-radius:7px;font-size:12px;color:var(--ink)}
     .options-popup button:hover{background:var(--hover)}
     .options-popup .delete-option{color:#dd7180}
-    @media(max-width:740px){.theme-menu{right:0;top:calc(100% + 10px)}.mic-btn{width:38px;height:38px}}
+    @media(max-width:740px){.theme-menu{right:0;top:calc(100% + 10px)}}
 
   </style>
 </head>
@@ -240,11 +242,11 @@
       <div id="history"><p class="hint-empty">กำลังตรวจสอบประวัติการสนทนา...</p></div>
     </div>
     <div class="side-guide">
-      <details id="sampleDetails">
-        <summary class="guide-summary">ลองถามเกี่ยวกับ</summary>
-        <div class="guide-list" id="guideList"></div>
-      </details>
-      <p class="side-meta">ประวัติเก็บโดย Dify และแยกตามเบราว์เซอร์ ไม่ต้องเข้าสู่ระบบ</p>
+      <button id="openExamples" class="examples-launch" type="button" aria-haspopup="dialog" aria-controls="examplesDialog">
+        <span class="examples-launch-copy"><span class="examples-launch-title">คำถามแนะนำ</span><span class="examples-launch-caption">เลือกดูตัวอย่างจาก 8 หมวดข้อมูล</span></span>
+        <span class="examples-launch-arrow" aria-hidden="true">›</span>
+      </button>
+      <p class="side-meta">ประวัติเก็บโดย Dify แยกตามเบราว์เซอร์</p>
     </div>
   </aside>
   <button id="scrim" class="scrim" type="button" aria-label="ปิดแถบประวัติ"></button>
@@ -277,15 +279,18 @@
     </div>
     <div class="composer-area">
       <div class="composer-wrap">
-        <form class="composer" id="form"><label class="sr-only" for="question">พิมพ์คำถาม</label><textarea id="question" rows="1" maxlength="8000" placeholder="ถาม MBS UniWise AI..." autocomplete="off"></textarea><button type="button" id="mic" class="mic-btn" title="พูดเพื่อพิมพ์คำถาม" aria-label="พูดเพื่อพิมพ์คำถาม" aria-pressed="false">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="2.5" width="6" height="12" rx="3"/><path d="M5.5 10a6.5 6.5 0 0 0 13 0M12 16.5v4.5m-4 0h8"/></svg>
-        </button><button class="send-btn" id="send" type="submit" title="ส่งข้อความ" aria-label="ส่งข้อความ"><svg viewBox="0 0 24 24"><path d="M12 19V5m0 0-6 6m6-6 6 6"/></svg></button></form>
-        <div id="micStatus" role="status" aria-live="polite"></div>
+        <form class="composer" id="form"><label class="sr-only" for="question">พิมพ์คำถาม</label><textarea id="question" rows="1" maxlength="8000" placeholder="ถาม MBS UniWise AI..." autocomplete="off"></textarea><button class="send-btn" id="send" type="submit" title="ส่งข้อความ" aria-label="ส่งข้อความ"><svg viewBox="0 0 24 24"><path d="M12 19V5m0 0-6 6m6-6 6 6"/></svg></button></form>
         <p class="composer-note">คำตอบสร้างโดย AI โปรดตรวจสอบข้อมูลสำคัญกับประกาศทางการของคณะ</p>
       </div>
     </div>
   </div>
 </div>
+<dialog id="examplesDialog" class="examples-dialog" aria-labelledby="examplesTitle">
+  <div class="examples-shell">
+    <div class="examples-header"><div><h2 id="examplesTitle">ลองถามเกี่ยวกับอะไรดี?</h2><p>เลือกหัวข้อที่สนใจ ระบบจะใส่คำถามในช่องพิมพ์ให้ตรวจสอบก่อนส่ง</p></div><button class="examples-close" id="closeExamples" type="button" aria-label="ปิดคำถามแนะนำ">×</button></div>
+    <div class="examples-grid" id="examplesGrid"></div>
+  </div>
+</dialog>
 <dialog id="dialog" class="dialog" aria-labelledby="dialogTitle"><div class="dialog-inner"><h2 id="dialogTitle"></h2><p id="dialogMessage"></p><label for="dialogInput" id="dialogLabel" class="sr-only">ชื่อบทสนทนา</label><input id="dialogInput" maxlength="100"><div class="dialog-buttons"><button type="button" class="dialog-button" id="dialogCancel">ยกเลิก</button><button type="button" class="dialog-button primary" id="dialogOK">ยืนยัน</button></div></div></dialog>
 <script>
   'use strict';
@@ -351,9 +356,24 @@
     if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==='k'){event.preventDefault();if(mobile())side(true);$('search').focus()}
     if((event.ctrlKey||event.metaKey)&&event.shiftKey&&event.key.toLowerCase()==='o'){event.preventDefault();newChat()}
   });
-  function choosePrompt(text){question.value=text;resize();side(false);question.focus()}
+  function choosePrompt(text){
+    if($('examplesDialog').open)$('examplesDialog').close();
+    question.value=text;resize();side(false);question.focus();
+  }
   function promptButton(text,cls){const b=document.createElement('button');b.className=cls;b.type='button';b.textContent=text;b.onclick=()=>choosePrompt(text);return b}
-  topics.forEach(([title,text])=>$('guideList').append(promptButton(`${title} — ${text}`,'guide-item')));
+  // Separate, scrollable dialog for suggestions – no nested scrollbar in the sidebar.
+  topics.forEach(([title,text])=>{
+    const button=document.createElement('button');button.type='button';button.className='example-card';
+    const heading=document.createElement('span');heading.className='example-title';heading.textContent=title;
+    const sample=document.createElement('span');sample.className='example-question';sample.textContent=text;
+    button.append(heading,sample);
+    button.addEventListener('click',()=>choosePrompt(text));
+    $('examplesGrid').append(button);
+  });
+  const examplesDialog=$('examplesDialog');
+  $('openExamples').addEventListener('click',()=>examplesDialog.showModal());
+  $('closeExamples').addEventListener('click',()=>examplesDialog.close());
+  examplesDialog.addEventListener('click',event=>{if(event.target===examplesDialog)examplesDialog.close()});
   function welcome(){
     chat.replaceChildren();const div=document.createElement('section');div.className='welcome';
     const logo=document.createElement('img');logo.src='https://acad-mbs.msu.ac.th/mbs.png';logo.alt='โลโก้คณะการบัญชีและการจัดการ';logo.className='welcome-seal';logo.onerror=()=>{logo.style.display='none'};
@@ -381,68 +401,9 @@
     copy.onclick=async()=>{try{await navigator.clipboard.writeText(entry.body.textContent);toast('คัดลอกคำตอบแล้ว')}catch{toast('ไม่สามารถคัดลอกได้ โปรดเลือกข้อความแทน')}};
     actions.append(copy);entry.inner.append(actions);
   }
-  function setBusy(value){sending=value;$('send').disabled=value;question.disabled=value;$('newSidebar').disabled=value;$('newTop').disabled=value;if(value)stopListening();micButton.disabled=value||!SpeechAPI;}
+  function setBusy(value){sending=value;$('send').disabled=value;question.disabled=value;$('newSidebar').disabled=value;$('newTop').disabled=value;}
   function resize(){question.style.height='auto';question.style.height=Math.min(166,Math.max(38,question.scrollHeight))+'px'}
   question.addEventListener('input',resize);
-  // Dictation is performed by the browser's Web Speech API, not by Dify or our PHP proxy.
-  // The user checks the transcript before clicking Send; audio is not stored by this page.
-  const SpeechAPI=window.SpeechRecognition||window.webkitSpeechRecognition;
-  let recognition=null,listening=false,dictationBase='',lastTranscript='',speechError='';
-  const micButton=$('mic'),micStatus=$('micStatus');
-  function setListening(value){
-    listening=value;micButton.classList.toggle('listening',value);
-    micButton.setAttribute('aria-pressed',String(value));
-    micButton.setAttribute('aria-label',value?'หยุดฟังเสียง':'พูดเพื่อพิมพ์คำถาม');
-    micButton.title=value?'หยุดฟังเสียง':'พูดเพื่อพิมพ์คำถาม';
-    micStatus.textContent=value?'กำลังฟังภาษาไทย... กดไมโครโฟนอีกครั้งเพื่อหยุด':speechError;
-  }
-  function stopListening(){if(recognition&&listening){try{recognition.stop()}catch(_){}setListening(false)}}
-  if(!SpeechAPI){micButton.disabled=true;micButton.title='เบราว์เซอร์นี้ไม่รองรับการแปลงเสียงเป็นข้อความ';}
-  micButton.addEventListener('click',()=>{
-    if(listening){stopListening();return}
-    if(sending){toast('โปรดรอให้ตอบคำถามเสร็จก่อน');return}
-    if(!SpeechAPI){toast('เบราว์เซอร์นี้ไม่รองรับไมโครโฟนสำหรับพิมพ์ด้วยเสียง');return}
-    if(!window.isSecureContext){
-      toast('การพูดผ่านไมโครโฟนต้องเปิดเว็บด้วย HTTPS หรือ localhost');
-      micStatus.textContent='โปรดตั้งค่า HTTPS ก่อนเปิดใช้ไมโครโฟน';return;
-    }
-    speechError='';dictationBase=question.value.trim();lastTranscript='';
-    try{
-      recognition=new SpeechAPI();recognition.lang='th-TH';recognition.continuous=false;
-      recognition.interimResults=true;recognition.maxAlternatives=1;
-      recognition.onstart=()=>setListening(true);
-      recognition.onresult=(event)=>{
-        let parts=[];
-        for(let i=0;i<event.results.length;i++){
-          const words=event.results[i][0]?.transcript||'';if(words.trim())parts.push(words.trim());
-        }
-        lastTranscript=parts.join(' ').trim();
-        question.value=[dictationBase,lastTranscript].filter(Boolean).join(' ');
-        resize();
-      };
-      recognition.onerror=(event)=>{
-        const messages={
-          'not-allowed':'ไม่ได้รับอนุญาตให้ใช้ไมโครโฟน โปรดอนุญาตในเบราว์เซอร์',
-          'service-not-allowed':'เบราว์เซอร์ไม่อนุญาตให้ใช้บริการรู้จำเสียง',
-          'audio-capture':'ไม่พบไมโครโฟน หรือกำลังถูกโปรแกรมอื่นใช้งาน',
-          'network':'ระบบแปลงเสียงมีปัญหาการเชื่อมต่ออินเทอร์เน็ต',
-          'no-speech':'ไม่ได้ยินเสียงพูด กรุณาลองใหม่',
-          'language-not-supported':'เบราว์เซอร์นี้ยังไม่รองรับการฟังภาษาไทย',
-        };
-        if(event.error!=='aborted'){
-          speechError=messages[event.error]||'ไม่สามารถแปลงเสียงได้ โปรดลองอีกครั้ง';
-          toast(speechError);
-        }
-      };
-      recognition.onend=()=>{
-        setListening(false);
-        if(lastTranscript){micStatus.textContent='แปลงเสียงเป็นข้อความแล้ว ตรวจสอบคำถามก่อนกดส่ง';question.focus()}
-        else if(!speechError)micStatus.textContent='หยุดฟังแล้ว';
-      };
-      recognition.start();
-    }catch(err){setListening(false);toast('เริ่มไมโครโฟนไม่ได้ โปรดลองใช้ Chrome หรือ Edge ผ่าน HTTPS')}
-  });
-
   question.addEventListener('keydown',event=>{if(event.key==='Enter'&&!event.shiftKey&&!event.isComposing){event.preventDefault();$('form').requestSubmit()}});
   async function api(action,body={},method='GET'){
     let url='api/chat.php?action='+encodeURIComponent(action);
@@ -495,7 +456,7 @@
     if(current){const one=conversations.find(c=>c.id===current);if(one)$('currentTitle').textContent=one.name||'บทสนทนา'}
   }
   async function openHistory(id){
-    if(sending)return;stopListening();
+    if(sending)return;
     const epoch=++loadEpoch;current=id;side(false);list();$('currentTitle').textContent=conversations.find(c=>c.id===id)?.name||'บทสนทนา';
     chat.replaceChildren();const loading=bubble('assistant','กำลังเปิดประวัติการสนทนา...');loading.node.classList.add('thinking');
     try{
@@ -516,7 +477,7 @@
     }catch(err){if(epoch!==loadEpoch)return;loading.body.textContent='เปิดประวัติไม่สำเร็จ: '+err.message;toast(err.message)}
   }
   function newChat(){
-    if(sending)return;stopListening();micStatus.textContent='';
+    if(sending)return;
     ++loadEpoch;current='';question.value='';resize();welcome();list();side(false);if(!mobile())question.focus();
   }
   $('newSidebar').onclick=newChat;$('newTop').onclick=newChat;
@@ -585,7 +546,7 @@
     entry.node.classList.remove('thinking');return nextId;
   }
   $('form').addEventListener('submit',async event=>{
-    event.preventDefault();const text=question.value.trim();if(!text||sending)return;stopListening();micStatus.textContent='';
+    event.preventDefault();const text=question.value.trim();if(!text||sending)return;
     question.value='';resize();
     if(!current)chat.replaceChildren();
     bubble('user',text);const waiting=bubble('assistant','กำลังค้นหาข้อมูลและเรียบเรียงคำตอบ');waiting.node.classList.add('thinking');waiting.body.classList.add('dots');
@@ -608,7 +569,7 @@
       if(!health.ready)throw Error(health.message||'เซิร์ฟเวอร์ยังไม่พร้อม');
       $('statusDot').classList.add('ready');$('statusText').textContent='พร้อมให้บริการ';
       await refreshHistory();loaded=true;
-    }catch(e){displayError='ยังเชื่อมต่อ Dify ไม่ได้';list();$('statusText').textContent='ยังไม่ได้เชื่อมต่อ';$('statusAlert').textContent=e.message+' — โปรดตรวจสอบ api/config.php';$('statusAlert').classList.add('visible')}
+    }catch(e){displayError='ยังเชื่อมต่อ Dify ไม่ได้';list();$('statusText').textContent='ยังไม่ได้เชื่อมต่อ';$('statusAlert').textContent=e.message+' — โปรดตรวจสอบการตั้งค่า Dify ใน api/chat.php';$('statusAlert').classList.add('visible')}
   })();
 </script>
 </body>
