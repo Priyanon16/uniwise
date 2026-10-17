@@ -117,6 +117,17 @@
     .message-actions{margin:7px 0 0;display:flex;gap:8px}
     .copy-btn{font-size:10px;color:#8c9caf;border:0;padding:4px 0;background:transparent}
     .copy-btn:hover{color:#1558c7}
+    .message-actions button{display:inline-flex;align-items:center;gap:5px;border:0;background:transparent;padding:5px 7px;border-radius:7px;min-height:30px;font-size:11px;color:var(--muted)}
+    .message-actions button:hover{color:var(--primary);background:var(--hover)}
+    .message.user .message-actions{justify-content:flex-end}
+    .edit-notice{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 13px 12px;margin:0 0 6px;border:1px solid var(--line);border-radius:12px;background:var(--surface-subtle);font-size:11px;line-height:1.7;color:var(--muted)}
+    .edit-notice[hidden]{display:none}
+    .edit-cancel{color:var(--primary);background:transparent;border:0;font-size:11px;white-space:nowrap;padding:6px}
+    .send-btn.stopping{background:#d9534f}
+    .send-btn.stopping:hover{background:#b43c3a}
+    .send-btn.stopping svg{stroke-width:2.5}
+    .busy-banner{font-size:11px;line-height:1.7;color:var(--muted);padding:4px 12px;text-align:center}
+    .busy-banner[hidden]{display:none}
     /* Faculty avatar stays visible beside messages, including while the assistant is typing. */
     .assistant-avatar{width:38px;height:38px;flex:0 0 38px;display:grid;place-items:center;border:1px solid var(--line);border-radius:13px;background:#fff;box-shadow:0 2px 10px rgba(25,50,86,.06);position:relative}
     .assistant-avatar img{display:block;width:30px;height:30px;object-fit:contain}
@@ -140,6 +151,7 @@
     #question::placeholder{color:#9da9ba}
     .send-btn{width:39px;height:39px;border:0;border-radius:12px;background:#175fdf;color:white;display:grid;place-items:center;flex:none;margin-bottom:1px}
     .send-btn:hover{background:#1053c8}
+    .send-btn.stopping:hover{background:#b43c3a}
     .send-btn svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
     .composer-note{text-align:center;color:#97a3b3;font-size:10px;line-height:1.65;margin:9px 0 0}
     .scrim{display:none}
@@ -299,6 +311,8 @@
     </div>
     <div class="composer-area">
       <div class="composer-wrap">
+        <div class="edit-notice" id="editNotice" hidden><span>กำลังแก้ไขคำถาม เมื่อส่งจะเริ่มแชทใหม่ (ประวัติเดิมไม่เปลี่ยน)</span><button class="edit-cancel" id="cancelEdit" type="button">ยกเลิก</button></div>
+        <div class="busy-banner" id="busyBanner" hidden>AI กำลังตอบอีกบทสนทนา — สามารถเปิดประวัติได้ หรือกดปุ่มหยุดด้านล่าง</div>
         <form class="composer" id="form"><label class="sr-only" for="question">พิมพ์คำถาม</label><textarea id="question" rows="1" maxlength="8000" placeholder="ถาม MBS UniWise AI..." autocomplete="off"></textarea><button class="send-btn" id="send" type="submit" title="ส่งข้อความ" aria-label="ส่งข้อความ"><svg viewBox="0 0 24 24"><path d="M12 19V5m0 0-6 6m6-6 6 6"/></svg></button></form>
         <p class="composer-note">คำตอบสร้างโดย AI โปรดตรวจสอบข้อมูลสำคัญกับประกาศทางการของคณะ</p>
       </div>
@@ -346,10 +360,10 @@
     ['หลักสูตรและสาขาวิชา','คณะมีสาขาวิชาระดับปริญญาตรีอะไรบ้าง?'],
     ['การรับสมัครนักศึกษา','เปิดรับสมัครนักศึกษาวันไหน'],
     ['ปฏิทินการศึกษา','ภาคเรียนที่ 2 ปีการศึกษา 2569 ลงทะเบียนเรียนเมื่อไหร่?'],
-    ['คู่มือการเรียน','การลาพักการศึกษาต้องดำเนินการอย่างไร?'],
+    ['คู่มือการเรียน','การย้ายสาขาต้องดำเนินการอย่างไร?'],
     ['ฝึกงานและสหกิจศึกษา','สหกิจศึกษาต้องเตรียมเอกสารอะไรบ้าง?'],
     ['อาจารย์และบุคลากร','สาขาคอมพิวเตอร์ธุรกิจมีอาจารย์คนใดบ้าง?'],
-    ['อาจารย์ที่ปรึกษา','ตรวจสอบรายชื่ออาจารย์ที่ปรึกษาได้อย่างไร?'],
+    ['อาจารย์ที่ปรึกษา','ใครเป็นอาจารย์ที่ปรึกษาสาขาคอมพิวเตอร์ธุรกิจบ้าง?'],
     ['ติดต่อคณะ','ช่องทางติดต่อคณะการบัญชีและการจัดการมีอะไรบ้าง?']
   ];
   function anonymousId(){
@@ -385,7 +399,7 @@
     path.setAttribute('d','M16 4l4 4-3 1-2 5 2 2-1 1-5-3-4 4-1-1 4-4-3-5 1-1 2 2 5-2 1-3z');
     svg.append(path);return svg;
   }
-  let current='',conversations=[],sending=false,loadEpoch=0,loaded=false,displayError='';
+  let current='',conversations=[],sending=false,loadEpoch=0,loaded=false,displayError='',generation=null,editDraft=null;
   const history=$('history'),chat=$('chatContent'),scroll=$('chatScroll'),question=$('question');
   function toast(message){const old=document.querySelector('.toast');if(old)old.remove();const node=document.createElement('div');node.className='toast';node.role='status';node.textContent=message;document.body.append(node);setTimeout(()=>node.remove(),4300)}
   function mobile(){return window.matchMedia('(max-width:740px)').matches}
@@ -403,7 +417,7 @@
   });
   function choosePrompt(text){
     if($('examplesDialog').open)$('examplesDialog').close();
-    question.value=text;resize();side(false);question.focus();
+    question.value=text;resize();if(mobile())side(false);question.focus();
   }
   function promptButton(text,cls){const b=document.createElement('button');b.className=cls;b.type='button';b.textContent=text;b.onclick=()=>choosePrompt(text);return b}
   // Separate, scrollable dialog for suggestions – no nested scrollbar in the sidebar.
@@ -445,7 +459,9 @@
     }
     const value=document.createElement('div');value.className='message-copy';value.textContent=text||'';
     inner.append(value);node.append(inner);chat.append(node);if(autos&&follow)scrollBottom(true);
-    return {node,body:value,inner};
+    const entry={node,body:value,inner};
+    if(role==='user')addActions(entry,'user',text||'');
+    return entry;
   }
   function typingIndicator(entry,message){
     entry.node.classList.add('thinking','generating');
@@ -455,20 +471,59 @@
     for(let i=0;i<3;i++)dots.append(document.createElement('span'));
     container.append(label,dots);entry.body.replaceChildren(container);
   }
-  function finishedAnswer(entry){
-    const actions=document.createElement('div');actions.className='message-actions';
-    const copy=document.createElement('button');copy.type='button';copy.className='copy-btn';copy.textContent='คัดลอกคำตอบ';
-    copy.onclick=async()=>{try{await navigator.clipboard.writeText(entry.body.textContent);toast('คัดลอกคำตอบแล้ว')}catch{toast('ไม่สามารถคัดลอกได้ โปรดเลือกข้อความแทน')}};
-    actions.append(copy);entry.inner.append(actions);
+  async function copyText(text){
+    if(!text){toast('ยังไม่มีข้อความให้คัดลอก');return}
+    try{
+      if(navigator.clipboard?.writeText){await navigator.clipboard.writeText(text);toast('คัดลอกข้อความแล้ว');return}
+    }catch(_){}
+    // HTTP pages often lack Clipboard API. Use a local temporary textarea instead.
+    const box=document.createElement('textarea');box.value=text;box.setAttribute('readonly','');
+    box.style.cssText='position:fixed;top:0;left:-9999px;opacity:0';
+    document.body.append(box);box.select();
+    let ok=false;try{ok=document.execCommand('copy')}catch(_){}box.remove();
+    toast(ok?'คัดลอกข้อความแล้ว':'คัดลอกไม่ได้ กรุณาเลือกข้อความแล้วกด Ctrl+C');
   }
-  function setBusy(value){sending=value;$('send').disabled=value;question.disabled=value;$('newSidebar').disabled=value;$('newTop').disabled=value;}
+  function addActions(entry,role,original){
+    if(entry.inner.querySelector('.message-actions'))return;
+    const bar=document.createElement('div');bar.className='message-actions';
+    const copy=document.createElement('button');copy.type='button';copy.className='copy-btn';copy.textContent=role==='user'?'คัดลอกคำถาม':'คัดลอกคำตอบ';
+    copy.onclick=()=>copyText(role==='user'?original:entry.body.textContent);
+    bar.append(copy);
+    if(role==='user'){
+      const edit=document.createElement('button');edit.type='button';edit.textContent='แก้ไขและส่งใหม่';
+      edit.title='แก้ไขคำถามและส่งเป็นบทสนทนาใหม่ โดยไม่เปลี่ยนประวัติเดิม';
+      edit.onclick=()=>startEdit(original);bar.append(edit);
+    }
+    entry.inner.append(bar);
+  }
+  function finishedAnswer(entry){addActions(entry,'assistant',entry.body.textContent)}
+  function showEdit(value){editDraft=value;$('editNotice').hidden=!editDraft}
+  function startEdit(text){
+    if(sending){toast('กรุณารอให้ตอบเสร็จหรือกดหยุดก่อนแก้ไขคำถาม');return}
+    showEdit(text);question.value=text;resize();question.focus();
+    toast('แก้ไขคำถามแล้วกดส่ง ระบบจะสร้างบทสนทนาใหม่');
+  }
+  $('cancelEdit').onclick=()=>{showEdit(null);question.value='';resize();question.focus()};
+  const stopIcon='<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="7" width="10" height="10" rx="1.5"/></svg>';
+  const sendIcon=$('send').innerHTML;
+  function setBusy(value){
+    sending=value;
+    const b=$('send');b.classList.toggle('stopping',value);
+    b.innerHTML=value?stopIcon:sendIcon;
+    b.title=value?'หยุดสร้างคำตอบ':'ส่งข้อความ';b.setAttribute('aria-label',b.title);
+    b.disabled=false;
+    updateBusyBanner();
+  }
+  function updateBusyBanner(){
+    $('busyBanner').hidden=!(sending&&generation&&generation.viewEpoch!==loadEpoch);
+  }
   function resize(){question.style.height='auto';question.style.height=Math.min(166,Math.max(38,question.scrollHeight))+'px'}
   question.addEventListener('input',resize);
-  question.addEventListener('keydown',event=>{if(event.key==='Enter'&&!event.shiftKey&&!event.isComposing){event.preventDefault();$('form').requestSubmit()}});
-  async function api(action,body={},method='GET'){
+  question.addEventListener('keydown',event=>{if(event.key==='Enter'&&!event.shiftKey&&!event.isComposing){event.preventDefault();if(!sending)$('form').requestSubmit()}});
+  async function api(action,body={},method='GET',signal=null){
     let url='api/chat.php?action='+encodeURIComponent(action);
     const headers={'Accept':'application/json','X-MBS-User':userId};
-    const options={method,headers,cache:'no-store',credentials:'same-origin'};
+    const options={method,headers,cache:'no-store',credentials:'same-origin'};if(signal)options.signal=signal;
     if(method==='GET')url+='&'+new URLSearchParams(body);
     else{headers['Content-Type']='application/json';options.body=JSON.stringify(body)}
     let response;try{response=await fetch(url,options)}catch{throw Error('เชื่อมต่อเซิร์ฟเวอร์ไม่ได้ กรุณาตรวจสอบ PHP และเครือข่าย')}
@@ -524,8 +579,8 @@
     if(current){const one=conversations.find(c=>c.id===current);if(one)$('currentTitle').textContent=one.name||'บทสนทนา'}
   }
   async function openHistory(id){
-    if(sending)return;
-    const epoch=++loadEpoch;current=id;side(false);list();$('currentTitle').textContent=conversations.find(c=>c.id===id)?.name||'บทสนทนา';
+    showEdit(null);
+    const epoch=++loadEpoch;current=id;if(mobile())side(false);list();updateBusyBanner();$('currentTitle').textContent=conversations.find(c=>c.id===id)?.name||'บทสนทนา';
     chat.replaceChildren();const loading=bubble('assistant','กำลังเปิดประวัติการสนทนา...');loading.node.classList.add('thinking');
     try{
       const found=[],seen=new Set();let cursor='';
@@ -545,8 +600,7 @@
     }catch(err){if(epoch!==loadEpoch)return;loading.body.textContent='เปิดประวัติไม่สำเร็จ: '+err.message;toast(err.message)}
   }
   function newChat(){
-    if(sending)return;
-    ++loadEpoch;current='';question.value='';resize();welcome();list();side(false);if(!mobile())question.focus();
+    ++loadEpoch;current='';showEdit(null);question.value='';resize();welcome();list();if(mobile())side(false);updateBusyBanner();if(!mobile())question.focus();
   }
   $('newSidebar').onclick=newChat;$('newTop').onclick=newChat;
   function askDialog(type,c){return new Promise(resolve=>{
@@ -561,7 +615,6 @@
     d.oncancel=e=>{e.preventDefault();cancel()};d.showModal();if(type==='rename')$('dialogInput').focus();
   })}
   async function optionsFor(c){
-    if(sending)return;
     const pick=await new Promise(resolve=>{
       const menu=document.createElement('div');
       menu.className='options-popup';
@@ -584,6 +637,9 @@
       try{savePin(c.id)}catch(_){toast('ไม่สามารถบันทึกหมุดได้ กรุณาอนุญาตการจัดเก็บข้อมูลเว็บไซต์')}
       return;
     }
+    if(pick==='delete'&&sending&&generation?.conversationId===c.id){
+      toast('กรุณากดหยุดสร้างคำตอบก่อนลบบทสนทนาที่กำลังตอบ');return;
+    }
     const result=await askDialog(pick,c);if(result===null)return;
     try{
       if(pick==='rename'){
@@ -599,51 +655,123 @@
       await refreshHistory();
     }catch(e){toast('ดำเนินการไม่สำเร็จ: '+e.message)}
   }
-  async function readStream(response,entry){
+  // POST Dify's documented stop endpoint via our server-side proxy.
+  async function performStop(g){
+    if(g.stopCallStarted||!g.taskId)return;
+    g.stopCallStarted=true;
+    try{
+      await api('stop',{task_id:g.taskId},'POST');
+      g.stopConfirmed=true;
+    }catch(err){
+      g.stopError=err.message;
+    }finally{
+      g.controller.abort();
+    }
+  }
+  function stopGeneration(){
+    const g=generation;
+    if(!g||g.stopRequested)return;
+    g.stopRequested=true;
+    $('send').disabled=true;
+    $('send').title='กำลังหยุดคำตอบ';
+    if(g.taskId){void performStop(g)}
+    else{
+      toast('กำลังรอรหัสงานจาก Dify เพื่อสั่งหยุด...');
+      g.stopTimeout=setTimeout(()=>{
+        if(g.stopRequested&&!g.stopCallStarted){
+          g.stopError='ยังไม่ได้รับรหัสงานจาก Dify';
+          g.controller.abort();
+        }
+      },4000);
+    }
+  }
+  async function readStream(response,entry,g){
     if(!response.body)throw Error('เบราว์เซอร์ไม่รองรับการรับคำตอบแบบต่อเนื่อง');
     const reader=response.body.getReader(),decoder=new TextDecoder();let buffer='',total='',ended=false,nextId='';
+    function consume(block){
+      const data=block.split('\n').filter(line=>line.startsWith('data:')).map(line=>line.slice(5).trimStart()).join('\n');
+      if(!data||data==='[DONE]')return;
+      let event;try{event=JSON.parse(data)}catch{return}
+      if(event.task_id){
+        g.taskId=String(event.task_id);
+        if(g.stopRequested)void performStop(g);
+      }
+      if(event.conversation_id){nextId=String(event.conversation_id);g.conversationId=nextId}
+      if(event.event==='error')throw Error(event.message||'Dify ไม่สามารถตอบคำถามได้');
+      if(g.stopRequested)return;
+      if(event.event==='message'||event.event==='agent_message'){
+        if(typeof event.answer==='string'){
+          total+=event.answer;entry.body.textContent=total;
+          entry.node.classList.remove('thinking');
+          if(entry.node.isConnected)scrollBottom();
+        }
+      }else if(event.event==='message_replace'){
+        total=typeof event.answer==='string'?event.answer:total;
+        entry.body.textContent=total;
+        entry.node.classList.remove('thinking');
+        if(entry.node.isConnected)scrollBottom();
+      }else if(event.event==='message_end')ended=true;
+    }
     while(true){
       const {value,done}=await reader.read();if(done)break;
       buffer+=decoder.decode(value,{stream:true}).replace(/\r\n/g,'\n');
       let index;
       while((index=buffer.indexOf('\n\n'))!==-1){
-        const block=buffer.slice(0,index);buffer=buffer.slice(index+2);
-        const data=block.split('\n').filter(line=>line.startsWith('data:')).map(line=>line.slice(5).trimStart()).join('\n');
-        if(!data||data==='[DONE]')continue;
-        let event;try{event=JSON.parse(data)}catch{continue}
-        if(event.conversation_id)nextId=event.conversation_id;
-        if(event.event==='error')throw Error(event.message||'Dify ไม่สามารถตอบคำถามได้');
-        if(event.event==='message'||event.event==='agent_message'){
-          if(typeof event.answer==='string'){total+=event.answer;entry.body.textContent=total;entry.node.classList.remove('thinking');scrollBottom()}
-        }else if(event.event==='message_replace'){
-          total=typeof event.answer==='string'?event.answer:total;entry.body.textContent=total;scrollBottom();
-        }else if(event.event==='message_end')ended=true;
+        const block=buffer.slice(0,index);buffer=buffer.slice(index+2);consume(block);
       }
     }
-    // Some networks buffer the full SSE response; process an unterminated final event defensively.
-    if(buffer.startsWith('data:')){
-      try{const e=JSON.parse(buffer.slice(5).trim());if(e.conversation_id)nextId=e.conversation_id;if(e.event==='error')throw Error(e.message||'Dify มีข้อผิดพลาด');if(e.event==='message'&&e.answer){total+=e.answer;entry.body.textContent=total}}catch(e){if(e.message&&e.message!=='Unexpected end of JSON input'&&e.name!=='SyntaxError')throw e}
-    }
+    if(buffer.trim())consume(buffer);
+    if(g.stopRequested)return nextId;
     if(!total&&!ended)throw Error('ไม่ได้รับคำตอบจาก Dify กรุณาตรวจสอบการเชื่อมต่อ');
     if(!total)entry.body.textContent='Dify ประมวลผลเสร็จแล้ว แต่ไม่ได้ส่งข้อความคำตอบกลับมา';
     entry.node.classList.remove('thinking','generating');return nextId;
   }
   $('form').addEventListener('submit',async event=>{
-    event.preventDefault();const text=question.value.trim();if(!text||sending)return;
+    event.preventDefault();
+    if(sending){stopGeneration();return}
+    const text=question.value.trim();if(!text)return;
+    if(editDraft){
+      // Dify's service API cannot overwrite an old message in place.
+      // Editing sends the revision as a new independent conversation.
+      ++loadEpoch;current='';chat.replaceChildren();list();
+      $('currentTitle').textContent='MBS UniWise AI';showEdit(null);
+    }
+    const originId=current,viewEpoch=loadEpoch;
     question.value='';resize();
     if(!current)chat.replaceChildren();
     bubble('user',text);
     const waiting=bubble('assistant','');typingIndicator(waiting,'กำลังค้นหาข้อมูลและเรียบเรียงคำตอบ...');
-    setBusy(true);scrollBottom(true);
+    const g={controller:new AbortController(),viewEpoch,conversationId:originId,taskId:'',stopRequested:false,stopCallStarted:false,stopConfirmed:false,stopError:'',stopTimeout:null,entry:waiting};
+    generation=g;setBusy(true);scrollBottom(true);
     try{
-      const response=await api('send',{query:text,conversation_id:current},'POST');
-      typingIndicator(waiting,'กำลังสร้างคำตอบ...');
-      const id=await readStream(response,waiting);if(id)current=id;
+      const response=await api('send',{query:text,conversation_id:originId},'POST',g.controller.signal);
+      if(!g.stopRequested)typingIndicator(waiting,'กำลังสร้างคำตอบ...');
+      const id=await readStream(response,waiting,g);
+      if(viewEpoch===loadEpoch&&id)current=id;
+      if(g.stopRequested){
+        waiting.body.textContent=waiting.node.classList.contains('thinking')?'หยุดสร้างคำตอบแล้ว':waiting.body.textContent||'หยุดสร้างคำตอบแล้ว';
+        if(g.stopConfirmed)toast('หยุดการสร้างคำตอบที่ Dify แล้ว');
+        else if(g.stopError)toast('หยุดแสดงผลแล้ว แต่ยังยืนยันว่า Dify หยุดงานไม่ได้');
+      }
       finishedAnswer(waiting);
       try{await refreshHistory()}catch(err){toast('ตอบแล้ว แต่โหลดประวัติไม่สำเร็จ: '+err.message)}
-      setTimeout(()=>refreshHistory().catch(()=>{}),1300);
-    }catch(err){waiting.node.classList.remove('thinking','generating');waiting.body.textContent='เกิดข้อผิดพลาด: '+err.message;toast('ส่งคำถามไม่สำเร็จ: '+err.message)}
-    finally{setBusy(false);scrollBottom(true);if(!mobile())question.focus()}
+    }catch(err){
+      if(g.stopRequested){
+        waiting.body.textContent=waiting.node.classList.contains('thinking')?'หยุดสร้างคำตอบแล้ว':waiting.body.textContent||'หยุดสร้างคำตอบแล้ว';
+        finishedAnswer(waiting);
+        if(g.stopConfirmed)toast('หยุดการสร้างคำตอบที่ Dify แล้ว');
+        else toast('หยุดการแสดงผลแล้ว แต่ยังไม่ยืนยันการหยุดบน Dify');
+        try{await refreshHistory()}catch(_){}
+      }else{
+        waiting.body.textContent='เกิดข้อผิดพลาด: '+err.message;toast('ส่งคำถามไม่สำเร็จ: '+err.message);
+      }
+    }finally{
+      if(g.stopTimeout)clearTimeout(g.stopTimeout);
+      waiting.node.classList.remove('thinking','generating');
+      if(generation===g){generation=null;setBusy(false)}
+      if(waiting.node.isConnected)scrollBottom(true);
+      if(!mobile()&&!question.disabled)question.focus();
+    }
   });
   $('fullscreen').onclick=async()=>{try{if(!document.fullscreenElement)await document.documentElement.requestFullscreen();else await document.exitFullscreen()}catch{toast('เบราว์เซอร์นี้ไม่อนุญาตให้เปิดเต็มหน้าจอ')}};
   welcome();resize();

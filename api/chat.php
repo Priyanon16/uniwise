@@ -48,8 +48,8 @@ if (!$ready) fail(503,'ยังไม่ได้ตั้งค่า Dify API
 if(!preg_match('~^https?://[^/]+(?:/[^?#]*)?/v1$~i',$base))fail(500,'DIFY_API_BASE ต้องลงท้ายด้วย /v1');
 $user=(string)($_SERVER['HTTP_X_MBS_USER']??'');
 if(!preg_match('/^mbs-[a-f0-9]{32}$/',$user)) fail(400,'รหัสอุปกรณ์ไม่ถูกต้อง');
-if(!in_array($action,['list','messages','send','rename','delete'],true)) fail(404,'ไม่พบคำสั่ง');
-if ((in_array($action,['list','messages'],true)&&$method!=='GET') || (in_array($action,['send','rename','delete'],true)&&$method!=='POST')) fail(405,'HTTP Method ไม่ถูกต้อง');
+if(!in_array($action,['list','messages','send','stop','rename','delete'],true)) fail(404,'ไม่พบคำสั่ง');
+if ((in_array($action,['list','messages'],true)&&$method!=='GET') || (in_array($action,['send','stop','rename','delete'],true)&&$method!=='POST')) fail(405,'HTTP Method ไม่ถูกต้อง');
 // A minimal shared rate limit by IP for cost control; still use Dify limits and HTTPS in production.
 if ($action==='send') {
     $ip=(string)($_SERVER['REMOTE_ADDR']??'unknown');
@@ -85,6 +85,11 @@ switch($action){
     $payload=['inputs'=>(object)($config['default_inputs']??[]),'query'=>$text,'user'=>$user,'response_mode'=>'streaming','auto_generate_name'=>true];
     if($id!=='')$payload['conversation_id']=$id;
     break;
+ case 'stop':
+    $task=(string)($data['task_id']??'');
+    if(!preg_match('/^[A-Za-z0-9-]{1,128}$/',$task))fail(400,'รหัสงาน Dify ไม่ถูกต้อง');
+    $outMethod='POST';$path='/chat-messages/'.rawurlencode($task).'/stop';
+    $payload=['user'=>$user];break;
  case 'rename':
     if($id==='')fail(400,'กรุณาระบุบทสนทนา');
     $name=trim((string)($data['name']??''));if($name===''||charCount($name)>100)fail(400,'กรุณากำหนดชื่อไม่เกิน 100 ตัวอักษร');
