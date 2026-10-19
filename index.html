@@ -124,6 +124,24 @@
     .message.assistant .message-copy li::marker{color:var(--muted)}
     .message.assistant .message-copy h2,.message.assistant .message-copy h3,.message.assistant .message-copy h4{font-size:1.06em;font-weight:700;line-height:1.65;margin:15px 0 8px;color:var(--title)}
     .message.assistant .message-copy a{color:var(--primary);text-decoration:underline;text-underline-offset:3px;overflow-wrap:anywhere;cursor:pointer}
+
+    /* Display image links returned by Dify as real, clickable images. */
+    .message.assistant .message-copy a.answer-image-link{
+      display:inline-block;max-width:100%;margin:6px 0 12px;
+      line-height:1;vertical-align:top;text-decoration:none;
+    }
+    .message.assistant .message-copy img.answer-image{
+      display:block;width:auto;height:auto;max-width:min(100%,300px);
+      max-height:420px;object-fit:contain;border-radius:12px;
+      border:1px solid var(--line);background:var(--surface-subtle);
+      box-shadow:0 3px 16px rgba(17,45,81,.09);
+    }
+    .message.assistant .message-copy a.answer-image-link:focus-visible{
+      outline:3px solid var(--primary);outline-offset:4px;border-radius:12px;
+    }
+    @media(max-width:740px){
+      .message.assistant .message-copy img.answer-image{max-width:min(100%,260px);max-height:360px}
+    }
     .message.assistant .message-copy a:hover{filter:brightness(.78)}
     .message.assistant .message-copy a:focus-visible{outline:2px solid var(--primary);outline-offset:3px;border-radius:2px}
     .message.assistant .message-copy code{font-family:ui-monospace,Consolas,monospace;font-size:.9em;background:var(--surface-subtle);padding:1px 5px;border-radius:5px}
@@ -509,27 +527,58 @@
     try{const url=new URL(raw);return ['http:','https:'].includes(url.protocol)?url.href:null}
     catch(_){return null}
   }
+  function answerImageUrl(raw){
+    const href=answerUrl(raw);
+    if(!href)return null;
+    try{
+      const url=new URL(href);
+      // Remote image previews must use HTTPS; keep non-image URLs as ordinary links.
+      return url.protocol==='https:' && /\.(?:jpe?g|png|gif|webp|avif)$/i.test(url.pathname)
+        ? href : null;
+    }catch(_){return null}
+  }
   function appendAnswerInline(target,raw){
     const text=String(raw||'');let pos=0;
     const appendText=value=>{if(value)target.append(document.createTextNode(value))};
     const link=(label,url)=>{
       const href=answerUrl(url);
-      if(!href){appendText(label);return}
+      if(!href){appendText(label||url);return}
       const a=document.createElement('a');a.href=href;
       a.target='_blank';a.rel='noopener noreferrer';a.textContent=label||url;
       a.title='เปิดลิงก์ในแท็บใหม่: '+href;
       target.append(a);
     };
+    const image=(url,alt='')=>{
+      const href=answerImageUrl(url);
+      if(!href){link(url,url);return}
+      const a=document.createElement('a');a.href=href;a.className='answer-image-link';
+      a.target='_blank';a.rel='noopener noreferrer';a.title='กดเพื่อดูรูปภาพขนาดเต็ม';
+      const img=document.createElement('img');img.className='answer-image';img.src=href;
+      img.alt=alt||'รูปภาพประกอบคำตอบ';img.loading='lazy';img.decoding='async';
+      img.referrerPolicy='no-referrer';
+      img.onerror=()=>{
+        // Sites may block embedded images. Keep the original clickable URL.
+        const fallback=document.createElement('a');fallback.href=href;fallback.target='_blank';
+        fallback.rel='noopener noreferrer';fallback.textContent=href;
+        fallback.title='เปิดรูปภาพในแท็บใหม่';a.replaceWith(fallback);
+      };
+      a.append(img);target.append(a);
+    };
     while(pos<text.length){
       const rest=text.slice(pos);let match;
-      // [ลิงก์](https://example.org) and [https://...](https://...)
+      // Markdown image: ![คำอธิบาย](https://example.com/photo.jpg)
+      if((match=rest.match(/^!\[([^\]\n]*)\]\(\s*(https?:\/\/[^\s)]+)\s*\)/i))){
+        image(match[2],match[1]);pos+=match[0].length;continue;
+      }
+      // Markdown link to an image is rendered as a picture instead of a long URL.
       if((match=rest.match(/^\[([^\]\n]+)\]\(\s*(https?:\/\/[^\s)]+)\s*\)/i))){
-        // Show the actual URL as the clickable text, never a generic “ลิงก์” label.
-        // A Markdown [label](URL) pair produces exactly one visible URL.
-        link(match[2],match[2]);pos+=match[0].length;continue;
+        if(answerImageUrl(match[2]))image(match[2],match[1]);
+        else link(match[2],match[2]);
+        pos+=match[0].length;continue;
       }
       if((match=rest.match(/^<((?:https?:\/\/)[^\s<>]+)>/i))){
-        link(match[1],match[1]);pos+=match[0].length;continue;
+        if(answerImageUrl(match[1]))image(match[1]);else link(match[1],match[1]);
+        pos+=match[0].length;continue;
       }
       if((match=rest.match(/^`([^`\n]+)`/))){
         const code=document.createElement('code');code.textContent=match[1];target.append(code);pos+=match[0].length;continue;
@@ -541,13 +590,12 @@
         const em=document.createElement('em');appendAnswerInline(em,match[1]);target.append(em);pos+=match[0].length;continue;
       }
       if((match=rest.match(/^https?:\/\/[^\s<>"'`]+/i))){
-        // Trim prose punctuation; don't absorb the enclosing ')' into the URL.
+        // Trim surrounding sentence punctuation but preserve image extensions.
         const url=match[0].replace(/[.,!?;:\]\u0E2F\u0E46)}]+$/g,'');
-        if(url){link(url,url);pos+=url.length;continue}
+        if(url){if(answerImageUrl(url))image(url);else link(url,url);pos+=url.length;continue}
       }
-      // Copy plain characters in one batch instead of generating thousands of nodes.
       let next=pos+1;
-      while(next<text.length && !/[\[<*`hH]/.test(text[next]))next++;
+      while(next<text.length && !/[!\[<*`hH]/.test(text[next]))next++;
       appendText(text.slice(pos,next));pos=next;
     }
   }
