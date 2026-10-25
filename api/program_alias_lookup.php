@@ -120,12 +120,18 @@ $matches = $exact ?: $partial;
 if (!$matches) respond(['success'=>true,'status'=>'not_found','program'=>'','group_id'=>'','candidates'=>[]]);
 if (count($matches) > 1) respond(['success'=>true,'status'=>'ambiguous','program'=>'','group_id'=>'','candidates'=>array_values($matches)]);
 $major = (string)reset($matches);
-// Only six official academic groups from people.php. Other curricula MUST NOT be guessed.
+// Strip the optional display prefix before returning the name to Dify.
+// e.g. "สาขาวิชาคอมพิวเตอร์ธุรกิจ" -> "คอมพิวเตอร์ธุรกิจ"
+$normalizedMajor = preg_replace('/^(?:สาขาวิชา|สาขา)\s*/u', '', trim($major)) ?? trim($major);
+
+// Only six OFFICIAL academic personnel groups from people.php.
+// The program ID in academic_programs is NOT a people.php group_id.
+// Do not invent personnel groups for other curricula.
 $groupCodes = [
     'บัญชี'=>'1','การบัญชี'=>'1','การตลาด'=>'2','การจัดการ'=>'3',
     'คอมพิวเตอร์ธุรกิจ'=>'4','บริหารการเงิน'=>'5','การบริหารการเงิน'=>'5',
     'เศรษฐศาสตร์'=>'6','เศรษฐศาสตร์ธุรกิจ'=>'6'
 ];
-$groupId = $groupCodes[$major] ?? '';
-respond(['success'=>true,'status'=>'matched','program'=>$major,'group_id'=>$groupId,
-         'match_type'=>($exact?'exact':'partial'),'candidates'=>[$major]]);
+$groupId = $groupCodes[canonical($normalizedMajor)] ?? '';
+respond(['success'=>true,'status'=>'matched','program'=>$normalizedMajor,'group_id'=>$groupId,
+         'match_type'=>($exact?'exact':'partial'),'candidates'=>[$normalizedMajor]]);
